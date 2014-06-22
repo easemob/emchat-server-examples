@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 本实例使用了 JAX-RS 2.0的client API, 这是JAVA 中调用REST服务的标准API
+ *
+ *
  * @author stliu
  * @date 6/23/14
  */
