@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'org.glassfish.jersey.core:jersey-client:2.9'
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.9'
+    testCompile "junit:junit:4.11"
+}
