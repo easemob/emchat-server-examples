@@ -18,6 +18,16 @@
     
 然后直接在Intellij中打开这个项目
 
+### 获取本项目的所有依赖
+
+我们建议您使用 [maven](http://maven.apache.org) 或者 [gradle](http://gradle.org) 来构建您的服务器项目,
+如果您没有使用上面的工具, 而是自己手工管理所依赖的jar包的话, 可以使用下面的命令来得到本项目使用到的jar包
+
+
+    gradlew.bat distZip
+
+这个会在 _build/distributions_ 目录下生成一个 easemob-server-example.zip 文件, 里面包含了本项目的所有依赖
+
 ### 直接编译
 
 在命令行中运行 

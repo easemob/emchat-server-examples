@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'java-library-distribution'
 
 repositories {
     mavenCentral()
@@ -11,4 +12,12 @@ dependencies {
     compile 'org.glassfish.jersey.core:jersey-client:2.9'
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.9'
     testCompile "junit:junit:4.11"
+}
+
+
+
+distributions {
+    main{
+        baseName = 'easemob-server-example'
+    }
 }
