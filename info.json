@@ -1,0 +1,20 @@
+{
+    "appkey" : "easemob-playground#test1",
+    "org" : "easemob-playground",
+    "admin" : {
+        "username" : "zhangjianguo",
+        "password" : "zhangjianguo"
+    },
+    "app" : 
+        {
+            "name" : "test1",
+            "credentials" : {
+                "client_id" : "YXA6wDs-MARqEeSO0VcBzaqg5A",
+                "client_secret" : "YXA6JOMWlLap_YbI_ucz77j-4-mI0JA"
+            },
+            "admin" : {
+                "username" : "testuser1",
+                "password" : "testuser1"
+            }
+        }
+}
