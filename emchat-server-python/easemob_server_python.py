@@ -188,7 +188,7 @@ def delete_user(org, app, auth, username):
     url = EASEMOB_HOST+("/%s/%s/users/%s" % (org, app, username))
     return post(url, {}, auth)
 
-def send_file(org, app, auth, file_path):
+def send_file(org, app, auth, file_path, secret=True):
     """上传文件
     上传文件
     curl --verbose --header "Authorization: Bearer YWMtz1hFWOZpEeOPpcmw1FB0RwAAAUZnAv0D7y9-i4c9_c4rcx1qJDduwylRe7Y" \
@@ -198,6 +198,7 @@ def send_file(org, app, auth, file_path):
     url = EASEMOB_HOST+("/%s/%s/chatfiles" % (org, app))
     # files = {'file': open(file_path, 'rb')}
     files = {'file': ('report.xls', open(file_path, 'rb'), 'image/jpeg', {'Expires': '0'})}
+    
     r = requests.post(url, files=files,  auth=auth)
     return http_result(r)
  
@@ -226,27 +227,30 @@ if __name__ == '__main__':
     print "Get app admin token with client id/secret: " + app_client_auth.get_token()
     
     print "now let's register some users...."
-    # app_users = []
-   #  for i in range(10):
-   #      username = id_generator()
-   #
-   #      password = '123456'
-   #      success, result = register_new_user(org, app, app_admin_auth, username, password)
-   #      if success:
-   #          print "registered new user %s in appkey[%s]" % (username, appkey)
-   #          app_users.append(username)
-   #      else:
-   #          print "failed to register new user %s in appkey[%s]" % (username, appkey)
-   #
-   #  print "now let's delete users just created, this time we're using app_client_auth"
-   #
-   #  for username in app_users:
-   #      success, result = delete_user(org, app,app_client_auth, username)
-   #      if success:
-   #          print "user %s is deleted"
-   #      else:
-   #          print "failed to delete user %s"
+    app_users = []
+    for i in range(10):
+        username = id_generator()
+
+        password = '123456'
+        success, result = register_new_user(org, app, app_admin_auth, username, password)
+        if success:
+            print "registered new user %s in appkey[%s]" % (username, appkey)
+            app_users.append(username)
+        else:
+            print "failed to register new user %s in appkey[%s]" % (username, appkey)
+
+    print "now let's delete users just created, this time we're using app_client_auth"
+
+    for username in app_users:
+        success, result = delete_user(org, app, app_client_auth, username)
+        if success:
+            print "user[%s] is deleted from appkey[%s]" % (username, appkey)
+        else:
+            print "failed to delete user[%s] from appkey[%s]" % (username, appkey)
+
+    print "now let's send an image"
     success, result = send_file(org, app, app_client_auth, '../zjg.jpg')
+
     print result
    
 
