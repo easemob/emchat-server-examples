@@ -14,8 +14,6 @@ public class EasemobRESTSSLAPI {
 
 	private static Logger logger = Logger.getLogger(HttpUtils.class);
 
-	private static HttpsUtils httpsUtils = new HttpsUtils();
-
 	/**
 	 * 创建用户
 	 * 
@@ -40,8 +38,8 @@ public class EasemobRESTSSLAPI {
 
 		logger.error("url:" + host + rest);
 		String reqURL = "https://" + host + "/" + rest;
-		String result = httpsUtils.sendSSLRequest(reqURL, token, body.toString(),
-				httpsUtils.Method_POST);
+		String result = HttpsUtils.sendSSLRequest(reqURL, token, body.toString(),
+				HttpsUtils.Method_POST);
 
 		return JSONObject.fromObject(result);
 	}
@@ -70,7 +68,7 @@ public class EasemobRESTSSLAPI {
 
 		logger.error("url:" + host + rest);
 		String reqURL = "https://" + host + "/" + rest;
-		String result = httpsUtils.sendSSLRequest(reqURL, token, null, httpsUtils.Method_DELETE);
+		String result = HttpsUtils.sendSSLRequest(reqURL, token, null, HttpsUtils.Method_DELETE);
 		return JSONObject.fromObject(result);
 	}
 
@@ -101,13 +99,17 @@ public class EasemobRESTSSLAPI {
 		}
 
 		logger.error("url: " + "https://" + host + "/" + rest);
+
 		String reqURL = "https://" + host + "/" + rest;
-		String result = httpsUtils.sendSSLRequest(reqURL, null, postBody.toString(),
-				httpsUtils.Method_POST);
+		String result = HttpsUtils.sendSSLRequest(reqURL, null, postBody.toString(),
+				HttpsUtils.Method_POST);
 		JSONObject jsonObject = JSONObject.fromObject(result);
 
 		if (null == jsonObject.get("error")) {
 			accessToken = (String) jsonObject.get("access_token");
+			logger.error("accessToken: " + accessToken);
+		} else {
+			logger.error("get accessToken failured");
 		}
 
 		return accessToken;
@@ -120,11 +122,11 @@ public class EasemobRESTSSLAPI {
 		// 获取IM用户token
 		JSONObject getIMAccessTokenPostBody = new JSONObject();
 		getIMAccessTokenPostBody.put("grant_type", "password");
-		getIMAccessTokenPostBody.put("username", "testuser2");
+		getIMAccessTokenPostBody.put("username", "testuser1");
 		getIMAccessTokenPostBody.put("password", "testuser1");
-		// String imToken = EasemobRESTSSLAPI.getAccessToken(host, appKey, false,
-		// getIMAccessTokenPostBody);
-		// System.out.println(imToken);
+		String imToken = EasemobRESTSSLAPI.getAccessToken(host, appKey, false,
+				getIMAccessTokenPostBody);
+		System.out.println(imToken);
 
 		// 获取管理员token
 		JSONObject getAccessTokenPostBody = new JSONObject();

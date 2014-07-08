@@ -46,7 +46,7 @@ public class HttpsUtils {
 	 * @return
 	 */
 	@SuppressWarnings("finally")
-	public String sendSSLRequest(String reqURL, String token, String body, String method) {
+	public static String sendSSLRequest(String reqURL, String token, String body, String method) {
 
 		String responseContent = null;
 		HttpClient httpClient = new DefaultHttpClient();
@@ -73,27 +73,27 @@ public class HttpsUtils {
 					.register(new Scheme("https", 443, socketFactory));
 			HttpResponse response = null;
 
-			if (method.equals(this.Method_POST)) {
+			if (method.equals(Method_POST)) {
 				HttpPost httpPost = new HttpPost(reqURL);
 				httpPost.setEntity(new StringEntity(body, "UTF-8"));
 				if (token != null) {
 					httpPost.setHeader("Authorization", "Bearer " + token);
 				}
 				response = httpClient.execute(httpPost);
-			} else if (method.equals(this.Method_PUT)) {
+			} else if (method.equals(Method_PUT)) {
 				HttpPut httpPut = new HttpPut(reqURL);
 				httpPut.setEntity(new StringEntity(body, "UTF-8"));
 				if (token != null) {
 					httpPut.setHeader("Authorization", "Bearer " + token);
 				}
 				response = httpClient.execute(httpPut);
-			} else if (method.equals(this.Method_GET)) {
+			} else if (method.equals(Method_GET)) {
 				HttpGet httpGet = new HttpGet(reqURL);
 				if (token != null) {
 					httpGet.setHeader("Authorization", "Bearer " + token);
 				}
 				response = httpClient.execute(httpGet);
-			} else if (method.equals(this.Method_DELETE)) {
+			} else if (method.equals(Method_DELETE)) {
 				HttpDelete httpDelete = new HttpDelete(reqURL);
 				if (token != null) {
 					httpDelete.setHeader("Authorization", "Bearer " + token);
