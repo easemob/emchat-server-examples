@@ -198,7 +198,7 @@ def send_file(org, app, auth, file_path, secret=True):
     url = EASEMOB_HOST+("/%s/%s/chatfiles" % (org, app))
     # files = {'file': open(file_path, 'rb')}
     files = {'file': ('report.xls', open(file_path, 'rb'), 'image/jpeg', {'Expires': '0'})}
-    
+
     r = requests.post(url, files=files,  auth=auth)
     return http_result(r)
  

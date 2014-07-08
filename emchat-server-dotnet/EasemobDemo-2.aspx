@@ -8,7 +8,10 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e) { }
 
-    string appName = "app名称", orgName = "申请的企业账号";
+    /// <summary>
+    /// 设置app的基本信息
+    /// </summary>
+    string appName = "iotbao", orgName = "ulinkmedia";
     protected void btnQueryToken_Click(object sender, EventArgs e)
     {
         if (IsValid)
@@ -142,7 +145,7 @@
             _build.AppendFormat("\"username\": \"{0}\",\"password\": \"{1}\"", userName, password);
             _build.Append("}");
 
-            return AccountCreate(_build.ToString(), token);
+            return AccountCreate(_build.ToString());
         }
 
         /// <summary>
