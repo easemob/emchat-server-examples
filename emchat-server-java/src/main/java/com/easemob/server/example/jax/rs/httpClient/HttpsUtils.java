@@ -1,7 +1,10 @@
-package com.easemob.server.example.jax.rs;
+package com.easemob.server.example.jax.rs.httpClient;
 
+import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -19,7 +22,9 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * HttpClient Utils
@@ -35,8 +40,6 @@ public class HttpsUtils {
 	public static String Method_PUT = "PUT";
 	public static String Method_DELETE = "DELETE";
 
-	private static Logger logger = Logger.getLogger(HttpsUtils.class);
-
 	/**
 	 * Send SSL Request
 	 * 
@@ -50,6 +53,7 @@ public class HttpsUtils {
 
 		String responseContent = null;
 		HttpClient httpClient = new DefaultHttpClient();
+		// HttpClient httpClient = HttpClients.createDefault();
 		X509TrustManager xtm = new X509TrustManager() {
 			public void checkClientTrusted(X509Certificate[] chain, String authType)
 					throws CertificateException {
@@ -111,7 +115,55 @@ public class HttpsUtils {
 			throw new RuntimeException();
 		} finally {
 			httpClient.getConnectionManager().shutdown();
-			return responseContent;
 		}
+
+		return responseContent;
+	}
+
+	/**
+	 * Convert Map to JSON
+	 * 
+	 * @throws IOException
+	 * @throws JsonParseException
+	 */
+	public static String Map2Json(Map<String, Object> jsonMap) {
+
+		String json = "";
+
+		try {
+
+			ObjectMapper objectMapper = new ObjectMapper();
+
+			// convert Map string to JSON
+			json = objectMapper.writeValueAsString(jsonMap);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return json;
+	}
+
+	/**
+	 * Convert Json to Map
+	 * 
+	 * @throws IOException
+	 * @throws JsonParseException
+	 */
+	public static Map<String, String> Json2Map(String jsonStr) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, String> map = new HashMap<String, String>();
+
+		try {
+
+			// convert JSON string to Map
+			map = mapper.readValue(jsonStr, Map.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return map;
 	}
 }

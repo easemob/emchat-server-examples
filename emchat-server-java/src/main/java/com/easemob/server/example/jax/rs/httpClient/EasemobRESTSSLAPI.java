@@ -1,8 +1,7 @@
-package com.easemob.server.example.jax.rs;
+package com.easemob.server.example.jax.rs.httpClient;
 
-import net.sf.json.JSONObject;
-
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * EasemobRESTAPI Demo
@@ -11,8 +10,6 @@ import org.apache.log4j.Logger;
  * 
  */
 public class EasemobRESTSSLAPI {
-
-	private static Logger logger = Logger.getLogger(HttpUtils.class);
 
 	/**
 	 * 创建用户
@@ -29,19 +26,17 @@ public class EasemobRESTSSLAPI {
 	 *            admin级别token
 	 * @return
 	 */
-	public static JSONObject createNewUser(String host, String appKey, JSONObject body, String token) {
-
+	public static String createNewUser(String host, String appKey, Map<String, Object> body,
+			String token) {
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
 
 		String rest = orgName + "/" + appName + "/users";
 
-		logger.error("url:" + host + rest);
 		String reqURL = "https://" + host + "/" + rest;
-		String result = HttpsUtils.sendSSLRequest(reqURL, token, body.toString(),
+		String result = HttpsUtils.sendSSLRequest(reqURL, token, HttpsUtils.Map2Json(body),
 				HttpsUtils.Method_POST);
-
-		return JSONObject.fromObject(result);
+		return result;
 	}
 
 	/**
@@ -59,17 +54,17 @@ public class EasemobRESTSSLAPI {
 	 *            admin级别token
 	 * @return
 	 */
-	public static JSONObject deleteUser(String host, String appKey, String id, String token) {
+	public static String deleteUser(String host, String appKey, String id, String token) {
 
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
 
 		String rest = orgName + "/" + appName + "/users/" + id;
 
-		logger.error("url:" + host + rest);
 		String reqURL = "https://" + host + "/" + rest;
 		String result = HttpsUtils.sendSSLRequest(reqURL, token, null, HttpsUtils.Method_DELETE);
-		return JSONObject.fromObject(result);
+
+		return result;
 	}
 
 	/**
@@ -88,29 +83,21 @@ public class EasemobRESTSSLAPI {
 	 * @return
 	 */
 	public static String getAccessToken(String host, String appKey, Boolean isAdmin,
-			JSONObject postBody) {
-		String accessToken = "";
+			Map<String, Object> postBody) {
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-
+		String accessToken = "";
 		String rest = "management/token";
 		if (!isAdmin) {
 			rest = orgName + "/" + appName + "/token";
 		}
 
-		logger.error("url: " + "https://" + host + "/" + rest);
-
 		String reqURL = "https://" + host + "/" + rest;
-		String result = HttpsUtils.sendSSLRequest(reqURL, null, postBody.toString(),
+		String result = HttpsUtils.sendSSLRequest(reqURL, null, HttpsUtils.Map2Json(postBody),
 				HttpsUtils.Method_POST);
-		JSONObject jsonObject = JSONObject.fromObject(result);
+		Map<String, String> resultMap = HttpsUtils.Json2Map(result);
 
-		if (null == jsonObject.get("error")) {
-			accessToken = (String) jsonObject.get("access_token");
-			logger.error("accessToken: " + accessToken);
-		} else {
-			logger.error("get accessToken failured");
-		}
+		accessToken = resultMap.get("access_token");
 
 		return accessToken;
 	}
@@ -120,7 +107,7 @@ public class EasemobRESTSSLAPI {
 		String appKey = "easemob-playground#test1";
 
 		// 获取IM用户token
-		JSONObject getIMAccessTokenPostBody = new JSONObject();
+		Map<String, Object> getIMAccessTokenPostBody = new HashMap<String, Object>();
 		getIMAccessTokenPostBody.put("grant_type", "password");
 		getIMAccessTokenPostBody.put("username", "testuser1");
 		getIMAccessTokenPostBody.put("password", "testuser1");
@@ -129,7 +116,7 @@ public class EasemobRESTSSLAPI {
 		System.out.println(imToken);
 
 		// 获取管理员token
-		JSONObject getAccessTokenPostBody = new JSONObject();
+		Map<String, Object> getAccessTokenPostBody = new HashMap<String, Object>();
 		getAccessTokenPostBody.put("grant_type", "password");
 		getAccessTokenPostBody.put("username", "zhangjianguo");
 		getAccessTokenPostBody.put("password", "zhangjianguo");
@@ -138,12 +125,12 @@ public class EasemobRESTSSLAPI {
 		// System.out.println(adminToken);
 
 		// 创建用户
-		JSONObject createNewUserPostBody = new JSONObject();
+		Map<String, Object> createNewUserPostBody = new HashMap<String, Object>();
 		createNewUserPostBody.put("username", "testuser2");
 		createNewUserPostBody.put("password", "testuser2");
 		createNewUserPostBody.put("addr", "BJFS");
-		String adminToken = "YWMt1dg3rAaLEeSeLyOsOrWKZAAAAUc5mRF9trZgseW8nbEiRbTuEzm6sqlzizc";
-		// EasemobRESTSSLAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
+		String adminToken = "YWMtVWWpUAhTEeSQZieN8wRN4QAAAUdFQji_f3OeR3Me_gfQIW5zWOa6smv6Wyg";
+		EasemobRESTSSLAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
 
 		// 删除用户
 		String id = "testuser2";
