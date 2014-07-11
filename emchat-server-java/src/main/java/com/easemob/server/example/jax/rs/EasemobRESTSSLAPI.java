@@ -1,7 +1,9 @@
-package com.easemob.server.example.jax.rs.httpClient;
+package com.easemob.server.example.jax.rs;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easemob.server.example.utils.HttpsUtils;
 
 /**
  * EasemobRESTAPI Demo
