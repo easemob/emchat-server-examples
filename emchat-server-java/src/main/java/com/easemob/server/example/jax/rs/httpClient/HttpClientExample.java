@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs;
+package com.easemob.server.example.jax.rs.httpClient;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,9 +37,9 @@ public class HttpClientExample {
 
 	long totalSize = 0;
 
-	public boolean sendFiletoServerHttp(final String localFilePath,
-			final String remoteUrl, final Map<String, String> headers,
-			final CloudOperationCallback listener) throws Exception {
+	public boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
+			final Map<String, String> headers, final CloudOperationCallback listener)
+			throws Exception {
 		File sourceFile = new File(localFilePath);
 		if (!sourceFile.isFile()) {
 			listener.onError("Source file doesn't exist");
@@ -64,23 +64,20 @@ public class HttpClientExample {
 
 			String remoteFileName = remoteUrl;
 			if (remoteFileName.indexOf("/") > 0) {
-				String path = remoteFileName.substring(0,
-						remoteFileName.lastIndexOf("/"));
-				remoteFileName = remoteFileName.substring(remoteFileName
-						.lastIndexOf("/"));
+				String path = remoteFileName.substring(0, remoteFileName.lastIndexOf("/"));
+				remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/"));
 				multipartEntity.addPart("path", new StringBody(path));
 			}
 
 			String mimeType;
 
-			if (sourceFile.getName().endsWith(".3gp")
-					|| sourceFile.getName().endsWith(".amr")) {
+			if (sourceFile.getName().endsWith(".3gp") || sourceFile.getName().endsWith(".amr")) {
 				mimeType = "audio/3gp";
 			} else {
 				mimeType = "image/png";
 			}
-			multipartEntity.addPart("file", new FileBody(sourceFile,
-					remoteFileName, mimeType, "UTF-8"));
+			multipartEntity.addPart("file", new FileBody(sourceFile, remoteFileName, mimeType,
+					"UTF-8"));
 
 			HttpParams httpParameters = new BasicHttpParams();
 			HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
@@ -90,8 +87,8 @@ public class HttpClientExample {
 			httpPost.setEntity(multipartEntity);
 			HttpClient httpclient = new DefaultHttpClient(httpParameters);
 			response = httpclient.execute(httpPost);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity()
+					.getContent()));
 			String line;
 			String lastLine = null;
 			StringBuilder sb = new StringBuilder();
@@ -118,8 +115,7 @@ public class HttpClientExample {
 	}
 
 	public void downloadFile(String remoteUrl, final String localFilePath,
-			final Map<String, String> headers,
-			final CloudOperationCallback callback) {
+			final Map<String, String> headers, final CloudOperationCallback callback) {
 
 		File file = new File(localFilePath);
 		if (!file.getParentFile().exists()) {
@@ -175,8 +171,7 @@ public class HttpClientExample {
 
 			} else {
 				if (callback != null)
-					callback.onError(String.valueOf(response.getStatusLine()
-							.getStatusCode()));
+					callback.onError(String.valueOf(response.getStatusLine().getStatusCode()));
 
 			}
 
@@ -296,18 +291,15 @@ public class HttpClientExample {
 	 * @param user
 	 * @return
 	 */
-	public static boolean getUserStatus(String appKey, String token,
-			String targetUserName) throws Exception {
-		String HTTP_URL = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/users/" + targetUserName
-				+ "/status";
+	public static boolean getUserStatus(String appKey, String token, String targetUserName)
+			throws Exception {
+		String HTTP_URL = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/users/"
+				+ targetUserName + "/status";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", "Bearer " + token);
 		ObjectMapper objectMapper = new ObjectMapper();
-		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null,
-				HttpsUtils.Method_GET);
-		String content = objectMapper.readTree(resultMsg).get("data")
-				.get(targetUserName).asText();
+		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null, HttpsUtils.Method_GET);
+		String content = objectMapper.readTree(resultMsg).get("data").get(targetUserName).asText();
 		if (content.equals("online")) {
 			return true;
 		} else if (content.equals("offline")) {
@@ -325,11 +317,10 @@ public class HttpClientExample {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getAccessToken(String appKey, String username,
-			String password) throws IOException {
+	public static String getAccessToken(String appKey, String username, String password)
+			throws IOException {
 		String token = "";
-		String HttpUrl = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/token";
+		String HttpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/token";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("grant_type", "password");
 		headers.put("username", username);
@@ -337,11 +328,9 @@ public class HttpClientExample {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			String resultMsg = HttpsUtils.sendSSLRequest(HttpUrl, null,
-					objectMapper.writeValueAsString(headers),
-					HttpsUtils.Method_POST);
+					objectMapper.writeValueAsString(headers), HttpsUtils.Method_POST);
 
-			token = objectMapper.readTree(resultMsg).get("access_token")
-					.asText();
+			token = objectMapper.readTree(resultMsg).get("access_token").asText();
 
 			// token=objectMapper.readValue(resultMsg,
 			// Map.class).get("access_token").toString();
@@ -363,11 +352,9 @@ public class HttpClientExample {
 	 * @return true发送成功 false 发送失败
 	 * @throws IOException
 	 */
-	public static Map<String, String> sendTextMessage(String appKey,
-			String token, String textContent, String fromUser,
-			List<String> toUsernames) throws IOException {
-		String httpUrl = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/messages";
+	public static Map<String, String> sendTextMessage(String appKey, String token,
+			String textContent, String fromUser, List<String> toUsernames) throws IOException {
+		String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/messages";
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("target_type", "users");
 		body.put("target", toUsernames);
@@ -400,8 +387,8 @@ public class HttpClientExample {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String httpPost(String url, String params,
-			Map<String, String> headers) throws Exception {
+	public static String httpPost(String url, String params, Map<String, String> headers)
+			throws Exception {
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -441,8 +428,8 @@ public class HttpClientExample {
 	 *            请求参数
 	 * @return
 	 */
-	public static String httpGet(String url, Map<String, String> params,
-			Map<String, String> headers) throws Exception {
+	public static String httpGet(String url, Map<String, String> params, Map<String, String> headers)
+			throws Exception {
 
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
