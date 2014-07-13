@@ -189,8 +189,8 @@ public class JerseyExample {
 	 * 获取用户token
 	 * 
 	 * @param appKey
-	 * @param username
-	 * @param password
+	 * @param username 用户名
+	 * @param password 密码
 	 * @return
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException 
