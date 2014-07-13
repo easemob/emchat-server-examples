@@ -1,17 +1,17 @@
-package com.easemob.server.example.jax.rs;
+package com.easemob.server.example.jax.rs.httpClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.easemob.server.example.utils.HttpsUtils;
-
 /**
- * EasemobRESTAPI Demo
+ * REST API Demo : 用户管理REST API HttpClient4.3实现
  * 
- * @author Lynch
+ * Doc URL: http://developer.easemob.com/docs/emchat/rest/userapi.html
+ * 
+ * @author Lynch 2014-07-09
  * 
  */
-public class EasemobRESTSSLAPI {
+public class EasemobUserAPI {
 
 	/**
 	 * 创建用户
@@ -113,7 +113,7 @@ public class EasemobRESTSSLAPI {
 		getIMAccessTokenPostBody.put("grant_type", "password");
 		getIMAccessTokenPostBody.put("username", "testuser1");
 		getIMAccessTokenPostBody.put("password", "testuser1");
-		String imToken = EasemobRESTSSLAPI.getAccessToken(host, appKey, false,
+		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false,
 				getIMAccessTokenPostBody);
 		System.out.println(imToken);
 
@@ -132,10 +132,10 @@ public class EasemobRESTSSLAPI {
 		createNewUserPostBody.put("password", "testuser2");
 		createNewUserPostBody.put("addr", "BJFS");
 		String adminToken = "YWMtVWWpUAhTEeSQZieN8wRN4QAAAUdFQji_f3OeR3Me_gfQIW5zWOa6smv6Wyg";
-		EasemobRESTSSLAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
+		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
 
 		// 删除用户
 		String id = "testuser2";
-		EasemobRESTSSLAPI.deleteUser(host, appKey, id, adminToken);
+		EasemobUserAPI.deleteUser(host, appKey, id, adminToken);
 	}
 }

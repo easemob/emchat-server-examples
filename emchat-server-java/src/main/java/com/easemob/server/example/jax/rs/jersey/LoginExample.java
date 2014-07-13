@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs;
+package com.easemob.server.example.jax.rs.jersey;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
