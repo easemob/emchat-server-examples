@@ -7,10 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,6 +24,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -29,15 +37,17 @@ import org.apache.http.util.EntityUtils;
 
 import com.easemob.server.example.utils.CloudOperationCallback;
 import com.easemob.server.example.utils.CustomMultiPartEntity;
+import com.easemob.server.example.utils.EMCallBack;
 import com.easemob.server.example.utils.HttpsUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HttpClientExample {
 
-	long totalSize = 0;
+	long  totalSize = 0;
 
-	public boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
+	public  boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
 			final Map<String, String> headers, final CloudOperationCallback listener)
 			throws Exception {
 		File sourceFile = new File(localFilePath);
@@ -86,6 +96,35 @@ public class HttpClientExample {
 			totalSize = multipartEntity.getContentLength();
 			httpPost.setEntity(multipartEntity);
 			HttpClient httpclient = new DefaultHttpClient(httpParameters);
+			
+			javax.net.ssl.X509TrustManager xtm=new javax.net.ssl.X509TrustManager() {
+				
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public void checkServerTrusted(X509Certificate[] chain, String authType)
+						throws CertificateException {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void checkClientTrusted(X509Certificate[] chain, String authType)
+						throws CertificateException {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			
+			SSLContext ctx=SSLContext.getInstance("TLS");
+			ctx.init(null, new TrustManager[]{xtm},null);
+			SSLSocketFactory socketFactory=new SSLSocketFactory(ctx);
+			httpclient.getConnectionManager().getSchemeRegistry().register(new Scheme("https",443, socketFactory));
+			
 			response = httpclient.execute(httpPost);
 			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity()
 					.getContent()));
@@ -110,6 +149,8 @@ public class HttpClientExample {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
+		}finally{
+		
 		}
 
 	}
@@ -281,6 +322,43 @@ public class HttpClientExample {
 		// }
 		//
 		// }
+		
+		
+		
+		//发送Image消息
+//		final List<String> toUsernames=new ArrayList<String>();
+//		toUsernames.add("ceshi1");
+//		toUsernames.add("ceshi2");
+//
+//		String fromUser = "ceshi";
+//		String filePath="C:\\a.png";
+//				sendImageMessage(appkey, token,
+//				filePath, fromUser, toUsernames,new EMCallBack() {
+//					
+//					@Override
+//					public void onSuccess() {
+//						 
+//						System.out.println("image message send sucess");
+//						
+//					}
+//					
+//					@Override
+//					public void onProgress(int progress, String status) {
+//						// TODO Auto-generated method stub
+//						System.out.println("image send progress:"+progress);
+//						
+//					}
+//					
+//					@Override
+//					public void onError(int code, String message) {
+//						System.out.println("image message send fail:"+message);
+//						
+//					}
+//				});
+//		 
+		
+		
+		
 
 	}
 
@@ -376,6 +454,121 @@ public class HttpClientExample {
 		System.out.println("resultMsg:" + resultMsg);
 		return result;
 	}
+	
+	
+	
+	
+	
+	/**
+	 * 发送图片消息
+	 * 
+	 * @param textContent
+	 *            消息内容
+	 * @param username
+	 *            发送人
+	 * @return true发送成功 false 发送失败
+	 * @throws Exception 
+	 */
+	public static void sendImageMessage(final String appKey, final String token,
+			final String filePath, String fromUser, final List<String> toUsernames,final EMCallBack callback) throws Exception {
+		
+		
+		final String remoteUrl="http://a1.easemob.com/"+appKey.replaceFirst("#", "/")+"/chatfiles";
+		
+		HttpClientExample httpok=new HttpClientExample();
+		
+		 Map<String,String> headers=new HashMap<String,String>();
+	        headers.put("restrict-access", "true");
+	        headers.put("Authorization", "Bearer "+token);
+		
+		httpok.sendFiletoServerHttp(filePath, remoteUrl, headers, new CloudOperationCallback() {
+			
+			@Override
+			public void onSuccess(String result) {
+				String uuid="";
+            	String secret="";
+            	try {
+            		
+            		JsonNode jsonNode=new ObjectMapper().readTree(result).get("entities");
+            		
+            		
+            		
+            		uuid=jsonNode.get(0).get("uuid").asText();
+            		if(jsonNode.get(0).has("share-secret"))
+            		{
+            			secret=jsonNode.get(0).get("share-secret").asText();
+            		}
+            		
+            		
+            		ObjectMapper mapper = new ObjectMapper();
+            		String remoteFile=remoteUrl+uuid;
+    				String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/messages";
+    				Map<String, Object> body = new HashMap<String, Object>();
+    				body.put("target_type", "users");
+    				body.put("target", toUsernames);
+    				Map<String, String> msgBody = new HashMap<String, String>();
+    				msgBody.put("type", "img");
+    				msgBody.put("url", remoteFile);
+    				msgBody.put("filename", new File(filePath).getName());
+    				msgBody.put("thumb", remoteFile);
+    				msgBody.put("secret", secret);
+    				body.put("msg", msgBody);
+    				body.put("from", "ceshi");
+    				Map<String, String> extBody = new HashMap<String, String>();
+    				extBody.put("attr1", "v1");
+    				extBody.put("attr2", "v2");
+    				body.put("ext", extBody);
+    				String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token,
+    						mapper.writeValueAsString(body), HttpsUtils.Method_POST);
+    				String content = mapper.readTree(resultMsg).get("data").toString();
+    				Map<String, String> resultMap = mapper.readValue(content, Map.class);
+    				System.out.println("resultMsg:" + resultMsg);
+            		
+            		  
+				} catch (Exception e) {
+					System.out.println("sendImageMessage json parse exception remotefilepath:"+remoteUrl);
+				}
+				 
+//				
+				 
+			}
+			
+			@Override
+			public void onProgress(int progress) {
+				if(callback!=null)
+				{
+					callback.onProgress(progress, null);
+				}
+				
+			}
+			
+			@Override
+			public void onError(String msg) {
+				if(callback!=null)
+				{
+					callback.onError(EMCallBack.ERROR_SEND, msg);
+				}
+			}
+		});
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 以Post方式发送请求
