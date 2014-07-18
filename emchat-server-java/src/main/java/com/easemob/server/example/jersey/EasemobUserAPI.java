@@ -1,7 +1,7 @@
-package com.easemob.server.example.jax.rs.restEasy;
+package com.easemob.server.example.jersey;
 
 /**
- * REST API Demo : 用户管理REST API RestEasy3.0实现
+ * REST API Demo : 用户管理REST API Jersey2.9实现
  * 
  * Doc URL: http://developer.easemob.com/docs/emchat/rest/userapi.html
  * 

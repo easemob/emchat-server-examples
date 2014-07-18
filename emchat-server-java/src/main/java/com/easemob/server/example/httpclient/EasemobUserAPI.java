@@ -1,7 +1,9 @@
-package com.easemob.server.example.jax.rs.httpClient;
+package com.easemob.server.example.httpclient;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easemob.server.example.utils.HttpsUtils;
 
 /**
  * REST API Demo : 用户管理REST API HttpClient4.3实现

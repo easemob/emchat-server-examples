@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs.restEasy;
+package com.easemob.server.example.httpclient;
 
 /**
  * RestEasy3.0 Utils
