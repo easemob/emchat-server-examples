@@ -1,7 +1,9 @@
-package com.easemob.server.example.jax.rs.httpclient;
+package com.easemob.server.example.httpclient;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easemob.server.example.utils.HttpsUtils;
 
 /**
  * REST API Demo : 用户管理REST API HttpClient4.3实现
@@ -106,17 +108,16 @@ public class EasemobUserAPI {
 
 	public static void main(String[] args) {
 		String host = "a1.easemob.com";
-		// String appKey = "easemob-playground#test1";
-		String appKey = "kuaiju#kuaiju";
+		String appKey = "easemob-playground#test1";
 
 		// 获取IM用户token
 		Map<String, Object> getIMAccessTokenPostBody = new HashMap<String, Object>();
 		getIMAccessTokenPostBody.put("grant_type", "password");
 		getIMAccessTokenPostBody.put("username", "testuser1");
 		getIMAccessTokenPostBody.put("password", "testuser1");
-		// String imToken = EasemobUserAPI.getAccessToken(host, appKey, false,
-		// getIMAccessTokenPostBody);
-		// System.out.println(imToken);
+		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false,
+				getIMAccessTokenPostBody);
+		System.out.println(imToken);
 
 		// 获取管理员token
 		Map<String, Object> getAccessTokenPostBody = new HashMap<String, Object>();
@@ -129,11 +130,10 @@ public class EasemobUserAPI {
 
 		// 创建用户
 		Map<String, Object> createNewUserPostBody = new HashMap<String, Object>();
-		createNewUserPostBody.put("username", "testuser1");
-		createNewUserPostBody.put("password", "testuser1");
+		createNewUserPostBody.put("username", "testuser2");
+		createNewUserPostBody.put("password", "testuser2");
 		createNewUserPostBody.put("addr", "BJFS");
-		// String adminToken = "YWMtVWWpUAhTEeSQZieN8wRN4QAAAUdFQji_f3OeR3Me_gfQIW5zWOa6smv6Wyg";
-		String adminToken = "YWMtWcC3uAvyEeSYSjNGzdq6RAAAAUdc_YU36rPpaIvmtTQmtogqmPV9sDq92_Q";
+		String adminToken = "YWMtVWWpUAhTEeSQZieN8wRN4QAAAUdFQji_f3OeR3Me_gfQIW5zWOa6smv6Wyg";
 		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
 
 		// 删除用户

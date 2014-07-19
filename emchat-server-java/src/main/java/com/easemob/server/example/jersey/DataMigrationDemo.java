@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs.jersey;
+package com.easemob.server.example.jersey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * 数据迁移:可以实现从同一个Server下一个APP迁移到另一个APP,也可以实现跨Server APP数据迁移
+ * 数据迁移:可以实现跨Server/ORG/APP做数据迁移
  * 
  * @author Lynch 2014-07-18
  * 

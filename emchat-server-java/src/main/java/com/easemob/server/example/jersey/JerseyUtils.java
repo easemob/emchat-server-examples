@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs.jersey;
+package com.easemob.server.example.jersey;
 
 import java.io.File;
 import java.security.KeyManagementException;

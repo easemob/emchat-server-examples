@@ -1,12 +1,9 @@
-package com.easemob.server.example.jax.rs.httpclient;
+package com.easemob.server.example.httpclient;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -17,7 +14,6 @@ import java.util.Map.Entry;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -42,13 +38,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class HttpClientExample {
+/**
+ * REST API Demo : 聊天消息导出REST API 实现 利用HttpClient实现
+ * 
+ * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
+ * 
+ * @author Lynch 2014-07-12
+ * 
+ */
+public class EasemobChatMessage {
 
 	long totalSize = 0;
 
-	public boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
-			final Map<String, String> headers, final CloudOperationCallback listener)
-			throws Exception {
+	public boolean sendFiletoServerHttp(final String localFilePath,
+			final String remoteUrl, final Map<String, String> headers,
+			final CloudOperationCallback listener) throws Exception {
 		File sourceFile = new File(localFilePath);
 		if (!sourceFile.isFile()) {
 			listener.onError("Source file doesn't exist");
@@ -73,20 +77,23 @@ public class HttpClientExample {
 
 			String remoteFileName = remoteUrl;
 			if (remoteFileName.indexOf("/") > 0) {
-				String path = remoteFileName.substring(0, remoteFileName.lastIndexOf("/"));
-				remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/"));
+				String path = remoteFileName.substring(0,
+						remoteFileName.lastIndexOf("/"));
+				remoteFileName = remoteFileName.substring(remoteFileName
+						.lastIndexOf("/"));
 				multipartEntity.addPart("path", new StringBody(path));
 			}
 
 			String mimeType;
 
-			if (sourceFile.getName().endsWith(".3gp") || sourceFile.getName().endsWith(".amr")) {
+			if (sourceFile.getName().endsWith(".3gp")
+					|| sourceFile.getName().endsWith(".amr")) {
 				mimeType = "audio/3gp";
 			} else {
 				mimeType = "image/png";
 			}
-			multipartEntity.addPart("file", new FileBody(sourceFile, remoteFileName, mimeType,
-					"UTF-8"));
+			multipartEntity.addPart("file", new FileBody(sourceFile,
+					remoteFileName, mimeType, "UTF-8"));
 
 			HttpParams httpParameters = new BasicHttpParams();
 			HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
@@ -105,15 +112,15 @@ public class HttpClientExample {
 				}
 
 				@Override
-				public void checkServerTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
+				public void checkServerTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
 					// TODO Auto-generated method stub
 
 				}
 
 				@Override
-				public void checkClientTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
+				public void checkClientTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
 					// TODO Auto-generated method stub
 
 				}
@@ -126,8 +133,8 @@ public class HttpClientExample {
 					.register(new Scheme("https", 443, socketFactory));
 
 			response = httpclient.execute(httpPost);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity()
-					.getContent()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
 			String line;
 			String lastLine = null;
 			StringBuilder sb = new StringBuilder();
@@ -150,87 +157,6 @@ public class HttpClientExample {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		} finally {
-
-		}
-
-	}
-
-	public void downloadFile(String remoteUrl, final String localFilePath,
-			final Map<String, String> headers, final CloudOperationCallback callback) {
-
-		File file = new File(localFilePath);
-		if (!file.getParentFile().exists()) {
-			file.mkdirs();
-		}
-		int count = 0;
-		int current_progress = 0;
-		HttpClient client = new DefaultHttpClient();
-
-		InputStream input = null;
-		OutputStream output = null;
-
-		try {
-			HttpGet httpget = new HttpGet(remoteUrl);
-			if (headers != null) {
-				for (Entry<String, String> item : headers.entrySet()) {
-					httpget.addHeader(item.getKey(), item.getValue());
-				}
-			}
-			HttpParams params = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(params, 20000);// connection
-																		// timeout
-			httpget.setParams(params);
-
-			HttpResponse response = client.execute(httpget);
-
-			if (response.getStatusLine().getStatusCode() == 200) {
-				HttpEntity entity = response.getEntity();
-
-				if (entity != null) {
-					long fileLength = entity.getContentLength();
-					input = entity.getContent();
-					output = new FileOutputStream(new File(localFilePath));
-					int bufSize = 102400;
-					byte[] buffer = new byte[bufSize];
-					long total = 0;
-					while ((count = input.read(buffer)) != -1) {
-						total += count;
-						int progress = (int) ((total * 100) / fileLength);
-						if (progress == 100 || progress > current_progress + 5) {
-							current_progress = progress;
-							if (callback != null)
-								callback.onProgress(current_progress);
-
-						}
-						output.write(buffer, 0, count);
-					}
-
-					if (callback != null)
-						callback.onSuccess(null);
-
-				}
-
-			} else {
-				if (callback != null)
-					callback.onError(String.valueOf(response.getStatusLine().getStatusCode()));
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			if (callback != null)
-				callback.onError(e.getMessage());
-		} finally {
-			try {
-				if (output != null) {
-					output.close();
-				}
-				if (input != null) {
-					input.close();
-				}
-			} catch (Exception err) {
-				err.printStackTrace();
-			}
 
 		}
 
@@ -280,11 +206,11 @@ public class HttpClientExample {
 		//
 		// }
 		// });
-		String appkey = "zdxd#ksf";
+		String appkey = "easemob-playground#test1";
 
 		String token = "YWMtWJ-etggfEeSZ4pfPDaJNRgAAAUdD7YReiepTP1RGOrMvCLvIib2jK8tyVfE";
 		// 获取Token
-		// token=getAccessToken(appkey, "admin", "123456");
+		// token=getAccessToken(appkey, "zhangjianguo", "zhangjianguo");
 		// System.out.println("token:"+token);
 
 		// 检测用户是否在线
@@ -364,15 +290,18 @@ public class HttpClientExample {
 	 * @param user
 	 * @return
 	 */
-	public static boolean getUserStatus(String appKey, String token, String targetUserName)
-			throws Exception {
-		String HTTP_URL = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/users/"
-				+ targetUserName + "/status";
+	public static boolean getUserStatus(String appKey, String token,
+			String targetUserName) throws Exception {
+		String HTTP_URL = "https://a1.easemob.com/"
+				+ appKey.replaceFirst("#", "/") + "/users/" + targetUserName
+				+ "/status";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", "Bearer " + token);
 		ObjectMapper objectMapper = new ObjectMapper();
-		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null, HttpsUtils.Method_GET);
-		String content = objectMapper.readTree(resultMsg).get("data").get(targetUserName).asText();
+		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null,
+				HttpsUtils.Method_GET);
+		String content = objectMapper.readTree(resultMsg).get("data")
+				.get(targetUserName).asText();
 		if (content.equals("online")) {
 			return true;
 		} else if (content.equals("offline")) {
@@ -390,10 +319,11 @@ public class HttpClientExample {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getAccessToken(String appKey, String username, String password)
-			throws IOException {
+	public static String getAccessToken(String appKey, String username,
+			String password) throws IOException {
 		String token = "";
-		String HttpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/token";
+		String HttpUrl = "https://a1.easemob.com/"
+				+ appKey.replaceFirst("#", "/") + "/token";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("grant_type", "password");
 		headers.put("username", username);
@@ -401,9 +331,11 @@ public class HttpClientExample {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			String resultMsg = HttpsUtils.sendSSLRequest(HttpUrl, null,
-					objectMapper.writeValueAsString(headers), HttpsUtils.Method_POST);
+					objectMapper.writeValueAsString(headers),
+					HttpsUtils.Method_POST);
 
-			token = objectMapper.readTree(resultMsg).get("access_token").asText();
+			token = objectMapper.readTree(resultMsg).get("access_token")
+					.asText();
 
 			// token=objectMapper.readValue(resultMsg,
 			// Map.class).get("access_token").toString();
@@ -425,9 +357,11 @@ public class HttpClientExample {
 	 * @return true发送成功 false 发送失败
 	 * @throws IOException
 	 */
-	public static Map<String, String> sendTextMessage(String appKey, String token,
-			String textContent, String fromUser, List<String> toUsernames) throws IOException {
-		String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/messages";
+	public static Map<String, String> sendTextMessage(String appKey,
+			String token, String textContent, String fromUser,
+			List<String> toUsernames) throws IOException {
+		String httpUrl = "https://a1.easemob.com/"
+				+ appKey.replaceFirst("#", "/") + "/messages";
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("target_type", "users");
 		body.put("target", toUsernames);
@@ -460,83 +394,94 @@ public class HttpClientExample {
 	 * @return true发送成功 false 发送失败
 	 * @throws Exception
 	 */
-	public static void sendImageMessage(final String appKey, final String token,
-			final String filePath, String fromUser, final List<String> toUsernames,
-			final EMCallBack callback) throws Exception {
+	public static void sendImageMessage(final String appKey,
+			final String token, final String filePath, String fromUser,
+			final List<String> toUsernames, final EMCallBack callback)
+			throws Exception {
 
-		final String remoteUrl = "http://a1.easemob.com/" + appKey.replaceFirst("#", "/")
-				+ "/chatfiles";
+		final String remoteUrl = "http://a1.easemob.com/"
+				+ appKey.replaceFirst("#", "/") + "/chatfiles";
 
-		HttpClientExample httpok = new HttpClientExample();
+		EasemobChatMessage httpok = new EasemobChatMessage();
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("restrict-access", "true");
 		headers.put("Authorization", "Bearer " + token);
 
-		httpok.sendFiletoServerHttp(filePath, remoteUrl, headers, new CloudOperationCallback() {
+		httpok.sendFiletoServerHttp(filePath, remoteUrl, headers,
+				new CloudOperationCallback() {
 
-			@Override
-			public void onSuccess(String result) {
-				String uuid = "";
-				String secret = "";
-				try {
+					@Override
+					public void onSuccess(String result) {
+						String uuid = "";
+						String secret = "";
+						try {
 
-					JsonNode jsonNode = new ObjectMapper().readTree(result).get("entities");
+							JsonNode jsonNode = new ObjectMapper().readTree(
+									result).get("entities");
 
-					uuid = jsonNode.get(0).get("uuid").asText();
-					if (jsonNode.get(0).has("share-secret")) {
-						secret = jsonNode.get(0).get("share-secret").asText();
+							uuid = jsonNode.get(0).get("uuid").asText();
+							if (jsonNode.get(0).has("share-secret")) {
+								secret = jsonNode.get(0).get("share-secret")
+										.asText();
+							}
+
+							ObjectMapper mapper = new ObjectMapper();
+							String remoteFile = remoteUrl + uuid;
+							String httpUrl = "https://a1.easemob.com/"
+									+ appKey.replaceFirst("#", "/")
+									+ "/messages";
+							Map<String, Object> body = new HashMap<String, Object>();
+							body.put("target_type", "users");
+							body.put("target", toUsernames);
+							Map<String, String> msgBody = new HashMap<String, String>();
+							msgBody.put("type", "img");
+							msgBody.put("url", remoteFile);
+							msgBody.put("filename",
+									new File(filePath).getName());
+							msgBody.put("thumb", remoteFile);
+							msgBody.put("secret", secret);
+							body.put("msg", msgBody);
+							body.put("from", "ceshi");
+							Map<String, String> extBody = new HashMap<String, String>();
+							extBody.put("attr1", "v1");
+							extBody.put("attr2", "v2");
+							body.put("ext", extBody);
+							String resultMsg = HttpsUtils.sendSSLRequest(
+									httpUrl, token,
+									mapper.writeValueAsString(body),
+									HttpsUtils.Method_POST);
+							String content = mapper.readTree(resultMsg)
+									.get("data").toString();
+							Map<String, String> resultMap = mapper.readValue(
+									content, Map.class);
+							System.out.println("resultMsg:" + resultMsg);
+
+						} catch (Exception e) {
+							System.out
+									.println("sendImageMessage json parse exception remotefilepath:"
+											+ remoteUrl);
+						}
+
+						//
+
 					}
 
-					ObjectMapper mapper = new ObjectMapper();
-					String remoteFile = remoteUrl + uuid;
-					String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/")
-							+ "/messages";
-					Map<String, Object> body = new HashMap<String, Object>();
-					body.put("target_type", "users");
-					body.put("target", toUsernames);
-					Map<String, String> msgBody = new HashMap<String, String>();
-					msgBody.put("type", "img");
-					msgBody.put("url", remoteFile);
-					msgBody.put("filename", new File(filePath).getName());
-					msgBody.put("thumb", remoteFile);
-					msgBody.put("secret", secret);
-					body.put("msg", msgBody);
-					body.put("from", "ceshi");
-					Map<String, String> extBody = new HashMap<String, String>();
-					extBody.put("attr1", "v1");
-					extBody.put("attr2", "v2");
-					body.put("ext", extBody);
-					String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token,
-							mapper.writeValueAsString(body), HttpsUtils.Method_POST);
-					String content = mapper.readTree(resultMsg).get("data").toString();
-					Map<String, String> resultMap = mapper.readValue(content, Map.class);
-					System.out.println("resultMsg:" + resultMsg);
+					@Override
+					public void onProgress(int progress) {
+						if (callback != null) {
+							callback.onProgress(progress, null);
+						}
 
-				} catch (Exception e) {
-					System.out.println("sendImageMessage json parse exception remotefilepath:"
-							+ remoteUrl);
-				}
+					}
 
-				//
-
-			}
-
-			@Override
-			public void onProgress(int progress) {
-				if (callback != null) {
-					callback.onProgress(progress, null);
-				}
-
-			}
-
-			@Override
-			public void onError(String msg) {
-				if (callback != null) {
-					callback.onError(EMCallBack.ERROR_SEND, msg);
-				}
-			}
-		});
+					@Override
+					public void onError(String msg) {
+						if (callback != null) {
+							callback.onError(EMCallBack.ERROR_SEND, msg);
+						}
+					}
+				});
 
 	}
 
@@ -550,8 +495,8 @@ public class HttpClientExample {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String httpPost(String url, String params, Map<String, String> headers)
-			throws Exception {
+	public static String httpPost(String url, String params,
+			Map<String, String> headers) throws Exception {
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -591,8 +536,8 @@ public class HttpClientExample {
 	 *            请求参数
 	 * @return
 	 */
-	public static String httpGet(String url, Map<String, String> params, Map<String, String> headers)
-			throws Exception {
+	public static String httpGet(String url, Map<String, String> params,
+			Map<String, String> headers) throws Exception {
 
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
