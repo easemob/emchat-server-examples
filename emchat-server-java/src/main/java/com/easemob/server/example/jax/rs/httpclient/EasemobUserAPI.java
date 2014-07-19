@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs.httpClient;
+package com.easemob.server.example.jax.rs.httpclient;
 
 import java.util.HashMap;
 import java.util.Map;

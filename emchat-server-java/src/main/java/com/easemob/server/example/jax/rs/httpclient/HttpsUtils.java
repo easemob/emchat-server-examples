@@ -1,4 +1,4 @@
-package com.easemob.server.example.jax.rs.httpClient;
+package com.easemob.server.example.jax.rs.httpclient;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
