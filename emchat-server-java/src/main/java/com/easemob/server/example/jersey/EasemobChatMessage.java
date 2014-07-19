@@ -44,7 +44,7 @@ public class EasemobChatMessage {
 		String accessToken = "";
 
 		// check appKey format
-		if (!JerseyUtils.match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", appKey)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", appKey)) {
 			LOGGER.error("Bad format of Appkey: " + appKey);
 
 			Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -98,7 +98,7 @@ public class EasemobChatMessage {
 			return JerseyUtils.Map2Json(resultMap);
 		}
 
-		if (!JerseyUtils.match("[0-9a-zA-Z](+)#[0-9a-zA-Z](+)", appKey)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", appKey)) {
 			LOGGER.error("Bad format of Appkey: " + appKey);
 
 			resultMap.put("statusCode", "401");
@@ -210,14 +210,16 @@ public class EasemobChatMessage {
 		reqBody.put("grant_type", "password");
 		reqBody.put("username", "apptestAdmin");
 		reqBody.put("password", "123456789");
-		String accessToken = getAccessToken(host, appKey, reqBody, JerseyUtils.USER_ROLE_APPADMIN);
-		System.out.println(accessToken);
+		// String accessToken = getAccessToken(host, appKey, reqBody,
+		// JerseyUtils.USER_ROLE_APPADMIN);
+		// System.out.println(accessToken);
+		String accessToken = "";
 
 		// 图片语音文件上传
 		String imageFilePath = "C:/Users/lynch/Pictures/b12d7b37ba15e1a87319915157cde2b0.jpg";
 		String videoFilePath = "C:/Users/lynch/Music/4minute - Love Tension.mp3";
-		mediaUpload(appKey, host,
-				"YWMtT4Ydzg4sEeSM0kFz7ZriMAAAAUdrlM99rGDiPdW9fvxXvYki0n5NwTXYYSM", imageFilePath);
+		// mediaUpload(appKey, host,
+		// "YWMtT4Ydzg4sEeSM0kFz7ZriMAAAAUdrlM99rGDiPdW9fvxXvYki0n5NwTXYYSM", imageFilePath);
 		mediaUpload(appKey, host,
 				"YWMtT4Ydzg4sEeSM0kFz7ZriMAAAAUdrlM99rGDiPdW9fvxXvYki0n5NwTXYYSM", videoFilePath);
 
