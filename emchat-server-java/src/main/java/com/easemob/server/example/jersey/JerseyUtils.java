@@ -1,6 +1,8 @@
 package com.easemob.server.example.jersey;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -128,8 +130,58 @@ public class JerseyUtils {
 	 * Send https request whit Jersey
 	 * 
 	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyManagementException
+	 * @throws IOException
 	 */
-	public static JsonNode sendRequestObject(String reqURL, File file, String token, String method,
+	public static JsonNode downLoadFile(String reqURL, String token, List<NameValuePair> headers,
+			File localPath) throws RuntimeException, KeyManagementException,
+			NoSuchAlgorithmException, IOException {
+		JsonNode jsonNode = null;
+
+		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", reqURL)) {
+			LOGGER.error("The URL to request is illegal");
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("statusCode", "400");
+			resultMap.put("message", "The URL to request is illegal");
+
+			return JerseyUtils.Map2Json(resultMap);
+		}
+
+		JerseyClient jerseyClient = null;
+
+		jerseyClient = getJerseyClient(true);
+
+		JerseyWebTarget rootJerseyWebTarget = jerseyClient.target(reqURL);
+
+		Invocation.Builder inBuilder = rootJerseyWebTarget.request();
+		if (token != null) {
+			// add headers
+			inBuilder.header("Authorization", "Bearer " + token);
+		}
+
+		if (null != headers && !headers.isEmpty()) {
+
+			for (NameValuePair nameValuePair : headers) {
+				inBuilder.header(nameValuePair.getName(), nameValuePair.getValue());
+			}
+
+		}
+
+		File file = inBuilder.get(File.class);
+		file.renameTo(new File("C:\\Users\\lynch\\Desktop\\" + file.getName() + ".mp3"));
+		FileWriter fr = new FileWriter(file);
+		fr.flush();
+
+		return jsonNode;
+	}
+
+	/**
+	 * Send https request whit Jersey
+	 * 
+	 * @return
+	 */
+	public static JsonNode uploadFile(String reqURL, File file, String token,
 			List<NameValuePair> headers) throws RuntimeException {
 		JsonNode jsonNode = null;
 
@@ -161,28 +213,13 @@ public class JerseyUtils {
 
 			}
 
-			if (JerseyUtils.METHOD_GET.equals(method)) {
+			FormDataMultiPart multiPart = new FormDataMultiPart();
+			multiPart.bodyPart(new FileDataBodyPart("file", file,
+					MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
-				jsonNode = inBuilder.get(JsonNode.class);
+			jsonNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA),
+					JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_POST.equals(method)) {
-				FormDataMultiPart multiPart = new FormDataMultiPart();
-				multiPart.bodyPart(new FileDataBodyPart("file", file,
-						MediaType.APPLICATION_OCTET_STREAM_TYPE));
-
-				jsonNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA),
-						JsonNode.class);
-
-			} else if (JerseyUtils.METHOD_PUT.equals(method)) {
-
-				// resultMap = inBuilder
-				// .put(Entity.entity(obj, MediaType.APPLICATION_JSON), Map.class);
-
-			} else if (JerseyUtils.METHOD_DELETE.equals(method)) {
-
-				jsonNode = inBuilder.delete(JsonNode.class);
-
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -222,14 +259,17 @@ public class JerseyUtils {
 	public static JsonNode Map2Json(Map<String, Object> jsonMap) {
 
 		JsonNode jsonNode = null;
-		try {
 
-			ObjectMapper mapper = new ObjectMapper();
+		if (null != jsonMap) {
+			try {
 
-			jsonNode = mapper.convertValue(jsonMap, JsonNode.class);
+				ObjectMapper mapper = new ObjectMapper();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+				jsonNode = mapper.convertValue(jsonMap, JsonNode.class);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return jsonNode;
@@ -246,21 +286,23 @@ public class JerseyUtils {
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode arrayNode = mapper.createArrayNode();
 
-		try {
-			JsonNode entitiesJsonNode = jsonNode.get("entities");
+		if (null != jsonNode) {
+			try {
+				JsonNode entitiesJsonNode = jsonNode.get("entities");
 
-			for (JsonNode jsonNode2 : entitiesJsonNode) {
-				ObjectNode objectNode = (ObjectNode) jsonNode2;
-				// 这四个属性移除掉
-				objectNode.remove("uuid");
-				objectNode.remove("type");
-				objectNode.remove("created");
-				objectNode.remove("modified");
-				arrayNode.add(objectNode);
+				for (JsonNode jsonNode2 : entitiesJsonNode) {
+					ObjectNode objectNode = (ObjectNode) jsonNode2;
+					// 这四个属性移除掉
+					objectNode.remove("uuid");
+					objectNode.remove("type");
+					objectNode.remove("created");
+					objectNode.remove("modified");
+					arrayNode.add(objectNode);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		return arrayNode;
