@@ -218,19 +218,20 @@ public class EasemobChatMessage {
 	 * @param method
 	 * @param uuid
 	 */
-	public static void getChatMessages(String appKey, String host, String token, String httpMethod,
-			String queryString) {
+	public static JsonNode getChatMessages(String appKey, String host, String token,
+			String httpMethod, String queryString) {
 
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatmessages?" + queryString;
+		String rest = orgName + "/" + appName + "/chatmessages" + queryString;
 
 		String reqURL = "https://" + host + "/" + rest;
 
 		List<NameValuePair> headers = new ArrayList<NameValuePair>();
 		headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
-		JerseyUtils.sendRequest(reqURL, null, token, httpMethod, headers);
+		JsonNode jsonNode = JerseyUtils.sendRequest(reqURL, null, token, httpMethod, headers);
+		return jsonNode.get("entities");
 	}
 
 	/**
@@ -280,23 +281,31 @@ public class EasemobChatMessage {
 		mediaDownload(appKey, host, accessToken, UUIDOfAudioFile, shareSecretOfAudioFile,
 				localFileName, false);
 
-		// 聊天消息 获取最新的20条记录
+		// 聊天消息
 		Map<String, Object> appAdminTokenReqBody = new HashMap<String, Object>();
 		reqBody.put("grant_type", "password");
-		reqBody.put("username", "testuser1");
-		reqBody.put("password", "testuser1");
+		reqBody.put("username", "easemobdemoadmin");
+		reqBody.put("password", "thepushbox");
 		String appAdminToken = getAccessToken(host, appKey, appAdminTokenReqBody,
 				JerseyUtils.USER_ROLE_APPADMIN);
-		String queryString = "?ql=order+by+timestamp+desc&limit=20";
-		getChatMessages(appKey, host, appAdminToken, JerseyUtils.METHOD_GET, queryString);
 
-		// 聊天消息 获取某个时间段内的消息
-		queryString = "ql=select * where timestamp<1403164734226 and timestamp>1403166586000 order by timestamp desc";
-		getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
+		// 获取最新的20条记录
+		String queryString = "?ql=order+by+timestamp+desc&limit=20";
+		JsonNode messages = getChatMessages(appKey, host, appAdminToken, JerseyUtils.METHOD_GET,
+				queryString);
+
+		// 聊天消息 获取7天以内的消息
+		String startTime = String.valueOf(System.currentTimeMillis());
+		String endTime = String.valueOf(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
+		queryString = "ql=select * where " + startTime + " < timestamp and timestamp < " + endTime
+				+ " order by timestamp desc";
+		JsonNode messagesSevenDays = getChatMessages(appKey, host, accessToken,
+				JerseyUtils.METHOD_GET, queryString);
 
 		// 聊天消息 分页获取数据
 		queryString = "ql=order by timestamp desc&limit=20&cursor=MTYxOTcyOTYyNDpnR2tBQVFNQWdHa0FCZ0ZHczBKN0F3Q0FkUUFRYUdpdkt2ZU1FZU9vNU4zVllyT2pqUUNBZFFBUWFHaXZJUGVNRWVPMjdMRWo5b0w4dEFB";
-		getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
+		JsonNode messagesPagenation = getChatMessages(appKey, host, accessToken,
+				JerseyUtils.METHOD_GET, queryString);
 
 	}
 }
