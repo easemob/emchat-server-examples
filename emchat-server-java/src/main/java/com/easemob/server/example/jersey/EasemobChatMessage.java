@@ -133,7 +133,7 @@ public class EasemobChatMessage {
 	 * @param uuid
 	 */
 	public static JsonNode mediaDownload(String appKey, String host, String token, String fileUUID,
-			String shareSecret, File localPath) {
+			String shareSecret, File localPath, boolean isThumbnail) {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		if (!JerseyUtils.match("[0-9a-zA-Z-_]+#[0-9a-zA-Z-_]+", appKey)) {
@@ -151,6 +151,9 @@ public class EasemobChatMessage {
 		List<NameValuePair> headers = new ArrayList<NameValuePair>();
 		headers.add(new BasicNameValuePair("share-secret", shareSecret));
 		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
+		if (isThumbnail) {
+			headers.add(new BasicNameValuePair("thumbnail", "true"));
+		}
 
 		try {
 			JerseyUtils.downLoadFile(reqURL, token, headers, localPath);
@@ -262,16 +265,18 @@ public class EasemobChatMessage {
 		String shareSecretOfIamgeFile = "RkD6AA4wEeSyjz0_iTyr_tCR-vbm7AjdlWFEXfQ6gYhDaY00";
 		String UUIDOfIamgeFile = "463e890a-0e30-11e4-854d-b9fec8a2574e";
 		// mediaDownload(appKey, host, accessToken, UUIDOfIamgeFile, shareSecretOfIamgeFile,
-		// localFileName);
+		// localFileName,false);
+
+		// 缩略图下载
+		File localFileNameThumbnail = new File("C:/Users/lynch/Pictures/aa.jpg");
+		mediaDownload(appKey, host, accessToken, UUIDOfIamgeFile, shareSecretOfIamgeFile,
+				localFileNameThumbnail, true);
 
 		// 语音文件下载
 		String shareSecretOfAudioFile = "uIk18A85EeSkRLkCA06Nc0GDRxusksq6pHo_uUYng9unmSkG";
 		String UUIDOfAudioFile = "b88676da-0f39-11e4-a143-9bb69516d9a0";
 		mediaDownload(appKey, host, accessToken, UUIDOfAudioFile, shareSecretOfAudioFile,
-				localFileName);
-
-		// 图片缩略图下载
-		imageDownloadThumbnai(appKey, host, accessToken, reqBody, JerseyUtils.METHOD_GET, "");
+				localFileName, false);
 
 		// 聊天消息 获取最新的20条记录
 		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.METHOD_GET, "");
