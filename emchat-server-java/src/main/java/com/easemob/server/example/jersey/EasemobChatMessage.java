@@ -218,27 +218,29 @@ public class EasemobChatMessage {
 	 * @param method
 	 * @param uuid
 	 */
-	public static void getChatMessages(String appKey, String host, String token,
-			Map<String, Object> reqBody, String method, String uuid) {
+	public static void getChatMessages(String appKey, String host, String token, String httpMethod,
+			String queryString) {
 
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatfiles/" + uuid;
+		String rest = orgName + "/" + appName + "/chatmessages?" + queryString;
 
 		String reqURL = "https://" + host + "/" + rest;
 
 		List<NameValuePair> headers = new ArrayList<NameValuePair>();
-		String shareSecret = "DRGM8OZrEeO1vafuJSo2IjHBeKlIhDp0GCnFu54xOF3M6KLr";
-		headers.add(new BasicNameValuePair("thumbnail", "true"));
-		headers.add(new BasicNameValuePair("share-secret", shareSecret));
-		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
+		headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
-		JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), token, method, headers);
+		JerseyUtils.sendRequest(reqURL, null, token, httpMethod, headers);
 	}
 
+	/**
+	 * Main Test
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		String host = "a1.easemob.com";
-		String appKey = "belo#myapptest";
+		String appKey = "easemob-playground#test1";
 
 		// 获取token
 		Map<String, Object> reqBody = new HashMap<String, Object>();
@@ -279,13 +281,22 @@ public class EasemobChatMessage {
 				localFileName, false);
 
 		// 聊天消息 获取最新的20条记录
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.METHOD_GET, "");
+		Map<String, Object> appAdminTokenReqBody = new HashMap<String, Object>();
+		reqBody.put("grant_type", "password");
+		reqBody.put("username", "testuser1");
+		reqBody.put("password", "testuser1");
+		String appAdminToken = getAccessToken(host, appKey, appAdminTokenReqBody,
+				JerseyUtils.USER_ROLE_APPADMIN);
+		String queryString = "?ql=order+by+timestamp+desc&limit=20";
+		getChatMessages(appKey, host, appAdminToken, JerseyUtils.METHOD_GET, queryString);
 
 		// 聊天消息 获取某个时间段内的消息
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.METHOD_GET, "");
+		queryString = "ql=select * where timestamp<1403164734226 and timestamp>1403166586000 order by timestamp desc";
+		getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
 
 		// 聊天消息 分页获取数据
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.METHOD_GET, "");
+		queryString = "ql=order by timestamp desc&limit=20&cursor=MTYxOTcyOTYyNDpnR2tBQVFNQWdHa0FCZ0ZHczBKN0F3Q0FkUUFRYUdpdkt2ZU1FZU9vNU4zVllyT2pqUUNBZFFBUWFHaXZJUGVNRWVPMjdMRWo5b0w4dEFB";
+		getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
 
 	}
 }
