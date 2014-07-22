@@ -43,18 +43,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
  * 
- * @author Lynch 2014-07-12
+ * @author Liyuzhao 2014-07-12
  * 
  */
 public class EasemobChatMessage {
 
 	long totalSize = 0;
 
-	public boolean sendFiletoServerHttp(final String localFilePath,
-			final String remoteUrl, final Map<String, String> headers,
-			final CloudOperationCallback listener) throws Exception {
+	public boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
+			final Map<String, String> headers, final CloudOperationCallback listener) throws Exception {
 		File sourceFile = new File(localFilePath);
-		if (!sourceFile.isFile()) {
+		if (!sourceFile.exists()) {
 			listener.onError("Source file doesn't exist");
 			return false;
 		}
@@ -77,23 +76,19 @@ public class EasemobChatMessage {
 
 			String remoteFileName = remoteUrl;
 			if (remoteFileName.indexOf("/") > 0) {
-				String path = remoteFileName.substring(0,
-						remoteFileName.lastIndexOf("/"));
-				remoteFileName = remoteFileName.substring(remoteFileName
-						.lastIndexOf("/"));
+				String path = remoteFileName.substring(0, remoteFileName.lastIndexOf("/"));
+				remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/"));
 				multipartEntity.addPart("path", new StringBody(path));
 			}
 
 			String mimeType;
 
-			if (sourceFile.getName().endsWith(".3gp")
-					|| sourceFile.getName().endsWith(".amr")) {
+			if (sourceFile.getName().endsWith(".3gp") || sourceFile.getName().endsWith(".amr")) {
 				mimeType = "audio/3gp";
 			} else {
 				mimeType = "image/png";
 			}
-			multipartEntity.addPart("file", new FileBody(sourceFile,
-					remoteFileName, mimeType, "UTF-8"));
+			multipartEntity.addPart("file", new FileBody(sourceFile, remoteFileName, mimeType, "UTF-8"));
 
 			HttpParams httpParameters = new BasicHttpParams();
 			HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
@@ -112,15 +107,13 @@ public class EasemobChatMessage {
 				}
 
 				@Override
-				public void checkServerTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
+				public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 					// TODO Auto-generated method stub
 
 				}
 
 				@Override
-				public void checkClientTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
+				public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 					// TODO Auto-generated method stub
 
 				}
@@ -129,12 +122,10 @@ public class EasemobChatMessage {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			ctx.init(null, new TrustManager[] { xtm }, null);
 			SSLSocketFactory socketFactory = new SSLSocketFactory(ctx);
-			httpclient.getConnectionManager().getSchemeRegistry()
-					.register(new Scheme("https", 443, socketFactory));
+			httpclient.getConnectionManager().getSchemeRegistry().register(new Scheme("https", 443, socketFactory));
 
 			response = httpclient.execute(httpPost);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			String line;
 			String lastLine = null;
 			StringBuilder sb = new StringBuilder();
@@ -290,18 +281,14 @@ public class EasemobChatMessage {
 	 * @param user
 	 * @return
 	 */
-	public static boolean getUserStatus(String appKey, String token,
-			String targetUserName) throws Exception {
-		String HTTP_URL = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/users/" + targetUserName
+	public static boolean getUserStatus(String appKey, String token, String targetUserName) throws Exception {
+		String HTTP_URL = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/users/" + targetUserName
 				+ "/status";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", "Bearer " + token);
 		ObjectMapper objectMapper = new ObjectMapper();
-		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null,
-				HttpsUtils.Method_GET);
-		String content = objectMapper.readTree(resultMsg).get("data")
-				.get(targetUserName).asText();
+		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null, HttpsUtils.Method_GET);
+		String content = objectMapper.readTree(resultMsg).get("data").get(targetUserName).asText();
 		if (content.equals("online")) {
 			return true;
 		} else if (content.equals("offline")) {
@@ -319,23 +306,19 @@ public class EasemobChatMessage {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getAccessToken(String appKey, String username,
-			String password) throws IOException {
+	public static String getAccessToken(String appKey, String username, String password) throws IOException {
 		String token = "";
-		String HttpUrl = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/token";
+		String HttpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/token";
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("grant_type", "password");
 		headers.put("username", username);
 		headers.put("password", password);
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			String resultMsg = HttpsUtils.sendSSLRequest(HttpUrl, null,
-					objectMapper.writeValueAsString(headers),
+			String resultMsg = HttpsUtils.sendSSLRequest(HttpUrl, null, objectMapper.writeValueAsString(headers),
 					HttpsUtils.Method_POST);
 
-			token = objectMapper.readTree(resultMsg).get("access_token")
-					.asText();
+			token = objectMapper.readTree(resultMsg).get("access_token").asText();
 
 			// token=objectMapper.readValue(resultMsg,
 			// Map.class).get("access_token").toString();
@@ -357,11 +340,9 @@ public class EasemobChatMessage {
 	 * @return true发送成功 false 发送失败
 	 * @throws IOException
 	 */
-	public static Map<String, String> sendTextMessage(String appKey,
-			String token, String textContent, String fromUser,
+	public static Map<String, String> sendTextMessage(String appKey, String token, String textContent, String fromUser,
 			List<String> toUsernames) throws IOException {
-		String httpUrl = "https://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/messages";
+		String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/messages";
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("target_type", "users");
 		body.put("target", toUsernames);
@@ -376,8 +357,8 @@ public class EasemobChatMessage {
 		body.put("ext", extBody);
 
 		ObjectMapper mapper = new ObjectMapper();
-		String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token,
-				mapper.writeValueAsString(body), HttpsUtils.Method_POST);
+		String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token, mapper.writeValueAsString(body),
+				HttpsUtils.Method_POST);
 		String content = mapper.readTree(resultMsg).get("data").toString();
 		Map<String, String> result = mapper.readValue(content, Map.class);
 		System.out.println("resultMsg:" + resultMsg);
@@ -394,13 +375,10 @@ public class EasemobChatMessage {
 	 * @return true发送成功 false 发送失败
 	 * @throws Exception
 	 */
-	public static void sendImageMessage(final String appKey,
-			final String token, final String filePath, String fromUser,
-			final List<String> toUsernames, final EMCallBack callback)
-			throws Exception {
+	public static void sendImageMessage(final String appKey, final String token, final String filePath,
+			String fromUser, final List<String> toUsernames, final EMCallBack callback) throws Exception {
 
-		final String remoteUrl = "http://a1.easemob.com/"
-				+ appKey.replaceFirst("#", "/") + "/chatfiles";
+		final String remoteUrl = "http://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/chatfiles";
 
 		EasemobChatMessage httpok = new EasemobChatMessage();
 
@@ -408,80 +386,68 @@ public class EasemobChatMessage {
 		headers.put("restrict-access", "true");
 		headers.put("Authorization", "Bearer " + token);
 
-		httpok.sendFiletoServerHttp(filePath, remoteUrl, headers,
-				new CloudOperationCallback() {
+		httpok.sendFiletoServerHttp(filePath, remoteUrl, headers, new CloudOperationCallback() {
 
-					@Override
-					public void onSuccess(String result) {
-						String uuid = "";
-						String secret = "";
-						try {
+			@Override
+			public void onSuccess(String result) {
+				String uuid = "";
+				String secret = "";
+				try {
 
-							JsonNode jsonNode = new ObjectMapper().readTree(
-									result).get("entities");
+					JsonNode jsonNode = new ObjectMapper().readTree(result).get("entities");
 
-							uuid = jsonNode.get(0).get("uuid").asText();
-							if (jsonNode.get(0).has("share-secret")) {
-								secret = jsonNode.get(0).get("share-secret")
-										.asText();
-							}
-
-							ObjectMapper mapper = new ObjectMapper();
-							String remoteFile = remoteUrl + uuid;
-							String httpUrl = "https://a1.easemob.com/"
-									+ appKey.replaceFirst("#", "/")
-									+ "/messages";
-							Map<String, Object> body = new HashMap<String, Object>();
-							body.put("target_type", "users");
-							body.put("target", toUsernames);
-							Map<String, String> msgBody = new HashMap<String, String>();
-							msgBody.put("type", "img");
-							msgBody.put("url", remoteFile);
-							msgBody.put("filename",
-									new File(filePath).getName());
-							msgBody.put("thumb", remoteFile);
-							msgBody.put("secret", secret);
-							body.put("msg", msgBody);
-							body.put("from", "ceshi");
-							Map<String, String> extBody = new HashMap<String, String>();
-							extBody.put("attr1", "v1");
-							extBody.put("attr2", "v2");
-							body.put("ext", extBody);
-							String resultMsg = HttpsUtils.sendSSLRequest(
-									httpUrl, token,
-									mapper.writeValueAsString(body),
-									HttpsUtils.Method_POST);
-							String content = mapper.readTree(resultMsg)
-									.get("data").toString();
-							Map<String, String> resultMap = mapper.readValue(
-									content, Map.class);
-							System.out.println("resultMsg:" + resultMsg);
-
-						} catch (Exception e) {
-							System.out
-									.println("sendImageMessage json parse exception remotefilepath:"
-											+ remoteUrl);
-						}
-
-						//
-
+					uuid = jsonNode.get(0).get("uuid").asText();
+					if (jsonNode.get(0).has("share-secret")) {
+						secret = jsonNode.get(0).get("share-secret").asText();
 					}
 
-					@Override
-					public void onProgress(int progress) {
-						if (callback != null) {
-							callback.onProgress(progress, null);
-						}
+					ObjectMapper mapper = new ObjectMapper();
+					String remoteFile = remoteUrl + uuid;
+					String httpUrl = "https://a1.easemob.com/" + appKey.replaceFirst("#", "/") + "/messages";
+					Map<String, Object> body = new HashMap<String, Object>();
+					body.put("target_type", "users");
+					body.put("target", toUsernames);
+					Map<String, String> msgBody = new HashMap<String, String>();
+					msgBody.put("type", "img");
+					msgBody.put("url", remoteFile);
+					msgBody.put("filename", new File(filePath).getName());
+					msgBody.put("thumb", remoteFile);
+					msgBody.put("secret", secret);
+					body.put("msg", msgBody);
+					body.put("from", "ceshi");
+					Map<String, String> extBody = new HashMap<String, String>();
+					extBody.put("attr1", "v1");
+					extBody.put("attr2", "v2");
+					body.put("ext", extBody);
+					String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token, mapper.writeValueAsString(body),
+							HttpsUtils.Method_POST);
+					String content = mapper.readTree(resultMsg).get("data").toString();
+					Map<String, String> resultMap = mapper.readValue(content, Map.class);
+					System.out.println("resultMsg:" + resultMsg);
 
-					}
+				} catch (Exception e) {
+					System.out.println("sendImageMessage json parse exception remotefilepath:" + remoteUrl);
+				}
 
-					@Override
-					public void onError(String msg) {
-						if (callback != null) {
-							callback.onError(EMCallBack.ERROR_SEND, msg);
-						}
-					}
-				});
+				//
+
+			}
+
+			@Override
+			public void onProgress(int progress) {
+				if (callback != null) {
+					callback.onProgress(progress, null);
+				}
+
+			}
+
+			@Override
+			public void onError(String msg) {
+				if (callback != null) {
+					callback.onError(EMCallBack.ERROR_SEND, msg);
+				}
+			}
+		});
 
 	}
 
@@ -495,8 +461,7 @@ public class EasemobChatMessage {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String httpPost(String url, String params,
-			Map<String, String> headers) throws Exception {
+	public static String httpPost(String url, String params, Map<String, String> headers) throws Exception {
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -536,8 +501,7 @@ public class EasemobChatMessage {
 	 *            请求参数
 	 * @return
 	 */
-	public static String httpGet(String url, Map<String, String> params,
-			Map<String, String> headers) throws Exception {
+	public static String httpGet(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
 
 		String response = null;
 		HttpClient httpclient = new DefaultHttpClient();
