@@ -35,6 +35,8 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.vo.Credentail;
+import com.easemob.server.example.vo.Token;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -51,22 +53,81 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 public class JerseyUtils {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
-
 	public static String METHOD_GET = "GET";
 	public static String METHOD_POST = "POST";
 	public static String METHOD_PUT = "PUT";
 	public static String METHOD_DELETE = "DELETE";
 	public static String USER_ROLE_ORGADMIN = "orgAdmin";
 	public static String USER_ROLE_APPADMIN = "appAdmin";
-	public static String USER_ROLE_IMUSER = "default";
+	public static String USER_ROLE_IMUSER = "imUser";
+
+	public static String BASEURL = "https://a1.easemob.com";
 
 	/**
 	 * Send https request whit Jersey
 	 * 
 	 * @return
 	 */
-	public static JsonNode sendRequest(String reqURL, JsonNode jsonNodeBody, String token,
+	public static JsonNode sendRequestNew(JerseyWebTarget webTarget, JsonNode jsonNodeBody, Credentail credentail,
 			String method, List<NameValuePair> headers) throws RuntimeException {
+		JsonNode jsonNode = null;
+
+		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", webTarget.getUri().toString())) {
+			LOGGER.error("The URL to request is illegal");
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("statusCode", "400");
+			resultMap.put("message", "The URL to request is illegal");
+
+			return JerseyUtils.Map2Json(resultMap);
+		}
+
+		try {
+
+			Invocation.Builder inBuilder = webTarget.request();
+			if (credentail != null) {
+				Token.applyAuthentication(inBuilder, credentail);
+			}
+
+			if (null != headers && !headers.isEmpty()) {
+
+				for (NameValuePair nameValuePair : headers) {
+					inBuilder.header(nameValuePair.getName(), nameValuePair.getValue());
+				}
+
+			}
+
+			Response response = null;
+			if (JerseyUtils.METHOD_GET.equals(method)) {
+
+				jsonNode = inBuilder.get(JsonNode.class);
+
+			} else if (JerseyUtils.METHOD_POST.equals(method)) {
+
+				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
+
+			} else if (JerseyUtils.METHOD_PUT.equals(method)) {
+
+				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
+
+			} else if (JerseyUtils.METHOD_DELETE.equals(method)) {
+
+				jsonNode = inBuilder.delete(JsonNode.class);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return jsonNode;
+	}
+
+	/**
+	 * Send https request whit Jersey
+	 * 
+	 * @return
+	 */
+	public static JsonNode sendRequest(String reqURL, JsonNode jsonNodeBody, Credentail credentail, String method,
+			List<NameValuePair> headers) throws RuntimeException {
 		JsonNode jsonNode = null;
 
 		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", reqURL)) {
@@ -86,9 +147,9 @@ public class JerseyUtils {
 			JerseyWebTarget rootJerseyWebTarget = jerseyClient.target(reqURL);
 
 			Invocation.Builder inBuilder = rootJerseyWebTarget.request();
-			if (token != null) {
+			if (credentail != null) {
 				// add headers
-				inBuilder.header("Authorization", "Bearer " + token);
+				Token.applyAuthentication(inBuilder, credentail);
 			}
 
 			if (null != headers && !headers.isEmpty()) {
@@ -106,13 +167,11 @@ public class JerseyUtils {
 
 			} else if (JerseyUtils.METHOD_POST.equals(method)) {
 
-				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON),
-						JsonNode.class);
+				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
 			} else if (JerseyUtils.METHOD_PUT.equals(method)) {
 
-				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON),
-						JsonNode.class);
+				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
 			} else if (JerseyUtils.METHOD_DELETE.equals(method)) {
 
@@ -134,9 +193,8 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static JsonNode downLoadFile(String reqURL, String token, List<NameValuePair> headers,
-			File localPath) throws RuntimeException, KeyManagementException,
-			NoSuchAlgorithmException, IOException {
+	public static JsonNode downLoadFile(String reqURL, String token, List<NameValuePair> headers, File localPath)
+			throws RuntimeException, KeyManagementException, NoSuchAlgorithmException, IOException {
 		JsonNode jsonNode = null;
 
 		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", reqURL)) {
@@ -181,8 +239,8 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static JsonNode uploadFile(String reqURL, File file, String token,
-			List<NameValuePair> headers) throws RuntimeException {
+	public static JsonNode uploadFile(String reqURL, File file, String token, List<NameValuePair> headers)
+			throws RuntimeException {
 		JsonNode jsonNode = null;
 
 		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", reqURL)) {
@@ -214,11 +272,9 @@ public class JerseyUtils {
 			}
 
 			FormDataMultiPart multiPart = new FormDataMultiPart();
-			multiPart.bodyPart(new FileDataBodyPart("file", file,
-					MediaType.APPLICATION_OCTET_STREAM_TYPE));
+			multiPart.bodyPart(new FileDataBodyPart("file", file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
-			jsonNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA),
-					JsonNode.class);
+			jsonNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA), JsonNode.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -328,47 +384,50 @@ public class JerseyUtils {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	private static JerseyClient getJerseyClient(boolean isSSL) throws NoSuchAlgorithmException,
-			KeyManagementException {
-		ClientBuilder clientBuilder = JerseyClientBuilder.newBuilder().register(
-				MultiPartFeature.class);
+	public static JerseyClient getJerseyClient(boolean isSSL) {
+		ClientBuilder clientBuilder = JerseyClientBuilder.newBuilder().register(MultiPartFeature.class);
 
 		// Create a secure JerseyClient
 		if (isSSL) {
+			try {
+				HostnameVerifier verifier = new HostnameVerifier() {
+					@Override
+					public boolean verify(String hostname, SSLSession session) {
+						return true;
+					}
+				};
 
-			HostnameVerifier verifier = new HostnameVerifier() {
-				@Override
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			};
+				// KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 
-			// KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+				TrustManager[] tm = new TrustManager[] { new X509TrustManager() {
 
-			TrustManager[] tm = new TrustManager[] { new X509TrustManager() {
+					@Override
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
 
-				@Override
-				public X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
+					@Override
+					public void checkServerTrusted(X509Certificate[] chain, String authType)
+							throws CertificateException {
+					}
 
-				@Override
-				public void checkServerTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
-				}
+					@Override
+					public void checkClientTrusted(X509Certificate[] chain, String authType)
+							throws CertificateException {
+					}
+				} };
 
-				@Override
-				public void checkClientTrusted(X509Certificate[] chain, String authType)
-						throws CertificateException {
-				}
-			} };
+				SSLContext sslContext = sslContext = SSLContext.getInstance("SSL");
 
-			SSLContext sslContext = sslContext = SSLContext.getInstance("SSL");
+				// sslContext.init(kmf.getKeyManagers(), tm, new SecureRandom());
+				sslContext.init(null, tm, new SecureRandom());
 
-			// sslContext.init(kmf.getKeyManagers(), tm, new SecureRandom());
-			sslContext.init(null, tm, new SecureRandom());
-
-			clientBuilder.sslContext(sslContext).hostnameVerifier(verifier);
+				clientBuilder.sslContext(sslContext).hostnameVerifier(verifier);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} catch (KeyManagementException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return (JerseyClient) clientBuilder.build().register(JacksonJsonProvider.class);

@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.vo.Token;
+import com.easemob.server.example.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -24,13 +26,13 @@ public class EasemobUserAPI {
 	/**
 	 * 获取指定org和app下所有IM用户
 	 */
-	public static List<String> getAllIMUsers(Map<String, Object> reqBody) {
+	public static List<String> getAllIMUsers(UsernamePasswordCredentail credentail, String appKey,
+			Map<String, Object> reqBody) {
 		JsonNode jsonNode = null;
-
+		Token token = credentail.getToken();
 		String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users?limit=150";
-
-		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody),
-				"YWMtVA8nUBIZEeS7gg2K43Yp_AAAAUeFT0tr01cWcszmuNgRGbFETzRgXXbgEDw", JerseyUtils.METHOD_GET, null);
+		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), credentail, JerseyUtils.METHOD_GET,
+				null);
 		JsonNode entitiesJsonNode = jsonNode.get("entities");
 		List<String> friendUsernames = new ArrayList<String>();
 		for (JsonNode jsonNode2 : entitiesJsonNode) {
@@ -53,7 +55,12 @@ public class EasemobUserAPI {
 	}
 
 	public static void main(String[] args) {
-		contactsFriend(getAllIMUsers(null));
-
+		String appKey = "easemob-demo#chatdemo";
+		// http://a1.easemob.com/easemob-demo/chatdemo/users/stliu
+		String secretKey = "easemobdemoadmin";
+		String secretValue = "thepushbox";
+		UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(appKey, secretKey, secretValue, true);
+		List<String> allIMUsers = getAllIMUsers(credentail, appKey, null);
+		System.err.println(allIMUsers);
 	}
 }

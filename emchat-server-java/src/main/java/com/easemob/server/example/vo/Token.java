@@ -1,5 +1,7 @@
 package com.easemob.server.example.vo;
 
+import javax.ws.rs.client.Invocation;
+
 /**
  * Access Token
  * 
@@ -8,9 +10,7 @@ package com.easemob.server.example.vo;
  */
 public class Token {
 
-	/** Token String */
 	private String accessToken;
-	/** token expired at */
 	private Long expiredAt;
 
 	public Token() {
@@ -21,12 +21,12 @@ public class Token {
 		this.expiredAt = expiredAt;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public static void applyAuthentication(Invocation.Builder builder, Credentail credentail) {
+		applyAuthentication(builder, credentail.getToken());
 	}
 
-	public Long getExpiredAt() {
-		return expiredAt;
+	public static void applyAuthentication(Invocation.Builder builder, Token token) {
+		builder.header("Authrization", "Bearer " + token.toString());
 	}
 
 	public boolean isExpired() {
@@ -35,7 +35,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [accessToken=" + accessToken + ", expiredAt=" + expiredAt + "]";
+		return accessToken;
 	}
 
 	@Override
