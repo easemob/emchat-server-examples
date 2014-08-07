@@ -115,8 +115,7 @@ public class EasemobUserAPI {
 		getIMAccessTokenPostBody.put("grant_type", "password");
 		getIMAccessTokenPostBody.put("username", "testuser1");
 		getIMAccessTokenPostBody.put("password", "testuser1");
-		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false,
-				getIMAccessTokenPostBody);
+		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false, getIMAccessTokenPostBody);
 		System.out.println(imToken);
 
 		// 获取管理员token
@@ -124,16 +123,13 @@ public class EasemobUserAPI {
 		getAccessTokenPostBody.put("grant_type", "password");
 		getAccessTokenPostBody.put("username", "zhangjianguo");
 		getAccessTokenPostBody.put("password", "zhangjianguo");
-		// String adminToken = EasemobRESTSSLAPI.getAccessToken(host, appKey, true,
-		// getAccessTokenPostBody);
-		// System.out.println(adminToken);
+		String adminToken = EasemobUserAPI.getAccessToken(host, appKey, true, getAccessTokenPostBody);
+		System.out.println(adminToken);
 
 		// 创建用户
 		Map<String, Object> createNewUserPostBody = new HashMap<String, Object>();
 		createNewUserPostBody.put("username", "testuser2");
 		createNewUserPostBody.put("password", "testuser2");
-		createNewUserPostBody.put("addr", "BJFS");
-		String adminToken = "YWMtVWWpUAhTEeSQZieN8wRN4QAAAUdFQji_f3OeR3Me_gfQIW5zWOa6smv6Wyg";
 		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
 
 		// 删除用户
