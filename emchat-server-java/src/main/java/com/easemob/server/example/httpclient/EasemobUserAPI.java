@@ -81,7 +81,7 @@ public class EasemobUserAPI {
 	 * @param appKey
 	 *            easemob-demo#chatdemo
 	 * @param isAdmin
-	 *            org管理员token true, IM用户token false
+	 *            org管理员token true, app管理员token false, IM用户token false
 	 * @param postBody
 	 *            POST请求体
 	 * @return
@@ -118,22 +118,22 @@ public class EasemobUserAPI {
 		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false, getIMAccessTokenPostBody);
 		System.out.println(imToken);
 
-		// 获取管理员token
+		// 获取org管理员token
 		Map<String, Object> getAccessTokenPostBody = new HashMap<String, Object>();
 		getAccessTokenPostBody.put("grant_type", "password");
 		getAccessTokenPostBody.put("username", "zhangjianguo");
 		getAccessTokenPostBody.put("password", "zhangjianguo");
-		String adminToken = EasemobUserAPI.getAccessToken(host, appKey, true, getAccessTokenPostBody);
-		System.out.println(adminToken);
+		String orgAdminToken = EasemobUserAPI.getAccessToken(host, appKey, true, getAccessTokenPostBody);
+		System.out.println(orgAdminToken);
 
 		// 创建用户
 		Map<String, Object> createNewUserPostBody = new HashMap<String, Object>();
 		createNewUserPostBody.put("username", "testuser2");
 		createNewUserPostBody.put("password", "testuser2");
-		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
+		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, orgAdminToken);
 
 		// 删除用户
 		String id = "testuser2";
-		EasemobUserAPI.deleteUser(host, appKey, id, adminToken);
+		EasemobUserAPI.deleteUser(host, appKey, id, orgAdminToken);
 	}
 }
