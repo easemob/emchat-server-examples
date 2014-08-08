@@ -52,14 +52,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 @SuppressWarnings("all")
 public class JerseyUtils {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
-	public static String METHOD_GET = "GET";
-	public static String METHOD_POST = "POST";
-	public static String METHOD_PUT = "PUT";
-	public static String METHOD_DELETE = "DELETE";
-	public static String USER_ROLE_ORGADMIN = "orgAdmin";
-	public static String USER_ROLE_APPADMIN = "appAdmin";
-	public static String USER_ROLE_IMUSER = "imUser";
+	private static Logger LOGGER = LoggerFactory.getLogger(JerseyUtils.class);
 
 	public static String BASEURL = "https://a1.easemob.com";
 

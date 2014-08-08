@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  */
 public class EasemobChatMessage {
+	String param = "{\"grant_type\":\"client_credentials\",\"client_id\":\"YXA6wDs-MARqEeSO0VcBzaqg5A\",\"client_secret\":\"YXA6JOMWlLap_YbI_ucz77j-4-mI0JA\"}";
 
 	long totalSize = 0;
 

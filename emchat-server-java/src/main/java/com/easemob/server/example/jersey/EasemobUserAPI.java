@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.client.WebTarget;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,7 @@ public class EasemobUserAPI {
 			Map<String, Object> reqBody) {
 		JsonNode jsonNode = null;
 		Token token = credentail.getToken();
+
 		String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users?limit=150";
 		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), credentail, JerseyUtils.METHOD_GET,
 				null);
@@ -42,11 +45,19 @@ public class EasemobUserAPI {
 		return friendUsernames;
 	}
 
-	public static JsonNode contactsFriend(List<String> friendUsernames) {
+	/**
+	 * 添加好友
+	 * 
+	 * @param friendUsernames
+	 *            好友列表
+	 * @return
+	 */
+	public static JsonNode contactsFriend(WebTarget webTarget, List<String> friendUsernames) {
 		JsonNode jsonNode = null;
 		for (String friendUsername : friendUsernames) {
 			String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users/88888/contacts/users/"
 					+ friendUsername;
+			JerseyUtils.sendRequest(reqURL, jsonNodeBody, credentail, jer, headers);
 			jsonNode = JerseyUtils.sendRequest(reqURL, null,
 					"YWMtVA8nUBIZEeS7gg2K43Yp_AAAAUeFT0tr01cWcszmuNgRGbFETzRgXXbgEDw", JerseyUtils.METHOD_POST, null);
 		}
@@ -54,13 +65,4 @@ public class EasemobUserAPI {
 		return jsonNode;
 	}
 
-	public static void main(String[] args) {
-		String appKey = "easemob-demo#chatdemo";
-		// http://a1.easemob.com/easemob-demo/chatdemo/users/stliu
-		String secretKey = "easemobdemoadmin";
-		String secretValue = "thepushbox";
-		UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(appKey, secretKey, secretValue, true);
-		List<String> allIMUsers = getAllIMUsers(credentail, appKey, null);
-		System.err.println(allIMUsers);
-	}
 }
