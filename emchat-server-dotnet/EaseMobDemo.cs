@@ -8,11 +8,11 @@ namespace HXComm
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// »·ĞÅ·şÎñÆ÷¶Ë»áÔ±·ÃÎÊ½Ó¿ÚDemo
-    /// Author£ºMr.Hu
+    /// ç¯ä¿¡æœåŠ¡å™¨ç«¯ä¼šå‘˜è®¿é—®æ¥å£Demo
+    /// Authorï¼šMr.Hu
     /// QQ:346163801
     /// Email:346163801@qq.com
-    /// ÈçÓĞÈÎºÎÎÊÌâ£¬¿ÉQQ»òÓÊÏäÁªÏµ
+    /// å¦‚æœ‰ä»»ä½•é—®é¢˜ï¼Œå¯QQæˆ–é‚®ç®±è”ç³»
     /// </summary>
     public class EaseMobDemo
     {
@@ -25,12 +25,12 @@ namespace HXComm
         public string easeMobUrl { get { return string.Format(reqUrlFormat, orgName, appName); } }
 
         /// <summary>
-        /// ¹¹Ôìº¯Êı
+        /// æ„é€ å‡½æ•°
         /// </summary>
         /// <param name="easeAppClientID">client_id</param>
         /// <param name="easeAppClientSecret">client_secret</param>
-        /// <param name="easeAppName">Ó¦ÓÃ±êÊ¶Ö®Ó¦ÓÃÃû³Æ</param>
-        /// <param name="easeAppOrgName">Ó¦ÓÃ±êÊ¶Ö®µÇÂ¼ÕËºÅ</param>
+        /// <param name="easeAppName">åº”ç”¨æ ‡è¯†ä¹‹åº”ç”¨åç§°</param>
+        /// <param name="easeAppOrgName">åº”ç”¨æ ‡è¯†ä¹‹ç™»å½•è´¦å·</param>
         public EaseMobDemo(string easeAppClientID, string easeAppClientSecret, string easeAppName, string easeAppOrgName)
         {
             this.clientID = easeAppClientID;
@@ -41,7 +41,7 @@ namespace HXComm
         }
 
         /// <summary>
-        /// Ê¹ÓÃappµÄclient_id ºÍ client_secretµÇÂ½²¢»ñÈ¡ÊÚÈ¨token
+        /// ä½¿ç”¨appçš„client_id å’Œ client_secretç™»é™†å¹¶è·å–æˆæƒtoken
         /// </summary>
         /// <returns></returns>
         string QueryToken()
@@ -68,7 +68,7 @@ namespace HXComm
                 JObject jo = JObject.Parse(postResultStr);
                 token = jo.GetValue("access_token").ToString();
                 int.TryParse(jo.GetValue("expires_in").ToString(), out expireSeconds);
-                //ÉèÖÃ»º´æ
+                //è®¾ç½®ç¼“å­˜
                 if (!string.IsNullOrEmpty(token) && token.Length > 0 && expireSeconds > 0)
                 {
                     System.Web.HttpRuntime.Cache.Insert(cacheKey, token, null, DateTime.Now.AddSeconds(expireSeconds), System.TimeSpan.Zero);
@@ -79,11 +79,11 @@ namespace HXComm
         }
 
         /// <summary>
-        /// ´´½¨ÓÃ»§
+        /// åˆ›å»ºç”¨æˆ·
         /// </summary>
-        /// <param name="userName">ÕËºÅ</param>
-        /// <param name="password">ÃÜÂë</param>
-        /// <returns>´´½¨³É¹¦µÄÓÃ»§JSON</returns>
+        /// <param name="userName">è´¦å·</param>
+        /// <param name="password">å¯†ç </param>
+        /// <returns>åˆ›å»ºæˆåŠŸçš„ç”¨æˆ·JSON</returns>
         public string AccountCreate(string userName, string password)
         {
             StringBuilder _build = new StringBuilder();
@@ -95,32 +95,32 @@ namespace HXComm
         }
 
         /// <summary>
-        /// ´´½¨ÓÃ»§(¿ÉÒÔÅúÁ¿´´½¨)
+        /// åˆ›å»ºç”¨æˆ·(å¯ä»¥æ‰¹é‡åˆ›å»º)
         /// </summary>
-        /// <param name="postData">´´½¨ÕËºÅJSONÊı×é--¿ÉÒÔÒ»¸ö£¬Ò²¿ÉÒÔ¶à¸ö</param>
-        /// <returns>´´½¨³É¹¦µÄÓÃ»§JSON</returns>
+        /// <param name="postData">åˆ›å»ºè´¦å·JSONæ•°ç»„--å¯ä»¥ä¸€ä¸ªï¼Œä¹Ÿå¯ä»¥å¤šä¸ª</param>
+        /// <returns>åˆ›å»ºæˆåŠŸçš„ç”¨æˆ·JSON</returns>
         public string AccountCreate(string postData) { return ReqUrl(easeMobUrl + "users", "POST", postData, token); }
 
         /// <summary>
-        /// »ñÈ¡Ö¸¶¨ÓÃ»§ÏêÇé
+        /// è·å–æŒ‡å®šç”¨æˆ·è¯¦æƒ…
         /// </summary>
-        /// <param name="userName">ÕËºÅ</param>
-        /// <returns>»áÔ±JSON</returns>
+        /// <param name="userName">è´¦å·</param>
+        /// <returns>ä¼šå‘˜JSON</returns>
         public string AccountGet(string userName) { return ReqUrl(easeMobUrl + "users/" + userName, "GET", string.Empty, token); }
 
         /// <summary>
-        /// ÖØÖÃÓÃ»§ÃÜÂë
+        /// é‡ç½®ç”¨æˆ·å¯†ç 
         /// </summary>
-        /// <param name="userName">ÕËºÅ</param>
-        /// <param name="newPassword">ĞÂÃÜÂë</param>
-        /// <returns>ÖØÖÃ½á¹ûJSON(Èç£º{ "action" : "set user password",  "timestamp" : 1404802674401,  "duration" : 90})</returns>
+        /// <param name="userName">è´¦å·</param>
+        /// <param name="newPassword">æ–°å¯†ç </param>
+        /// <returns>é‡ç½®ç»“æœJSON(å¦‚ï¼š{ "action" : "set user password",  "timestamp" : 1404802674401,  "duration" : 90})</returns>
         public string AccountResetPwd(string userName, string newPassword) { return ReqUrl(easeMobUrl + "users/" + userName + "/password", "PUT", "{\"newpassword\" : \"" + newPassword + "\"}", token); }
 
         /// <summary>
-        /// É¾³ıÓÃ»§
+        /// åˆ é™¤ç”¨æˆ·
         /// </summary>
-        /// <param name="userName">ÕËºÅ</param>
-        /// <returns>³É¹¦·µ»Ø»áÔ±JSONÏêÏ¸ĞÅÏ¢£¬Ê§°ÜÖ±½Ó·µ»Ø£ºÏµÍ³´íÎóĞÅÏ¢</returns>
+        /// <param name="userName">è´¦å·</param>
+        /// <returns>æˆåŠŸè¿”å›ä¼šå‘˜JSONè¯¦ç»†ä¿¡æ¯ï¼Œå¤±è´¥ç›´æ¥è¿”å›ï¼šç³»ç»Ÿé”™è¯¯ä¿¡æ¯</returns>
         public string AccountDel(string userName) { return ReqUrl(easeMobUrl + "users/" + userName, "DELETE", string.Empty, token); }
 
         public string ReqUrl(string reqUrl, string method, string paramData, string token)
@@ -133,7 +133,7 @@ namespace HXComm
                 if (!string.IsNullOrEmpty(token) && token.Length > 1) { request.Headers.Add("Authorization", "Bearer " + token); }
                 if (request.Method.ToString() != "GET" && !string.IsNullOrEmpty(paramData) && paramData.Length > 0)
                 {
-                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.ContentType = "application/json";
                     byte[] buffer = Encoding.UTF8.GetBytes(paramData);
                     request.ContentLength = buffer.Length;
                     request.GetRequestStream().Write(buffer, 0, buffer.Length);
@@ -155,7 +155,7 @@ namespace HXComm
     public class SampleUse
     {
         /// <summary>
-        /// Ê¹ÓÃ·¶Àı
+        /// ä½¿ç”¨èŒƒä¾‹
         /// HXComm.SampleUse mySample = new HXComm.SampleUse();
         /// mySample.Test(appClientID, appClientSecret, appName, orgName);
         /// </summary>
@@ -166,7 +166,7 @@ namespace HXComm
         public void Test(string appClientID, string appClientSecret, string appName, string orgName)
         {
             EaseMobDemo myEaseMobDemo = new EaseMobDemo(appClientID, appClientSecret, appName, orgName);
-            string userName = "a001", password = "a001", newPassword = "a000000";//´Ë´¦ÎÒÃÇÒª½øĞĞ¼ÓÃÜ´¦Àí£¬Èç¹ûÔÚÊµ¼ÊÏîÄ¿ÖĞ£¬½¨Òé¼ÓÃÜ
+            string userName = "a001", password = "a001", newPassword = "a000000";//æ­¤å¤„æˆ‘ä»¬è¦è¿›è¡ŒåŠ å¯†å¤„ç†ï¼Œå¦‚æœåœ¨å®é™…é¡¹ç›®ä¸­ï¼Œå»ºè®®åŠ å¯†
 
             Console.WriteLine("{0}", myEaseMobDemo.AccountCreate(userName, password));
             Console.WriteLine("{0}", myEaseMobDemo.AccountGet(password));
@@ -175,10 +175,10 @@ namespace HXComm
         }
 
         /// <summary>
-        /// ÅúÁ¿µ¼ÈëÕËºÅ(txtÎÄ¼ş)
-        /// ÄÚÈİ¸ñÊ½Îª(ÓÃÖÆ±í·û»ò¿Õ¸ñ¸ô¿ª¼´¿É)£ºÕËºÅ ÃÜÂë
+        /// æ‰¹é‡å¯¼å…¥è´¦å·(txtæ–‡ä»¶)
+        /// å†…å®¹æ ¼å¼ä¸º(ç”¨åˆ¶è¡¨ç¬¦æˆ–ç©ºæ ¼éš”å¼€å³å¯)ï¼šè´¦å· å¯†ç 
         /// </summary>
-        /// <param name="txtFile">ÎÄ¼ş±£´æµØÖ·</param>
+        /// <param name="txtFile">æ–‡ä»¶ä¿å­˜åœ°å€</param>
         /// <param name="appClientID"></param>
         /// <param name="appClientSecret"></param>
         /// <param name="appName"></param>
