@@ -1,9 +1,10 @@
 #
-#Sat Jul 19 00:27:11 CST 2014
+#Mon Aug 11 21:11:31 PDT 2014
 org.eclipse.jdt.core.compiler.debug.localVariable=generate
 org.eclipse.jdt.core.compiler.compliance=1.7
 org.eclipse.jdt.core.compiler.codegen.unusedLocal=preserve
 org.eclipse.jdt.core.compiler.debug.sourceFile=generate
+org.eclipse.jdt.core.compiler.codegen.methodParameters=do not generate
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.7
 org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 org.eclipse.jdt.core.compiler.debug.lineNumber=generate

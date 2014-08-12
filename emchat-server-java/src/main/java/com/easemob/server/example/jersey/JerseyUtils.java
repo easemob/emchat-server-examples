@@ -35,6 +35,8 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.utils.HTTPMethod;
+import com.easemob.server.example.utils.PropertiesUtils;
 import com.easemob.server.example.vo.Credentail;
 import com.easemob.server.example.vo.Token;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,10 +56,10 @@ public class JerseyUtils {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(JerseyUtils.class);
 
-	public static String BASEURL = "https://a1.easemob.com";
+	public static String BASEURL = "https://" + PropertiesUtils.getProperties().getProperty("Server_HOST");
 
 	/**
-	 * Send https request whit Jersey
+	 * Send https request with Jersey
 	 * 
 	 * @return
 	 */
@@ -90,19 +92,19 @@ public class JerseyUtils {
 			}
 
 			Response response = null;
-			if (JerseyUtils.METHOD_GET.equals(method)) {
+			if (HTTPMethod.METHOD_GET.equals(method)) {
 
 				jsonNode = inBuilder.get(JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_POST.equals(method)) {
+			} else if (HTTPMethod.METHOD_POST.equals(method)) {
 
 				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_PUT.equals(method)) {
+			} else if (HTTPMethod.METHOD_PUT.equals(method)) {
 
 				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_DELETE.equals(method)) {
+			} else if (HTTPMethod.METHOD_DELETE.equals(method)) {
 
 				jsonNode = inBuilder.delete(JsonNode.class);
 
@@ -154,19 +156,19 @@ public class JerseyUtils {
 			}
 
 			Response response = null;
-			if (JerseyUtils.METHOD_GET.equals(method)) {
+			if (HTTPMethod.METHOD_GET.equals(method)) {
 
 				jsonNode = inBuilder.get(JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_POST.equals(method)) {
+			} else if (HTTPMethod.METHOD_POST.equals(method)) {
 
 				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_PUT.equals(method)) {
+			} else if (HTTPMethod.METHOD_PUT.equals(method)) {
 
 				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
 
-			} else if (JerseyUtils.METHOD_DELETE.equals(method)) {
+			} else if (HTTPMethod.METHOD_DELETE.equals(method)) {
 
 				jsonNode = inBuilder.delete(JsonNode.class);
 

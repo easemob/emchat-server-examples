@@ -3,10 +3,12 @@ package com.easemob.server.example.vo;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
 import com.easemob.server.example.jersey.JerseyUtils;
+import com.easemob.server.example.utils.PropertiesUtils;
 
 public abstract class Credentail {
 
-	protected static JerseyWebTarget ROOT_TOKEN_TARGET = JerseyUtils.getJerseyClient(true).target(JerseyUtils.BASEURL);
+	protected JerseyWebTarget ROOT_TOKEN_TARGET = JerseyUtils.getJerseyClient(true).target(
+			"https://" + PropertiesUtils.getProperties().getProperty("Server_HOST", "localhost"));
 
 	protected String grantType;
 	protected String secretKey;
@@ -19,7 +21,7 @@ public abstract class Credentail {
 	protected abstract GrantType getGrantType();
 
 	public static enum GrantType {
-		client_credentials, password
+		CLIENT_CREDENTIALS, PASSWORD
 	}
 
 	public Credentail() {

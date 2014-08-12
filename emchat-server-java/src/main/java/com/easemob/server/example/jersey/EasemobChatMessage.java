@@ -14,6 +14,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.utils.HTTPMethod;
+import com.easemob.server.example.utils.Roles;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -57,15 +59,15 @@ public class EasemobChatMessage {
 		}
 
 		String rest = "";
-		if (JerseyUtils.USER_ROLE_ORGADMIN.equals(role)) {
+		if (Roles.USER_ROLE_ORGADMIN.equals(role)) {
 			rest = "/management/token";
-		} else if (JerseyUtils.USER_ROLE_APPADMIN.equals(role) || JerseyUtils.USER_ROLE_IMUSER.equals(role)) {
+		} else if (Roles.USER_ROLE_APPADMIN.equals(role) || Roles.USER_ROLE_IMUSER.equals(role)) {
 			rest = "/token";
 		}
 
 		String reqURL = "https://" + host + "/" + appKey.replaceFirst("#", "/") + rest;
 
-		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), null, JerseyUtils.METHOD_POST, null);
+		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), null, HTTPMethod.METHOD_POST, null);
 
 		if (jsonNode.get("access_token").textValue() != "") {
 			accessToken = jsonNode.get("access_token").textValue();
@@ -244,7 +246,7 @@ public class EasemobChatMessage {
 		reqBody.put("grant_type", "password");
 		reqBody.put("username", "zhangjianguo");
 		reqBody.put("password", "zhangjianguo");
-		String accessToken = getAccessToken(host, appKey, reqBody, JerseyUtils.USER_ROLE_APPADMIN);
+		String accessToken = getAccessToken(host, appKey, reqBody, Roles.USER_ROLE_APPADMIN);
 		System.out.println(accessToken);
 
 		// 图片文件上传
@@ -275,22 +277,22 @@ public class EasemobChatMessage {
 		reqBody.put("grant_type", "password");
 		reqBody.put("username", "easemobdemoadmin");
 		reqBody.put("password", "thepushbox");
-		String appAdminToken = getAccessToken(host, appKey, appAdminTokenReqBody, JerseyUtils.USER_ROLE_APPADMIN);
+		String appAdminToken = getAccessToken(host, appKey, appAdminTokenReqBody, Roles.USER_ROLE_APPADMIN);
 
 		// 获取最新的20条记录
 		String queryString = "?ql=order+by+timestamp+desc&limit=20";
-		JsonNode messages = getChatMessages(appKey, host, appAdminToken, JerseyUtils.METHOD_GET, queryString);
+		JsonNode messages = getChatMessages(appKey, host, appAdminToken, HTTPMethod.METHOD_GET, queryString);
 
 		// 聊天消息 获取7天以内的消息
 		String startTime = String.valueOf(System.currentTimeMillis());
 		String endTime = String.valueOf(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
 		queryString = "ql=select * where " + startTime + " < timestamp and timestamp < " + endTime
 				+ " order by timestamp desc";
-		JsonNode messagesSevenDays = getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
+		JsonNode messagesSevenDays = getChatMessages(appKey, host, accessToken, HTTPMethod.METHOD_GET, queryString);
 
 		// 聊天消息 分页获取数据
 		queryString = "ql=order by timestamp desc&limit=20&cursor=MTYxOTcyOTYyNDpnR2tBQVFNQWdHa0FCZ0ZHczBKN0F3Q0FkUUFRYUdpdkt2ZU1FZU9vNU4zVllyT2pqUUNBZFFBUWFHaXZJUGVNRWVPMjdMRWo5b0w4dEFB";
-		JsonNode messagesPagenation = getChatMessages(appKey, host, accessToken, JerseyUtils.METHOD_GET, queryString);
+		JsonNode messagesPagenation = getChatMessages(appKey, host, accessToken, HTTPMethod.METHOD_GET, queryString);
 
 	}
 }

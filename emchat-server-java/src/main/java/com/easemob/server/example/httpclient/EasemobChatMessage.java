@@ -33,7 +33,7 @@ import org.apache.http.util.EntityUtils;
 import com.easemob.server.example.utils.CloudOperationCallback;
 import com.easemob.server.example.utils.CustomMultiPartEntity;
 import com.easemob.server.example.utils.EMCallBack;
-import com.easemob.server.example.utils.HttpsUtils;
+import com.easemob.server.example.utils.HTTPMethod;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -288,7 +288,7 @@ public class EasemobChatMessage {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", "Bearer " + token);
 		ObjectMapper objectMapper = new ObjectMapper();
-		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null, HttpsUtils.Method_GET);
+		String resultMsg = HttpsUtils.sendSSLRequest(HTTP_URL, token, null, HTTPMethod.Method_GET);
 		String content = objectMapper.readTree(resultMsg).get("data").get(targetUserName).asText();
 		if (content.equals("online")) {
 			return true;
@@ -317,7 +317,7 @@ public class EasemobChatMessage {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			String resultMsg = HttpsUtils.sendSSLRequest(HttpUrl, null, objectMapper.writeValueAsString(headers),
-					HttpsUtils.Method_POST);
+					HTTPMethod.Method_POST);
 
 			token = objectMapper.readTree(resultMsg).get("access_token").asText();
 
@@ -359,7 +359,7 @@ public class EasemobChatMessage {
 
 		ObjectMapper mapper = new ObjectMapper();
 		String resultMsg = HttpsUtils.sendSSLRequest(httpUrl, token, mapper.writeValueAsString(body),
-				HttpsUtils.Method_POST);
+				HTTPMethod.Method_POST);
 		String content = mapper.readTree(resultMsg).get("data").toString();
 		Map<String, String> result = mapper.readValue(content, Map.class);
 		System.out.println("resultMsg:" + resultMsg);

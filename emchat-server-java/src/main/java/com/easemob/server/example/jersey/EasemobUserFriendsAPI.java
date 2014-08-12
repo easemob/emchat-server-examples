@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.client.WebTarget;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,32 +22,35 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Lynch 2014-07-09
  * 
  */
-public class EasemobUserAPI {
+public class EasemobUserFriendsAPI {
 
 	/** LOGGER */
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobUserAPI.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(EasemobUserFriendsAPI.class);
 
+	// 获取这个app下的所有用户 GET https://a1.easemob.com/easemob-demo/chatdemoui/users
 	/**
-	 * 获取指定AppKey下所有IM用户(不分页)
+	 * 获取指定org和app下所有IM用户(不分页)
 	 */
-	public static JsonNode getAllIMUsers(UsernamePasswordCredentail credentail, String appKey,
+	public static List<String> getAllIMUsers(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
 		JsonNode jsonNode = null;
+
+		Token token = credentail.getToken();
 
 		String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users?limit=150";
 		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
 				null);
-		if (jsonNode.get("error") == null) {
-			LOGGER.info("");
+		JsonNode entitiesJsonNode = jsonNode.get("entities");
+		List<String> friendUsernames = new ArrayList<String>();
+		for (JsonNode jsonNode2 : entitiesJsonNode) {
+			friendUsernames.add(jsonNode2.get("username").asText());
 		}
 
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-
-		return entitiesJsonNode;
+		return friendUsernames;
 	}
 
 	/**
-	 * 获取指定AppKey下所有IM用户(分页)
+	 * 获取指定org和app下所有IM用户(分页)
 	 */
 	public static List<String> getIMUsersPagination(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -66,7 +71,7 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 获取指定AppKey下某个用户
+	 * 获取这个app下的用户stliu的详情
 	 */
 	public static List<String> getIMUserDetailByUsername(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -87,7 +92,7 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 给指定AppKey创建一个新的用户
+	 * 在这个app下创建一个新的用户
 	 */
 	public static List<String> getIMUserDetailByUsername(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -108,7 +113,7 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 给指定AppKey批量创建用户
+	 * 在这个app下批量创建用户
 	 */
 	public static List<String> getIMUserDetailByUsername(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -129,7 +134,7 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 删除指定AppKey下IM用户
+	 * 在这个app下删除IM用户
 	 */
 	public static List<String> deleteIMUserByUsername(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -150,7 +155,7 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 批量指定AppKey下删除IM用户
+	 * 批量在这个app下删除IM用户
 	 */
 	public static List<String> deleteIMUserByUsernameBatch(UsernamePasswordCredentail credentail, String appKey,
 			Map<String, Object> reqBody) {
@@ -171,45 +176,23 @@ public class EasemobUserAPI {
 	}
 
 	/**
-	 * 指定AppKey设置APP管理员
+	 * 添加好友
+	 * 
+	 * @param friendUsernames
+	 *            好友列表
+	 * @return
 	 */
-	public static List<String> deleteIMUserByUsernameBatch(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
+	public static JsonNode contactsFriend(WebTarget webTarget, List<String> friendUsernames) {
 		JsonNode jsonNode = null;
-
-		Token token = credentail.getToken();
-
-		String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users?limit=150";
-		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		for (String friendUsername : friendUsernames) {
+			String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users/88888/contacts/users/"
+					+ friendUsername;
+			JerseyUtils.sendRequest(reqURL, jsonNodeBody, credentail, jer, headers);
+			jsonNode = JerseyUtils.sendRequest(reqURL, null,
+					"YWMtVA8nUBIZEeS7gg2K43Yp_AAAAUeFT0tr01cWcszmuNgRGbFETzRgXXbgEDw", HTTPMethod.METHOD_POST, null);
 		}
 
-		return friendUsernames;
-	}
-
-	/**
-	 * 撤销指定AppKey某个APP管理员
-	 */
-	public static List<String> deleteIMUserByUsernameBatch(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
-
-		Token token = credentail.getToken();
-
-		String reqURL = "https://a1.easemob.com/easemob-demo/chatdemoui/users?limit=150";
-		jsonNode = JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
-		}
-
-		return friendUsernames;
+		return jsonNode;
 	}
 
 }

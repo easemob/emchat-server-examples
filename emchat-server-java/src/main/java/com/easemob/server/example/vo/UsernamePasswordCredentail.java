@@ -10,24 +10,27 @@ import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
 import com.easemob.server.example.jersey.JerseyUtils;
+import com.easemob.server.example.utils.HTTPMethod;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class UsernamePasswordCredentail extends Credentail {
 
 	private static JerseyWebTarget USERNAMEPASSWORD_TOKEN_TARGET = null;
 
-	public UsernamePasswordCredentail(String appKey, String secretKey, String secretValue, boolean isMgmt) {
+	public UsernamePasswordCredentail(String appKey, String secretKey, String secretValue, boolean isOrgAdmin) {
 		super(secretKey, secretValue);
-		if (isMgmt) {
+		if (isOrgAdmin) {
+			// org管理员
 			USERNAMEPASSWORD_TOKEN_TARGET = ROOT_TOKEN_TARGET.path("management").path("token");
 		} else {
+			// app管理员、IM用户
 			USERNAMEPASSWORD_TOKEN_TARGET = ROOT_TOKEN_TARGET.path(appKey.replace("#", "/")).path("token");
 		}
 	}
 
 	@Override
 	protected GrantType getGrantType() {
-		return GrantType.password;
+		return GrantType.PASSWORD;
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class UsernamePasswordCredentail extends Credentail {
 		if (null == token || token.isExpired()) {
 			try {
 				Map<String, Object> jsonNodeBody = new HashMap<String, Object>();
-				jsonNodeBody.put("grant_type", GrantType.password);
+				jsonNodeBody.put("grant_type", GrantType.PASSWORD);
 				jsonNodeBody.put("username", secretKey);
 				jsonNodeBody.put("password", secretValue);
 
@@ -48,7 +51,7 @@ public class UsernamePasswordCredentail extends Credentail {
 				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
 				JsonNode tokenRequest = JerseyUtils.sendRequestNew(getTokenRequestTarget(),
-						JerseyUtils.Map2Json(jsonNodeBody), null, JerseyUtils.METHOD_POST, headers);
+						JerseyUtils.Map2Json(jsonNodeBody), null, HTTPMethod.METHOD_POST, headers);
 				if (null != tokenRequest.get("error")) {
 					return token;
 				}
@@ -62,6 +65,7 @@ public class UsernamePasswordCredentail extends Credentail {
 				throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
 			}
 		}
+
 		return token;
 	}
 
