@@ -78,7 +78,7 @@ public class JerseyUtils {
 			Invocation.Builder inBuilder = rootJerseyWebTarget.request();
 			if (token != null) {
 				// add headers
-				inBuilder.header("Authentication", "Bearer " + token);
+				inBuilder.header("Authorization", "Bearer " + token);
 			}
 			if (null != headers && !headers.isEmpty()) {
 				if (headers.iterator().hasNext()) {
