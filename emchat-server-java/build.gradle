@@ -1,24 +1,24 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'java-library-distribution'
 
 repositories {
-	mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
+    
     compile 'org.glassfish.jersey.core:jersey-client:2.9'
+    
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.9'
+    
     compile 'org.apache.httpcomponents:httpclient:4.3.3'
+    
     compile 'org.apache.httpcomponents:httpmime:4.2'
-    testCompile "junit:junit:4.11"
-}
+    
+    compile 'org.glassfish.jersey.media:jersey-media-multipart:2.9'
+    
+    compile 'org.apache.commons:commons-lang3:3.3.2'
 
-distributions {
-    main{
-        baseName = 'easemob-server-example'
-    }
 }
