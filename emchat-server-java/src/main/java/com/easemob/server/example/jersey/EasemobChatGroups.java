@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Administrator
  * 
  */
-public class EasemobGroupMessage {
+public class EasemobChatGroups {
 
 	public static void main(String[] args) {
 		String appkey = "easemob-playground#test1";

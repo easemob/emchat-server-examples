@@ -8,9 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.easemob.server.example.vo.Credentail;
 import com.easemob.server.example.vo.Token;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
@@ -54,24 +52,24 @@ public class JerseyUtils {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(JerseyUtils.class);
 
-	public static String BASEURL = "https://" + PropertiesUtils.getProperties().getProperty("Server_HOST");
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	/**
 	 * Send HTTPS request with Jersey
 	 * 
 	 * @return
 	 */
-	public static JsonNode sendRequest(JerseyWebTarget webTarget, JsonNode jsonNodeBody, Credentail credentail,
-			String method, List<NameValuePair> headers) throws RuntimeException {
-		JsonNode jsonNode = null;
+	public static ObjectNode sendRequest(JerseyWebTarget webTarget, Object body, Credentail credentail, String method,
+			List<NameValuePair> headers) throws RuntimeException {
+
+		ObjectNode objectNode = factory.objectNode();
 
 		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", webTarget.getUri().toString())) {
 			LOGGER.error("The URL to request is illegal");
-			Map<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap.put("statusCode", "400");
-			resultMap.put("message", "The URL to request is illegal");
 
-			return JerseyUtils.Map2Json(resultMap);
+			objectNode.put("message", "The URL to request is illegal");
+
+			return objectNode;
 		}
 
 		try {
@@ -92,26 +90,29 @@ public class JerseyUtils {
 			Response response = null;
 			if (HTTPMethod.METHOD_GET.equals(method)) {
 
-				jsonNode = inBuilder.get(JsonNode.class);
+				response = inBuilder.get(Response.class);
 
 			} else if (HTTPMethod.METHOD_POST.equals(method)) {
 
-				jsonNode = inBuilder.post(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
+				response = inBuilder.post(Entity.entity(body, MediaType.APPLICATION_JSON), Response.class);
 
 			} else if (HTTPMethod.METHOD_PUT.equals(method)) {
 
-				jsonNode = inBuilder.put(Entity.entity(jsonNodeBody, MediaType.APPLICATION_JSON), JsonNode.class);
+				response = inBuilder.put(Entity.entity(body, MediaType.APPLICATION_JSON), Response.class);
 
 			} else if (HTTPMethod.METHOD_DELETE.equals(method)) {
 
-				jsonNode = inBuilder.delete(JsonNode.class);
+				response = inBuilder.delete(Response.class);
 
 			}
+
+			objectNode = response.readEntity(ObjectNode.class);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return jsonNode;
+		return objectNode;
 	}
 
 	/**
@@ -122,9 +123,8 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static JsonNode downLoadFile(JerseyWebTarget jerseyWebTarget, String token, List<NameValuePair> headers,
+	public static void downLoadFile(JerseyWebTarget jerseyWebTarget, String token, List<NameValuePair> headers,
 			File localPath) throws RuntimeException, KeyManagementException, NoSuchAlgorithmException, IOException {
-		JsonNode jsonNode = null;
 
 		Invocation.Builder inBuilder = jerseyWebTarget.request();
 		if (token != null) {
@@ -143,9 +143,9 @@ public class JerseyUtils {
 		File file = inBuilder.get(File.class);
 		file.renameTo(localPath);
 		FileWriter fr = new FileWriter(file);
+
 		fr.flush();
 
-		return jsonNode;
 	}
 
 	/**
@@ -153,11 +153,10 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static JsonNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, String token,
+	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, String token,
 			List<NameValuePair> headers) throws RuntimeException {
-		JsonNode jsonNode = null;
+		ObjectNode objectNode = factory.objectNode();
 
-		Response response = null;
 		try {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
@@ -177,61 +176,13 @@ public class JerseyUtils {
 			FormDataMultiPart multiPart = new FormDataMultiPart();
 			multiPart.bodyPart(new FileDataBodyPart("file", file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
-			jsonNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA), JsonNode.class);
+			objectNode = inBuilder.post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA), ObjectNode.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return jsonNode;
-	}
-
-	/**
-	 * Convert JsonNode to jsonMap
-	 * 
-	 * @param jsonText
-	 * @return
-	 */
-	public static Map<String, Object> Json2Map(JsonNode jsonText) {
-
-		Map<String, Object> objMap = new HashMap<String, Object>();
-
-		try {
-
-			ObjectMapper mapper = new ObjectMapper();
-
-			objMap = mapper.convertValue(jsonText, Map.class);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return objMap;
-	}
-
-	/**
-	 * Convert jsonMap to JsonNode
-	 * 
-	 * @param jsonMap
-	 * @return
-	 */
-	public static JsonNode Map2Json(Map<String, Object> jsonMap) {
-
-		JsonNode jsonNode = null;
-
-		if (null != jsonMap) {
-			try {
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				jsonNode = mapper.convertValue(jsonMap, JsonNode.class);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return jsonNode;
+		return objectNode;
 	}
 
 	/**
@@ -242,8 +193,7 @@ public class JerseyUtils {
 	 */
 	public static ArrayNode getEntitiesFromCompanies(JsonNode jsonNode) {
 
-		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode arrayNode = mapper.createArrayNode();
+		ArrayNode arrayNode = factory.arrayNode();
 
 		if (null != jsonNode) {
 			try {

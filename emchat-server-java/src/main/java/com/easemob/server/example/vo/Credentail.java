@@ -2,17 +2,14 @@ package com.easemob.server.example.vo;
 
 import org.glassfish.jersey.client.JerseyWebTarget;
 
-import com.easemob.server.example.utils.JerseyUtils;
-import com.easemob.server.example.utils.PropertiesUtils;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 public abstract class Credentail {
 
-	protected JerseyWebTarget ROOT_TOKEN_TARGET = JerseyUtils.getJerseyClient(true).target(
-			"https://" + PropertiesUtils.getProperties().getProperty("Server_HOST", "localhost"));
-
 	protected String grantType;
-	protected String secretKey;
-	protected String secretValue;
+	protected String tokenKey1;
+	protected String tokenKey2;
+	protected JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	protected Token token;
 
@@ -27,9 +24,9 @@ public abstract class Credentail {
 	public Credentail() {
 	}
 
-	public Credentail(String secretKey, String secretValue) {
-		this.secretKey = secretKey;
-		this.secretValue = secretValue;
+	public Credentail(String tokenKey1, String tokenKey2) {
+		this.tokenKey1 = tokenKey1;
+		this.tokenKey2 = tokenKey2;
 	}
 
 	public Credentail(Token token) {
@@ -40,7 +37,7 @@ public abstract class Credentail {
 
 	@Override
 	public String toString() {
-		return "Credentail [grantType=" + grantType + ", secretKey=" + secretKey + ", secretValue=" + secretValue
+		return "Credentail [grantType=" + grantType + ", tokenKey1=" + tokenKey1 + ", tokenKey2=" + tokenKey2
 				+ ", token=" + token + "]";
 	}
 
@@ -49,9 +46,9 @@ public abstract class Credentail {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((grantType == null) ? 0 : grantType.hashCode());
-		result = prime * result + ((secretKey == null) ? 0 : secretKey.hashCode());
-		result = prime * result + ((secretValue == null) ? 0 : secretValue.hashCode());
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
+		result = prime * result + ((tokenKey1 == null) ? 0 : tokenKey1.hashCode());
+		result = prime * result + ((tokenKey2 == null) ? 0 : tokenKey2.hashCode());
 		return result;
 	}
 
@@ -69,20 +66,20 @@ public abstract class Credentail {
 				return false;
 		} else if (!grantType.equals(other.grantType))
 			return false;
-		if (secretKey == null) {
-			if (other.secretKey != null)
-				return false;
-		} else if (!secretKey.equals(other.secretKey))
-			return false;
-		if (secretValue == null) {
-			if (other.secretValue != null)
-				return false;
-		} else if (!secretValue.equals(other.secretValue))
-			return false;
 		if (token == null) {
 			if (other.token != null)
 				return false;
 		} else if (!token.equals(other.token))
+			return false;
+		if (tokenKey1 == null) {
+			if (other.tokenKey1 != null)
+				return false;
+		} else if (!tokenKey1.equals(other.tokenKey1))
+			return false;
+		if (tokenKey2 == null) {
+			if (other.tokenKey2 != null)
+				return false;
+		} else if (!tokenKey2.equals(other.tokenKey2))
 			return false;
 		return true;
 	}

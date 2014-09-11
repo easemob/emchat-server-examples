@@ -1,4 +1,4 @@
-package com.easemob.server.example.jersey;
+package com.easemob.server.example.vo;
 
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyWebTarget;
@@ -23,7 +23,7 @@ public interface EndPoints {
 
 	public JerseyWebTarget TOKEN_ORG_TARGET = MANAGEMENT_TARGET.path("token");
 
-	JerseyWebTarget APPLICATION_TEMPLATE = ROOT_TARGET.path("{org_name}").path("{app_name}");
+	public JerseyWebTarget APPLICATION_TEMPLATE = ROOT_TARGET.path("{org_name}").path("{app_name}");
 
 	public JerseyWebTarget TOKEN_APP_TARGET = APPLICATION_TEMPLATE.path("token");
 

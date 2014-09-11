@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Lynch 2014-07-12
  * 
  */
-public class EasemobSendMessage {
+public class EasemobMessages {
 
 	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException, IOException {
 

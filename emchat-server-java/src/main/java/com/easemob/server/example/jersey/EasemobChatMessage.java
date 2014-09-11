@@ -19,6 +19,7 @@ import com.easemob.server.example.utils.Constants;
 import com.easemob.server.example.utils.HTTPMethod;
 import com.easemob.server.example.utils.JerseyUtils;
 import com.easemob.server.example.utils.Roles;
+import com.easemob.server.example.vo.EndPoints;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -279,8 +280,8 @@ public class EasemobChatMessage {
 		reqBody.put("grant_type", "password");
 		reqBody.put("username", "chatappAdmin");
 		reqBody.put("password", "9876543");
-		String accessToken = getAccessToken(reqBody, Roles.USER_ROLE_APPADMIN).get("access_token").textValue();
-
+		// String accessToken = getAccessToken(reqBody, Roles.USER_ROLE_APPADMIN).get("access_token").textValue();
+		String accessToken = "YWMt_tsO6DQUEeSQwheELDW36wAAAUl09nrzMZbh-NkjgcmN02D6xmXfdD4S-1E";
 		System.out.println(accessToken);
 
 		// 图片文件上传

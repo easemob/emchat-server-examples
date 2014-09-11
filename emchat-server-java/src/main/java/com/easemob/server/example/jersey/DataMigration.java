@@ -26,9 +26,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author Lynch 2014-07-18
  * 
  */
-public class DataMigrationDemo {
+public class DataMigration {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(DataMigrationDemo.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(DataMigration.class);
 
 	private static String APPKEY = PropertiesUtils.getProperties().getProperty("APPKEY");
 

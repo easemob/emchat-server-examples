@@ -26,7 +26,7 @@ public class Token {
 	}
 
 	public static void applyAuthentication(Invocation.Builder builder, Token token) {
-		builder.header("Authrization", "Bearer " + token.toString());
+		builder.header("Authorization", "Bearer " + token.toString());
 	}
 
 	public boolean isExpired() {

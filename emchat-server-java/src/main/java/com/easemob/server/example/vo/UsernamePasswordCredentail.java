@@ -1,30 +1,32 @@
 package com.easemob.server.example.vo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
-import com.easemob.server.example.utils.HTTPMethod;
-import com.easemob.server.example.utils.JerseyUtils;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.easemob.server.example.utils.Roles;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class UsernamePasswordCredentail extends Credentail {
 
 	private static JerseyWebTarget USERNAMEPASSWORD_TOKEN_TARGET = null;
 
-	public UsernamePasswordCredentail(String appKey, String secretKey, String secretValue, boolean isOrgAdmin) {
-		super(secretKey, secretValue);
-		if (isOrgAdmin) {
-			// org管理员
-			USERNAMEPASSWORD_TOKEN_TARGET = ROOT_TOKEN_TARGET.path("management").path("token");
-		} else {
-			// app管理员、IM用户
-			USERNAMEPASSWORD_TOKEN_TARGET = ROOT_TOKEN_TARGET.path(appKey.replace("#", "/")).path("token");
+	public UsernamePasswordCredentail(String username, String password, String role) {
+		super(username, password);
+
+		if (role.equals(Roles.USER_ROLE_ORGADMIN)) {
+			// ORG管理员
+			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
+		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
+			// APP管理员、IM用户
+			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET;
 		}
 	}
 
@@ -42,16 +44,30 @@ public class UsernamePasswordCredentail extends Credentail {
 	public Token getToken() {
 		if (null == token || token.isExpired()) {
 			try {
-				Map<String, Object> jsonNodeBody = new HashMap<String, Object>();
-				jsonNodeBody.put("grant_type", GrantType.PASSWORD);
-				jsonNodeBody.put("username", secretKey);
-				jsonNodeBody.put("password", secretValue);
+				ObjectNode objectNode = factory.objectNode();
+				objectNode.put("grant_type", "password");
+				objectNode.put("username", tokenKey1);
+				objectNode.put("password", tokenKey2);
 
 				List<NameValuePair> headers = new ArrayList<NameValuePair>();
 				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
-				JsonNode tokenRequest = JerseyUtils.sendRequest(getTokenRequestTarget(),
-						JerseyUtils.Map2Json(jsonNodeBody), null, HTTPMethod.METHOD_POST, headers);
+				// ObjectNode tokenRequest = JerseyUtils.sendRequest(getTokenRequestTarget(), objectNode, null,
+				// HTTPMethod.METHOD_POST, headers);
+
+				Invocation.Builder inBuilder = getTokenRequestTarget().request();
+
+				if (null != headers && !headers.isEmpty()) {
+
+					for (NameValuePair nameValuePair : headers) {
+						inBuilder.header(nameValuePair.getName(), nameValuePair.getValue());
+					}
+
+				}
+
+				ObjectNode tokenRequest = inBuilder.post(Entity.entity(objectNode, MediaType.APPLICATION_JSON),
+						ObjectNode.class);
+
 				if (null != tokenRequest.get("error")) {
 					return token;
 				}
@@ -68,5 +84,4 @@ public class UsernamePasswordCredentail extends Credentail {
 
 		return token;
 	}
-
 }
