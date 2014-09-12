@@ -1,8 +1,10 @@
 package com.easemob.server.example.jersey;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +13,16 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
+import com.easemob.server.example.utils.Constants;
 import com.easemob.server.example.utils.JerseyUtils;
+import com.easemob.server.example.vo.EndPoints;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * REST API Demo: 发送消息REST API Jersey2.9实现
@@ -179,4 +187,155 @@ public class EasemobMessages {
 		return token;
 
 	}
+
+	/**
+	 * 图片/语音文件上传
+	 * 
+	 * 
+	 * @param appKey
+	 * @param host
+	 * @param accessToken
+	 * @param filePath
+	 */
+	public static ObjectNode mediaUpload(String accessToken, String filePath) {
+		ObjectNode objectNode = factory.objectNode();
+
+		String appKey = Constants.APPKEY;
+
+		File file = new File(filePath);
+		if (!file.exists()) {
+
+			LOGGER.error("file: " + filePath + " is not exist!");
+			objectNode.put("statusCode", "401");
+			objectNode.put("message", "File or directory not found");
+
+			return objectNode;
+		}
+
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", appKey)) {
+			LOGGER.error("Bad format of Appkey: " + appKey);
+
+			objectNode.put("statusCode", "401");
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+
+		try {
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", appKey.split("#")[0]).resolveTemplate(
+					"app_name", appKey.split("#")[1]);
+
+			// LOGGER.info("ready to upload : " + filePath + " to " + webTarget.);
+
+			List<NameValuePair> headers = new ArrayList<NameValuePair>();
+			headers.add(new BasicNameValuePair("restrict-access", "true"));
+
+			objectNode = JerseyUtils.uploadFile(webTarget, file, accessToken, headers);
+
+			/*
+			 * {"action":"post", "application":"2962b340-0a3b-11e4-b21b-d3b66dbe207b","params":{}, "path":"/chatfiles",
+			 * "uri" :
+			 * "https://a1.easemob.com/belo/chatapp/chatfiles","entities":[{"uuid":"6ec47ab0-3491-11e4-8f22-5fe10cba652a"
+			 * ,"type":"chatfile","share-secret":"bsR6ujSREeSNZ3EVLLFqVadYix_ES4pffHZfrOb4-pPseyze"}],"timestamp":
+			 * 1409875996123,"duration":2,"organization":"belo","applicationName":"chatapp"}
+			 */
+
+		} catch (Exception e) {
+
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 图片语音文件下载
+	 * 
+	 * @param appKey
+	 * @param host
+	 * @param token
+	 * @param reqBody
+	 * @param method
+	 * @param uuid
+	 */
+	public static JsonNode mediaDownload(String token, String fileUUID, String shareSecret, File localPath,
+			boolean isThumbnail) {
+
+		String appKey = Constants.APPKEY;
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (!JerseyUtils.match("[0-9a-zA-Z-_]+#[0-9a-zA-Z-_]+", appKey)) {
+			LOGGER.error("Bad format of Appkey: " + appKey);
+
+			resultMap.put("statusCode", "401");
+			resultMap.put("message", "Bad format of Appkey");
+
+			return JerseyUtils.Map2Json(resultMap);
+		}
+
+		try {
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", appKey.split("#")[0])
+					.resolveTemplate("app_name", appKey.split("#")[1]).path(fileUUID);
+
+			List<NameValuePair> headers = new ArrayList<NameValuePair>();
+			headers.add(new BasicNameValuePair("share-secret", shareSecret));
+			headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
+			if (isThumbnail) {
+				headers.add(new BasicNameValuePair("thumbnail", "true"));
+			}
+
+			JerseyUtils.downLoadFile(webTarget, token, headers, localPath);
+		} catch (KeyManagementException e) {
+			LOGGER.error("File jerseyClient error : " + e.getMessage());
+			return JerseyUtils.Map2Json(resultMap);
+		} catch (NoSuchAlgorithmException e) {
+			LOGGER.error("File jerseyClient error : " + e.getMessage());
+			return JerseyUtils.Map2Json(resultMap);
+		} catch (RuntimeException e) {
+			resultMap.put("statusCode", "200");
+			resultMap.put("message", "File or directory not found");
+			LOGGER.error("RuntimeException : " + e.getMessage());
+			return JerseyUtils.Map2Json(resultMap);
+		} catch (IOException e) {
+			LOGGER.error("File I/O error : " + e.getMessage());
+			return JerseyUtils.Map2Json(resultMap);
+		}
+
+		LOGGER.error("File download successfully .");
+		resultMap.put("statusCode", "200");
+		resultMap.put("message", "File or directory not found");
+
+		return JerseyUtils.Map2Json(resultMap);
+	}
+
+	/**
+	 * 下载缩略图
+	 * 
+	 * @param appKey
+	 * @param host
+	 * @param token
+	 * @param reqBody
+	 * @param method
+	 * @param uuid
+	 */
+	public static void imageDownloadThumbnai(String appKey, String host, String token, Map<String, Object> reqBody,
+			String method, String uuid) {
+
+		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
+		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
+		String rest = orgName + "/" + appName + "/chatfiles/" + uuid;
+
+		String reqURL = "https://" + host + "/" + rest;
+
+		List<NameValuePair> headers = new ArrayList<NameValuePair>();
+		String shareSecret = "DRGM8OZrEeO1vafuJSo2IjHBeKlIhDp0GCnFu54xOF3M6KLr";
+		headers.add(new BasicNameValuePair("thumbnail", "true"));
+		headers.add(new BasicNameValuePair("share-secret", shareSecret));
+		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
+
+		// JerseyUtils.sendRequest(reqURL, JerseyUtils.Map2Json(reqBody), token, method, headers);
+	}
+
 }
