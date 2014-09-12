@@ -151,6 +151,54 @@ public class EasemobIMUsers {
 	}
 
 	/**
+	 * 注册IM用户[批量生成用户然后注册]
+	 * 
+	 * 给指定AppKey创建一批用户
+	 * 
+	 * @param usernamePrefix
+	 *            生成用户名的前缀
+	 * @param perNumber
+	 *            批量注册时一次注册的数量
+	 * @param totalNumber
+	 *            生成用户注册的用户总数
+	 * @return
+	 */
+	public static ObjectNode createNewIMUserBatchGen(String usernamePrefix, Long perNumber, Long totalNumber) {
+		ObjectNode objectNode = factory.objectNode();
+
+		if (totalNumber == 0 || perNumber == 0) {
+			return objectNode;
+		}
+
+		System.out.println("你即将注册" + totalNumber + "个用户，如果大于" + perNumber + "了,会分批注册,每次注册" + perNumber + "个");
+
+		ArrayNode genericArrayNode = EasemobIMUsers.genericArrayNode(usernamePrefix, totalNumber);
+		if (totalNumber <= perNumber) {
+			objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+		} else {
+
+			for (int i = 0; i < genericArrayNode.size(); i++) {
+				ArrayNode tmpArrayNode = factory.arrayNode();
+				tmpArrayNode.add(genericArrayNode.get(i));
+				// 300 records on one migration
+				if ((i + 1) % perNumber == 0) {
+					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					tmpArrayNode.removeAll();
+					continue;
+				}
+
+				// the rest records that less than the times of 300
+				if (i > (genericArrayNode.size() / perNumber * perNumber - 1)) {
+					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					tmpArrayNode.removeAll();
+				}
+			}
+		}
+
+		return objectNode;
+	}
+
+	/**
 	 * 获取指定AppKey下所有IM用户(分页)
 	 */
 	public static List<String> getIMUsersPagination(Map<String, Object> reqBody) {
@@ -270,6 +318,19 @@ public class EasemobIMUsers {
 		return friendUsernames;
 	}
 
+	public static ArrayNode genericArrayNode(String usernamePrefix, Long number) {
+		ArrayNode arrayNode = factory.arrayNode();
+		for (int i = 0; i < number; i++) {
+			ObjectNode userNode = factory.objectNode();
+			userNode.put("username", usernamePrefix + "_" + i);
+			userNode.put("password", Constants.DEFAULT_PASSWORD);
+
+			arrayNode.add(userNode);
+		}
+
+		return arrayNode;
+	}
+
 	public static void main(String[] args) {
 		ObjectNode userDataNode = factory.objectNode();
 		userDataNode.put("username", "lynch12");
@@ -288,5 +349,9 @@ public class EasemobIMUsers {
 		dataArrayNode.add(node2);
 
 		EasemobIMUsers.createNewIMUserBatch(dataArrayNode);
+
+		/**************************************************************/
+		EasemobIMUsers.createNewIMUserBatchGen("lynch", dataArrayNode);
+
 	}
 }

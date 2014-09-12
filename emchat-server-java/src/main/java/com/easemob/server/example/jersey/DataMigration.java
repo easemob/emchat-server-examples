@@ -179,13 +179,19 @@ public class DataMigration {
 
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode arrayNode = mapper.createArrayNode();
-		/*
-		 * for (int i = 0; i < entitiesPure.size(); i++) { arrayNode.add(entitiesPure.get(i)); // 300 records on one
-		 * migration if ((i + 1) % 300 == 0) { postDataToNewSvr(APPKEY, NEW_SVR_HOST, accessTokenOnNewServer,
-		 * arrayNode); arrayNode.removeAll(); } // the rest records that less than 300 if (i > (entitiesPure.size() /
-		 * 300 * 300 - 1)) { postDataToNewSvr(APPKEY, NEW_SVR_HOST, accessTokenOnNewServer, arrayNode);
-		 * arrayNode.removeAll(); } }
-		 */
+
+		for (int i = 0; i < entitiesPure.size(); i++) {
+			arrayNode.add(entitiesPure.get(i)); // 300 records on onemigration
+			if ((i + 1) % 300 == 0) {
+				postDataToNewSvr(APPKEY, NEW_SVR_HOST, accessTokenOnNewServer, arrayNode);
+				arrayNode.removeAll();
+			}
+			// the rest records that less than 300
+			if (i > (entitiesPure.size() / 300 * 300 - 1)) {
+				postDataToNewSvr(APPKEY, NEW_SVR_HOST, accessTokenOnNewServer, arrayNode);
+				arrayNode.removeAll();
+			}
+		}
 
 	}
 }
