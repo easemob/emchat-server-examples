@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * 群聊天信息和用户管理
+ * 群聊
  * 
  * @author Administrator
  * 

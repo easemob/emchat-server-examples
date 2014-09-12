@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.vo.Credentail;
 import com.easemob.server.example.vo.Token;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -59,12 +57,12 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode sendRequest(JerseyWebTarget webTarget, Object body, Credentail credentail, String method,
-			List<NameValuePair> headers) throws RuntimeException {
+	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credentail credentail,
+			String method, List<NameValuePair> headers) throws RuntimeException {
 
 		ObjectNode objectNode = factory.objectNode();
 
-		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", webTarget.getUri().toString())) {
+		if (!match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", jerseyWebTarget.getUri().toString())) {
 			LOGGER.error("The URL to request is illegal");
 
 			objectNode.put("message", "The URL to request is illegal");
@@ -74,7 +72,7 @@ public class JerseyUtils {
 
 		try {
 
-			Invocation.Builder inBuilder = webTarget.request();
+			Invocation.Builder inBuilder = jerseyWebTarget.request();
 			if (credentail != null) {
 				Token.applyAuthentication(inBuilder, credentail);
 			}
@@ -123,13 +121,13 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static void downLoadFile(JerseyWebTarget jerseyWebTarget, String token, List<NameValuePair> headers,
-			File localPath) throws RuntimeException, KeyManagementException, NoSuchAlgorithmException, IOException {
+	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credentail credentail,
+			List<NameValuePair> headers, File localPath) throws IOException {
 
 		Invocation.Builder inBuilder = jerseyWebTarget.request();
-		if (token != null) {
-			// add headers
-			inBuilder.header("Authorization", "Bearer " + token);
+		if (credentail != null) {
+			// add token into headers
+			Token.applyAuthentication(inBuilder, credentail);
 		}
 
 		if (null != headers && !headers.isEmpty()) {
@@ -146,6 +144,8 @@ public class JerseyUtils {
 
 		fr.flush();
 
+		return file;
+
 	}
 
 	/**
@@ -153,16 +153,15 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, String token,
+	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, Credentail credentail,
 			List<NameValuePair> headers) throws RuntimeException {
 		ObjectNode objectNode = factory.objectNode();
 
 		try {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
-			if (token != null) {
-				// add authorization str
-				inBuilder.header("Authorization", "Bearer " + token);
+			if (credentail != null) {
+				Token.applyAuthentication(inBuilder, credentail);
 			}
 
 			if (null != headers && !headers.isEmpty()) {
@@ -183,38 +182,6 @@ public class JerseyUtils {
 		}
 
 		return objectNode;
-	}
-
-	/**
-	 * Get entities from companies without "uuid", "type", "created", "modified"
-	 * 
-	 * @param jsonMap
-	 * @return
-	 */
-	public static ArrayNode getEntitiesFromCompanies(JsonNode jsonNode) {
-
-		ArrayNode arrayNode = factory.arrayNode();
-
-		if (null != jsonNode) {
-			try {
-				JsonNode entitiesJsonNode = jsonNode.get("entities");
-
-				for (JsonNode jsonNode2 : entitiesJsonNode) {
-					ObjectNode objectNode = (ObjectNode) jsonNode2;
-					// 这四个属性移除掉
-					objectNode.remove("uuid");
-					objectNode.remove("type");
-					objectNode.remove("created");
-					objectNode.remove("modified");
-					arrayNode.add(objectNode);
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return arrayNode;
 	}
 
 	/**
