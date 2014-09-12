@@ -21,6 +21,8 @@ import com.easemob.server.example.utils.JerseyUtils;
 import com.easemob.server.example.utils.Roles;
 import com.easemob.server.example.vo.EndPoints;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * REST API Demo : 聊天消息导出REST API Jersey2.9实现
@@ -33,6 +35,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class EasemobChatMessage {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
+
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	/**
 	 * Obtain access token
@@ -47,19 +51,18 @@ public class EasemobChatMessage {
 	 *            true orgAdmin token ; false IM user token
 	 * @return
 	 */
-	public static JsonNode getAccessToken(Map<String, Object> reqBody, String role) {
+	public static ObjectNode getAccessToken(Map<String, Object> reqBody, String role) {
 		JsonNode jsonNode = null;
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		ObjectNode objectNode = factory.objectNode();
 
 		String appKey = Constants.APPKEY;
 		// check appKey format
 		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", appKey)) {
 			LOGGER.error("Bad format of Appkey: " + appKey);
 
-			resultMap.put("statusCode", "401");
-			resultMap.put("message", "Bad format of Appkey");
+			objectNode.put("message", "Bad format of Appkey");
 
-			return JerseyUtils.Map2Json(resultMap);
 		}
 
 		try {
@@ -73,7 +76,7 @@ public class EasemobChatMessage {
 						.resolveTemplate("app_name", appKey.split("#")[1]);
 			}
 
-			jsonNode = JerseyUtils.sendRequest(webTarget, JerseyUtils.Map2Json(reqBody), null, HTTPMethod.METHOD_POST,
+			jsonNode = JerseyUtils.sendRequest(webTarget, , null, HTTPMethod.METHOD_POST,
 					null);
 			if (jsonNode.get("access_token").textValue() != "") {
 				resultMap.put("statusCode", "200");
@@ -98,9 +101,8 @@ public class EasemobChatMessage {
 	 * @param accessToken
 	 * @param filePath
 	 */
-	public static JsonNode mediaUpload(String accessToken, String filePath) {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		JsonNode responseNode = null;
+	public static ObjectNode mediaUpload(String accessToken, String filePath) {
+		ObjectNode objectNode = factory.objectNode();
 
 		String appKey = Constants.APPKEY;
 
@@ -108,19 +110,19 @@ public class EasemobChatMessage {
 		if (!file.exists()) {
 
 			LOGGER.error("file: " + filePath + " is not exist!");
-			resultMap.put("statusCode", "401");
-			resultMap.put("message", "File or directory not found");
+			objectNode.put("statusCode", "401");
+			objectNode.put("message", "File or directory not found");
 
-			return JerseyUtils.Map2Json(resultMap);
+			return objectNode;
 		}
 
 		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", appKey)) {
 			LOGGER.error("Bad format of Appkey: " + appKey);
 
-			resultMap.put("statusCode", "401");
-			resultMap.put("message", "Bad format of Appkey");
+			objectNode.put("statusCode", "401");
+			objectNode.put("message", "Bad format of Appkey");
 
-			return JerseyUtils.Map2Json(resultMap);
+			return objectNode;
 		}
 
 		try {
@@ -134,7 +136,7 @@ public class EasemobChatMessage {
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			headers.add(new BasicNameValuePair("restrict-access", "true"));
 
-			responseNode = JerseyUtils.uploadFile(webTarget, file, accessToken, headers);
+			objectNode = JerseyUtils.uploadFile(webTarget, file, accessToken, headers);
 
 			/*
 			 * {"action":"post", "application":"2962b340-0a3b-11e4-b21b-d3b66dbe207b","params":{}, "path":"/chatfiles",
@@ -143,13 +145,12 @@ public class EasemobChatMessage {
 			 * ,"type":"chatfile","share-secret":"bsR6ujSREeSNZ3EVLLFqVadYix_ES4pffHZfrOb4-pPseyze"}],"timestamp":
 			 * 1409875996123,"duration":2,"organization":"belo","applicationName":"chatapp"}
 			 */
-			responseNode = responseNode.path("entities").get(0);
 
 		} catch (Exception e) {
 
 		}
 
-		return responseNode;
+		return objectNode;
 	}
 
 	/**

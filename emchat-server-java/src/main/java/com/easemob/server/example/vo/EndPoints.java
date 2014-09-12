@@ -29,6 +29,9 @@ public interface EndPoints {
 
 	public JerseyWebTarget USERS_TARGET = APPLICATION_TEMPLATE.path("users");
 
+	public JerseyWebTarget USERS_ADDFRIENDS_TARGET = APPLICATION_TEMPLATE.path("users").path("{ownerUserPrimaryKey}")
+			.path("contacts").path("users").path("{friendUserPrimaryKey}");
+
 	public JerseyWebTarget MESSAGES_TARGET = APPLICATION_TEMPLATE.path("messages");
 
 	public JerseyWebTarget CHATMESSAGES_TARGET = APPLICATION_TEMPLATE.path("chatmessages");

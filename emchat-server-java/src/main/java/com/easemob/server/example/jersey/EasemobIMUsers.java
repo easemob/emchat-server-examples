@@ -1,9 +1,8 @@
 package com.easemob.server.example.jersey;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import com.easemob.server.example.utils.HTTPMethod;
 import com.easemob.server.example.utils.JerseyUtils;
 import com.easemob.server.example.utils.Roles;
 import com.easemob.server.example.vo.EndPoints;
-import com.easemob.server.example.vo.Token;
 import com.easemob.server.example.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,7 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * Doc URL: http://developer.easemob.com/docs/emchat/rest/userapi.html
  * 
- * @author Lynch 2014-07-09
+ * @author Lynch 2014-09-09
  * 
  */
 public class EasemobIMUsers {
@@ -40,6 +38,9 @@ public class EasemobIMUsers {
 	 * 注册IM用户[单个]
 	 * 
 	 * 给指定AppKey创建一个新的用户
+	 * 
+	 * @param dataNode
+	 * @return
 	 */
 	public static ObjectNode createNewIMUserSingle(ObjectNode dataNode) {
 
@@ -49,7 +50,6 @@ public class EasemobIMUsers {
 		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
-			objectNode.put("statusCode", "401");
 			objectNode.put("message", "Bad format of Appkey");
 
 			return objectNode;
@@ -61,7 +61,6 @@ public class EasemobIMUsers {
 		if (null != dataNode && !dataNode.has("username")) {
 			LOGGER.error("Property that named username must be provided .");
 
-			objectNode.put("statusCode", "402");
 			objectNode.put("message", "Property that named username must be provided .");
 
 			return objectNode;
@@ -69,7 +68,6 @@ public class EasemobIMUsers {
 		if (null != dataNode && !dataNode.has("password")) {
 			LOGGER.error("Property that named password must be provided .");
 
-			objectNode.put("statusCode", "403");
 			objectNode.put("message", "Property that named password must be provided .");
 
 			return objectNode;
@@ -97,6 +95,9 @@ public class EasemobIMUsers {
 	 * 注册IM用户[批量]
 	 * 
 	 * 给指定AppKey创建一批用户
+	 * 
+	 * @param dataArrayNode
+	 * @return
 	 */
 	public static ObjectNode createNewIMUserBatch(ArrayNode dataArrayNode) {
 
@@ -106,7 +107,6 @@ public class EasemobIMUsers {
 		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
-			objectNode.put("statusCode", "401");
 			objectNode.put("message", "Bad format of Appkey");
 
 			return objectNode;
@@ -199,125 +199,408 @@ public class EasemobIMUsers {
 	}
 
 	/**
-	 * 获取指定AppKey下所有IM用户(分页)
+	 * 获取IM用户[主键查询]
+	 * 
+	 * @param userPrimaryKey
+	 *            用户主键：username或者uuid
+	 * @return
 	 */
-	public static List<String> getIMUsersPagination(Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode getIMUsersByPrimaryKey(String userPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), HTTPMethod.METHOD_GET, null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		// check properties that must be provided
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("The primaryKey that will be useed to query must be provided .");
+
+			objectNode.put("message", "The primaryKey that will be useed to query must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey);
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
 	/**
-	 * 获取指定AppKey下某个用户
+	 * 获取IM用户[条件查询]
+	 * 
+	 * @param username
+	 * @return
 	 */
-	public static List<String> getIMUserDetailByUsername(Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode getIMUserByQueryStringNOPagenation(String username) {
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), HTTPMethod.METHOD_GET, null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		try {
+
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.queryParam("ql", "select * where name = '" + username + "'");
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
 	/**
-	 * 删除指定AppKey下IM用户
+	 * 删除IM用户[单个]
+	 * 
+	 * 删除指定AppKey下IM单个用户
+	 *
+	 * 
+	 * @param userPrimaryKey
+	 * @return
 	 */
-	public static List<String> deleteIMUserByUsername(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode deleteIMUserByUserPrimaryKey(String userPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
 
-		Token token = credentail.getToken();
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		try {
+
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey);
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
 	/**
+	 * 删除IM用户[批量]
+	 * 
 	 * 批量指定AppKey下删除IM用户
+	 * 
+	 * @param limit
+	 * @param queryStr
+	 * @return
 	 */
-	public static List<String> deleteIMUserByUsernameBatch(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode deleteIMUserByUsernameBatch(Long limit, String queryStr) {
 
-		Token token = credentail.getToken();
+		ObjectNode objectNode = factory.objectNode();
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		try {
+
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).queryParam("ql", queryStr)
+					.queryParam("limit", String.valueOf(limit));
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
 	/**
-	 * 指定AppKey设置APP管理员
+	 * 重置IM用户密码 提供原始密码
+	 * 
+	 * 需提供username或者uuid,原始密码，新密码
+	 * 
+	 * @param userPrimaryKey
+	 * @param dataObjectNode
+	 * @return
 	 */
-	public static List<String> conferAppAdminRole(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode modifyIMUserPasswordWithOldPasswd(String userPrimaryKey, ObjectNode dataObjectNode) {
+		ObjectNode objectNode = factory.objectNode();
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("oldpassword")) {
+			LOGGER.error("Property that named oldpassword must be provided .");
+
+			objectNode.put("message", "Property that named oldpassword must be provided .");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
+			LOGGER.error("Property that named newpassword must be provided .");
+
+			objectNode.put("message", "Property that named newpassword must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
+
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, null, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
 	/**
-	 * 撤销指定AppKey某个APP管理员
+	 * 重置IM用户密码 提供管理员token
+	 * 
+	 * @param userPrimaryKey
+	 * @param dataObjectNode
+	 * @return
 	 */
-	public static List<String> abolishAppAdminRole(UsernamePasswordCredentail credentail, String appKey,
-			Map<String, Object> reqBody) {
-		JsonNode jsonNode = null;
+	public static ObjectNode modifyIMUserPasswordWithAdminToken(String userPrimaryKey, ObjectNode dataObjectNode) {
+		ObjectNode objectNode = factory.objectNode();
 
-		String reqURL = "";
-		JerseyWebTarget target = JerseyUtils.getJerseyClient(true).target(reqURL);
-		jsonNode = JerseyUtils.sendRequest(target, JerseyUtils.Map2Json(reqBody), credentail, HTTPMethod.METHOD_GET,
-				null);
-		JsonNode entitiesJsonNode = jsonNode.get("entities");
-		List<String> friendUsernames = new ArrayList<String>();
-		for (JsonNode jsonNode2 : entitiesJsonNode) {
-			friendUsernames.add(jsonNode2.get("username").asText());
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
 		}
 
-		return friendUsernames;
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
+			LOGGER.error("Property that named newpassword must be provided .");
+
+			objectNode.put("message", "Property that named newpassword must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
+
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
+	/**
+	 * 添加好友[单个]
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode addFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
+					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 添加好友[批量]
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKeys
+	 * @return
+	 */
+	public static ObjectNode addFriendBatch(String ownerUserPrimaryKey, List<String> friendUserPrimaryKeys) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null == friendUserPrimaryKeys) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		String friendUserPrimaryKeysStr = "";
+		for (String friendUserPrimaryKey : friendUserPrimaryKeys) {
+			friendUserPrimaryKeysStr = friendUserPrimaryKey + ",";
+		}
+		friendUserPrimaryKeysStr = friendUserPrimaryKeysStr.substring(0, friendUserPrimaryKeysStr.lastIndexOf(",") - 1);
+
+		try {
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
+					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKeysStr);
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 指定前缀和数量生成用户基本数据
+	 * 
+	 * @param usernamePrefix
+	 * @param number
+	 * @return
+	 */
 	public static ArrayNode genericArrayNode(String usernamePrefix, Long number) {
 		ArrayNode arrayNode = factory.arrayNode();
 		for (int i = 0; i < number; i++) {
@@ -331,27 +614,4 @@ public class EasemobIMUsers {
 		return arrayNode;
 	}
 
-	public static void main(String[] args) {
-		ObjectNode userDataNode = factory.objectNode();
-		userDataNode.put("username", "lynch12");
-		userDataNode.put("password", Constants.DEFAULT_PASSWORD);
-
-		// ObjectNode createdIMUser = EasemobIMUsers.createNewIMUserSingle(userDataNode);
-		/**************************************************************/
-		ObjectNode node1 = factory.objectNode();
-		ArrayNode dataArrayNode = factory.arrayNode();
-		node1.put("username", "lynch14");
-		node1.put("password", Constants.DEFAULT_PASSWORD);
-		dataArrayNode.add(node1);
-		ObjectNode node2 = factory.objectNode();
-		node2.put("username", "lynch15");
-		node2.put("password", Constants.DEFAULT_PASSWORD);
-		dataArrayNode.add(node2);
-
-		EasemobIMUsers.createNewIMUserBatch(dataArrayNode);
-
-		/**************************************************************/
-		EasemobIMUsers.createNewIMUserBatchGen("lynch", dataArrayNode);
-
-	}
 }
