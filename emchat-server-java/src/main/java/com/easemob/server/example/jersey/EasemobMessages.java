@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobMessages {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
 
 	private static final String APPKEY = Constants.APPKEY;
 

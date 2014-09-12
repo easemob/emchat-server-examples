@@ -19,14 +19,16 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * 图片语音文件上传、下载
+ * REST API Demo : 图片语音文件上传、下载 Jersey2.9实现
  * 
- * @author Administrator
+ * Doc URL: http://www.easemob.com/docs/rest/files/
+ * 
+ * @author Lynch 2014-09-09
  * 
  */
-public class EasemobFiles {
+class EasemobFiles {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(EasemobFiles.class);
 
 	private static final String APPKEY = Constants.APPKEY;
 

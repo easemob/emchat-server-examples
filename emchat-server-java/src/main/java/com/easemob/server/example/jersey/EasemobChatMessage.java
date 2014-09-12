@@ -15,9 +15,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * REST API Demo : 聊天消息导出REST API Jersey2.9实现
+ * REST API Demo : 聊天记录 Jersey2.9实现
  * 
- * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
+ * Doc URL: http://www.easemob.com/docs/rest/chatmessage/
  * 
  * @author Lynch 2014-07-12
  * 

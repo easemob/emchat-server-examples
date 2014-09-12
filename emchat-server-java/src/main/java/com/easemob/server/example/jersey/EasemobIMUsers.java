@@ -19,9 +19,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * REST API Demo : 用户管理REST API Jersey2.9实现
+ * REST API Demo : 用户体系集成 Jersey2.9实现
  * 
- * Doc URL: http://developer.easemob.com/docs/emchat/rest/userapi.html
+ * Doc URL: http://www.easemob.com/docs/rest/userapi/
  * 
  * @author Lynch 2014-09-09
  * 
