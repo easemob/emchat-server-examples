@@ -17,7 +17,7 @@ import org.apache.http.util.EntityUtils;
  * 
  * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
  * 
- * @author Liyuzhao 2014-07-12
+ * @author Lynch 2014-09-15
  * 
  */
 public class EasemobChatMessage {
@@ -29,127 +29,6 @@ public class EasemobChatMessage {
 			final Map<String, String> headers) throws Exception {
 
 		return false;
-
-	}
-
-	public static void main(String[] args) throws Exception {
-		String remoteUrl = "";
-		// apacheApi.sendFiletoServerHttp("C:\\a.png", remoteUrl, headers, new
-		// CloudOperationCallback() {
-		//
-		// @Override
-		// public void onSuccess(String result) {
-		//
-		// System.out.println("result:"+result);
-		// }
-		//
-		// @Override
-		// public void onProgress(int progress) {
-		// System.out.println("progress:"+progress);
-		//
-		// }
-		//
-		// @Override
-		// public void onError(String msg) {
-		// System.out.println("errorMsg:"+msg);
-		// }
-		// });
-		// headers.put("Accept", "application/octet-stream");
-		// apacheApi.downloadFile(remoteUrl, "D:\\m.png", headers, new
-		// CloudOperationCallback() {
-		//
-		// @Override
-		// public void onSuccess(String result) {
-		// System.out.println("file download success");
-		//
-		// }
-		//
-		// @Override
-		// public void onProgress(int progress) {
-		// System.out.println("progress:"+progress);
-		//
-		// }
-		//
-		// @Override
-		// public void onError(String msg) {
-		// System.out.println("errorMsg:"+msg);
-		//
-		// }
-		// });
-		String appkey = "";
-
-		String token = "";
-		// 获取Token
-		// token=getAccessToken(appkey, "zhangjianguo", "zhangjianguo");
-		// System.out.println("token:"+token);
-
-		// 检测用户是否在线
-
-		// String checkUser="ceshi1";
-		//
-		// boolean userStatus = getUserStatus(appkey, token , checkUser);
-		// //
-		// if(userStatus)
-		// {
-		// System.out.println("用户在线");
-		// }else{
-		// System.out.println("用户离线状态");
-		// }
-		//
-
-		// 发送Text消息
-		// List<String> toUsernames=new ArrayList<String>();
-		// toUsernames.add("ceshi1");
-		// toUsernames.add("ceshi2");
-		//
-		// String fromUser="ceshi";
-		// String txtContent="Hello,It is a test message!";
-		//
-		// Map<String, String> sendResult = sendTextMessage(appkey,
-		// token,txtContent,fromUser, toUsernames);
-		// for (String toUsername : toUsernames) {
-		//
-		// String isSuccess = sendResult.get(toUsername);
-		// if(isSuccess.equals("success"))
-		// {
-		// System.out.println("send message to "+toUsername+" success!");
-		// }else{
-		// System.out.println("send message to "+toUsername+" fail!");
-		// }
-		//
-		// }
-
-		// 发送Image消息
-		// final List<String> toUsernames=new ArrayList<String>();
-		// toUsernames.add("ceshi1");
-		// toUsernames.add("ceshi2");
-		//
-		// String fromUser = "ceshi";
-		// String filePath="C:\\a.png";
-		// sendImageMessage(appkey, token,
-		// filePath, fromUser, toUsernames,new EMCallBack() {
-		//
-		// @Override
-		// public void onSuccess() {
-		//
-		// System.out.println("image message send sucess");
-		//
-		// }
-		//
-		// @Override
-		// public void onProgress(int progress, String status) {
-		// // TODO Auto-generated method stub
-		// System.out.println("image send progress:"+progress);
-		//
-		// }
-		//
-		// @Override
-		// public void onError(int code, String message) {
-		// System.out.println("image message send fail:"+message);
-		//
-		// }
-		// });
-		//
 
 	}
 

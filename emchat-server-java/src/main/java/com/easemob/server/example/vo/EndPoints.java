@@ -36,5 +36,7 @@ public interface EndPoints {
 
 	public JerseyWebTarget CHATMESSAGES_TARGET = APPLICATION_TEMPLATE.path("chatmessages");
 
+	public JerseyWebTarget CHATGROUPS_TARGET = APPLICATION_TEMPLATE.path("chatgroups");
+
 	public JerseyWebTarget CHATFILES_TARGET = APPLICATION_TEMPLATE.path("chatfiles");
 }
