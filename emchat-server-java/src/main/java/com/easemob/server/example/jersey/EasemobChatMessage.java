@@ -1,22 +1,23 @@
 package com.easemob.server.example.jersey;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.MediaType;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.utils.Constants;
+import com.easemob.server.example.utils.HTTPMethod;
+import com.easemob.server.example.utils.JerseyUtils;
+import com.easemob.server.example.utils.Roles;
+import com.easemob.server.example.vo.EndPoints;
+import com.easemob.server.example.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
- * REST API Demo : 聊天消息导出REST API Jersey2.9实现
+ * REST API Demo : 聊天记录 Jersey2.9实现
  * 
- * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
+ * Doc URL: http://www.easemob.com/docs/rest/chatmessage/
  * 
  * @author Lynch 2014-07-12
  * 
@@ -25,135 +26,9 @@ public class EasemobChatMessage {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
 
-	/**
-	 * Obtain access token
-	 * 
-	 * @param host
-	 *            IP or Domain
-	 * @param appKey
-	 *            orgName#appName
-	 * @param reqBody
-	 *            mapData for httpReqeust Body
-	 * @param isAdmin
-	 *            true orgAdmin token ; false IM user token
-	 * @return
-	 */
-	public static String getAccessToken(String host, String appKey, Map<String, Object> reqBody,
-			boolean isAdmin) {
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String accessToken = "";
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
-		String rest = "management/token";
-		if (!isAdmin) {
-			rest = orgName + "/" + appName + "/token";
-		}
-
-		String reqURL = "https://" + host + "/" + rest;
-
-		String result = JerseyUtils.sendRequest(reqURL, reqBody, null, JerseyUtils.Method_POST,
-				null);
-
-		if ((JerseyUtils.Json2Map(result)).get("access_token") == "") {
-			accessToken = (String) JerseyUtils.Json2Map(result).get("access_token");
-		}
-
-		return accessToken;
-	}
-
-	/**
-	 * 图片语音文件上传
-	 * 
-	 * TODO 考虑连接超时咋办
-	 * 
-	 * @param appKey
-	 * @param host
-	 * @param accessToken
-	 * @param filePath
-	 */
-	public static void mediaUpload(String appKey, String host, String accessToken, String filePath) {
-
-		File file = new File(filePath);
-
-		if (!file.exists()) {
-
-			LOGGER.error("file: " + filePath + " is not exist!");
-
-			return;
-		}
-
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatfiles";
-
-		String reqURL = "https://" + host + "/" + rest;
-
-		List<NameValuePair> headers = new ArrayList<NameValuePair>();
-		headers.add(new BasicNameValuePair("restrict-access", "true"));
-		headers.add(new BasicNameValuePair("Content-Type", MediaType.MULTIPART_FORM_DATA));
-
-		Map<String, Object> reqBody = new HashMap<String, Object>();
-		reqBody.put("file", file.toString());
-
-		LOGGER.info("ready to upload : " + filePath + " to " + reqURL);
-
-		JerseyUtils.sendRequest(reqURL, reqBody, accessToken, JerseyUtils.Method_POST, headers);
-	}
-
-	/**
-	 * 图片语音文件下载
-	 * 
-	 * @param appKey
-	 * @param host
-	 * @param token
-	 * @param reqBody
-	 * @param method
-	 * @param uuid
-	 */
-	public static void mediaDownload(String appKey, String host, String token,
-			Map<String, Object> reqBody, String method, String uuid) {
-
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatfiles/" + uuid;
-
-		String reqURL = "https://" + host + "/" + rest;
-
-		List<NameValuePair> headers = new ArrayList<NameValuePair>();
-		String shareSecret = "DRGM8OZrEeO1vafuJSo2IjHBeKlIhDp0GCnFu54xOF3M6KLr";
-		headers.add(new BasicNameValuePair("share-secret", shareSecret));
-		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
-
-		JerseyUtils.sendRequest(reqURL, reqBody, token, method, headers);
-	}
-
-	/**
-	 * 图片语音文件下载
-	 * 
-	 * @param appKey
-	 * @param host
-	 * @param token
-	 * @param reqBody
-	 * @param method
-	 * @param uuid
-	 */
-	public static void mediaDownloadThumbnai(String appKey, String host, String token,
-			Map<String, Object> reqBody, String method, String uuid) {
-
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatfiles/" + uuid;
-
-		String reqURL = "https://" + host + "/" + rest;
-
-		List<NameValuePair> headers = new ArrayList<NameValuePair>();
-		String shareSecret = "DRGM8OZrEeO1vafuJSo2IjHBeKlIhDp0GCnFu54xOF3M6KLr";
-		headers.add(new BasicNameValuePair("thumbnail", "true"));
-		headers.add(new BasicNameValuePair("share-secret", shareSecret));
-		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
-
-		JerseyUtils.sendRequest(reqURL, reqBody, token, method, headers);
-	}
+	private static final String APPKEY = Constants.APPKEY;
 
 	/**
 	 * 获取聊天消息
@@ -165,50 +40,73 @@ public class EasemobChatMessage {
 	 * @param method
 	 * @param uuid
 	 */
-	public static void getChatMessages(String appKey, String host, String token,
-			Map<String, Object> reqBody, String method, String uuid) {
+	public static ObjectNode getChatMessages(ObjectNode queryStrNode) {
 
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String rest = orgName + "/" + appName + "/chatfiles/" + uuid;
+		ObjectNode objectNode = factory.objectNode();
 
-		String reqURL = "https://" + host + "/" + rest;
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
-		List<NameValuePair> headers = new ArrayList<NameValuePair>();
-		String shareSecret = "DRGM8OZrEeO1vafuJSo2IjHBeKlIhDp0GCnFu54xOF3M6KLr";
-		headers.add(new BasicNameValuePair("thumbnail", "true"));
-		headers.add(new BasicNameValuePair("share-secret", shareSecret));
-		headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
+			objectNode.put("message", "Bad format of Appkey");
 
-		JerseyUtils.sendRequest(reqURL, reqBody, token, method, headers);
+			return objectNode;
+		}
+
+		try {
+
+			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]);
+			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
+				webTarget.queryParam("ql", queryStrNode.get("ql").asText());
+			}
+			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
+				webTarget.queryParam("limit", queryStrNode.get("limit").asText());
+			}
+
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
 	}
 
+	/**
+	 * Main Test
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		String host = "a1.easemob.com";
-		String appKey = "chatdemoui#chatdemoui";
-
-		// 获取token
-		Map<String, Object> reqBody = new HashMap<String, Object>();
-		String accessToken = getAccessToken(host, appKey, reqBody, true);
-		System.out.println(accessToken);
-
-		// 图片语音文件上传
-		String filePath = "";
-		mediaUpload(appKey, host, accessToken, filePath);
-
-		// 图片语音文件下载
-		mediaDownload(appKey, host, accessToken, reqBody, JerseyUtils.Method_GET, "");
-
-		// 图片缩略图下载
-		mediaDownloadThumbnai(appKey, host, accessToken, reqBody, JerseyUtils.Method_GET, "");
 
 		// 聊天消息 获取最新的20条记录
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.Method_GET, "");
+		ObjectNode queryStrNode = factory.objectNode();
+		queryStrNode.put("ql", "order+by+timestamp+desc");
+		queryStrNode.put("limit", "20");
+		ObjectNode messages = getChatMessages(queryStrNode);
 
-		// 聊天消息 获取某个时间段内的消息
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.Method_GET, "");
+		// 聊天消息 获取7天以内的消息
+		String currentTimestamp = String.valueOf(System.currentTimeMillis());
+		String senvenDayAgo = String.valueOf(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
+		ObjectNode queryStrNode1 = factory.objectNode();
+		queryStrNode1.put("ql", "select * where " + senvenDayAgo + " < timestamp and timestamp < " + currentTimestamp);
+		ObjectNode messages1 = getChatMessages(queryStrNode1);
 
-		// 聊天消息 分页获取数据
-		getChatMessages(appKey, host, accessToken, reqBody, JerseyUtils.Method_GET, "");
+		// 聊天消息 分页获取
+		ObjectNode queryStrNode2 = factory.objectNode();
+		queryStrNode2.put("ql", "order+by+timestamp+desc");
+		queryStrNode2.put("limit", "20");
+		// 第一页
+		ObjectNode messages2 = getChatMessages(queryStrNode2);
+		// 第二页
+		String cursor = messages2.get("cursor").asText();
+		queryStrNode2.put("cursor", cursor);
+		ObjectNode messages3 = getChatMessages(queryStrNode2);
+
 	}
 }

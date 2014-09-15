@@ -3,8 +3,6 @@ package com.easemob.server.example.httpclient;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.easemob.server.example.utils.HttpsUtils;
-
 /**
  * REST API Demo : 用户管理REST API HttpClient4.3实现
  * 
@@ -30,16 +28,14 @@ public class EasemobUserAPI {
 	 *            admin级别token
 	 * @return
 	 */
-	public static String createNewUser(String host, String appKey, Map<String, Object> body,
-			String token) {
+	public static String createNewUser(String host, String appKey, Map<String, Object> body, String token) {
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
 
 		String rest = orgName + "/" + appName + "/users";
 
 		String reqURL = "https://" + host + "/" + rest;
-		String result = HttpsUtils.sendSSLRequest(reqURL, token, HttpsUtils.Map2Json(body),
-				HttpsUtils.Method_POST);
+		String result = "";
 		return result;
 	}
 
@@ -66,7 +62,7 @@ public class EasemobUserAPI {
 		String rest = orgName + "/" + appName + "/users/" + id;
 
 		String reqURL = "https://" + host + "/" + rest;
-		String result = HttpsUtils.sendSSLRequest(reqURL, token, null, HttpsUtils.Method_DELETE);
+		String result = "";
 
 		return result;
 	}
@@ -81,13 +77,12 @@ public class EasemobUserAPI {
 	 * @param appKey
 	 *            easemob-demo#chatdemo
 	 * @param isAdmin
-	 *            org管理员token true, app管理员token false, IM用户token false
+	 *            org管理员token true, IM用户token false
 	 * @param postBody
 	 *            POST请求体
 	 * @return
 	 */
-	public static String getAccessToken(String host, String appKey, Boolean isAdmin,
-			Map<String, Object> postBody) {
+	public static String getAccessToken(String host, String appKey, Boolean isAdmin, Map<String, Object> postBody) {
 		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
 		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
 		String accessToken = "";
@@ -97,11 +92,7 @@ public class EasemobUserAPI {
 		}
 
 		String reqURL = "https://" + host + "/" + rest;
-		String result = HttpsUtils.sendSSLRequest(reqURL, null, HttpsUtils.Map2Json(postBody),
-				HttpsUtils.Method_POST);
-		Map<String, String> resultMap = HttpsUtils.Json2Map(result);
-
-		accessToken = resultMap.get("access_token");
+		String result = "";
 
 		return accessToken;
 	}
@@ -118,22 +109,23 @@ public class EasemobUserAPI {
 		String imToken = EasemobUserAPI.getAccessToken(host, appKey, false, getIMAccessTokenPostBody);
 		System.out.println(imToken);
 
-		// 获取org管理员token
+		// 获取管理员token
 		Map<String, Object> getAccessTokenPostBody = new HashMap<String, Object>();
 		getAccessTokenPostBody.put("grant_type", "password");
 		getAccessTokenPostBody.put("username", "zhangjianguo");
 		getAccessTokenPostBody.put("password", "zhangjianguo");
-		String orgAdminToken = EasemobUserAPI.getAccessToken(host, appKey, true, getAccessTokenPostBody);
-		System.out.println(orgAdminToken);
+		String adminToken = EasemobUserAPI.getAccessToken(host, appKey, true, getAccessTokenPostBody);
+		System.out.println(adminToken);
 
 		// 创建用户
 		Map<String, Object> createNewUserPostBody = new HashMap<String, Object>();
 		createNewUserPostBody.put("username", "testuser2");
 		createNewUserPostBody.put("password", "testuser2");
-		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, orgAdminToken);
+		createNewUserPostBody.put("addr", "BJFS");
+		EasemobUserAPI.createNewUser(host, appKey, createNewUserPostBody, adminToken);
 
 		// 删除用户
 		String id = "testuser2";
-		EasemobUserAPI.deleteUser(host, appKey, id, orgAdminToken);
+		EasemobUserAPI.deleteUser(host, appKey, id, adminToken);
 	}
 }
