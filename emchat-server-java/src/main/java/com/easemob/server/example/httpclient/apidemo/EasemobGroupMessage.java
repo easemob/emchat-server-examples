@@ -1,4 +1,4 @@
-package com.easemob.server.example.httpclient;
+package com.easemob.server.example.httpclient.apidemo;
 
 import java.io.IOException;
 import java.security.KeyManagementException;

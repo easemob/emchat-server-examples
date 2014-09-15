@@ -1,10 +1,10 @@
-package com.easemob.server.example.vo;
+package com.easemob.server.example.jersey.vo;
 
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
-import com.easemob.server.example.utils.Constants;
-import com.easemob.server.example.utils.JerseyUtils;
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.jersey.utils.JerseyUtils;
 
 /**
  * JerseyWebTarget EndPoints

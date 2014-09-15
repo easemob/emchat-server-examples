@@ -1,4 +1,4 @@
-package com.easemob.server.example.jersey;
+package com.easemob.server.example.jersey.apidemo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.easemob.server.example.utils.Constants;
-import com.easemob.server.example.utils.HTTPMethod;
-import com.easemob.server.example.utils.JerseyUtils;
-import com.easemob.server.example.utils.PropertiesUtils;
-import com.easemob.server.example.vo.Credentail;
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.comm.PropertiesUtils;
+import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.Credentail;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;

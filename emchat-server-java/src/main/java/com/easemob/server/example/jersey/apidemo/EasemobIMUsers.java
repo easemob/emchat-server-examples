@@ -1,4 +1,4 @@
-package com.easemob.server.example.jersey;
+package com.easemob.server.example.jersey.apidemo;
 
 import java.util.List;
 
@@ -7,12 +7,12 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.easemob.server.example.utils.Constants;
-import com.easemob.server.example.utils.HTTPMethod;
-import com.easemob.server.example.utils.JerseyUtils;
-import com.easemob.server.example.utils.Roles;
-import com.easemob.server.example.vo.EndPoints;
-import com.easemob.server.example.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.EndPoints;
+import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;

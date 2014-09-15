@@ -1,4 +1,4 @@
-package com.easemob.server.example.vo;
+package com.easemob.server.example.jersey.vo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +7,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
-import com.easemob.server.example.utils.Constants;
-import com.easemob.server.example.utils.HTTPMethod;
-import com.easemob.server.example.utils.JerseyUtils;
-import com.easemob.server.example.utils.Roles;
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ClientSecretCredentail extends Credentail {

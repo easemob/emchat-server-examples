@@ -1,4 +1,4 @@
-package com.easemob.server.example.utils;
+package com.easemob.server.example.comm;
 
 import java.io.IOException;
 import java.io.InputStream;

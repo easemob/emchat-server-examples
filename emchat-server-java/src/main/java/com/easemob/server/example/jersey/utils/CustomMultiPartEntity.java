@@ -1,4 +1,4 @@
-package com.easemob.server.example.utils;
+package com.easemob.server.example.jersey.utils;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

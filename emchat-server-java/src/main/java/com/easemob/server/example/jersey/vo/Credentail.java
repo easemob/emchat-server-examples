@@ -1,4 +1,4 @@
-package com.easemob.server.example.vo;
+package com.easemob.server.example.jersey.vo;
 
 import org.glassfish.jersey.client.JerseyWebTarget;
 

@@ -1,4 +1,4 @@
-package com.easemob.server.example.utils;
+package com.easemob.server.example.jersey.utils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,8 +33,9 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.easemob.server.example.vo.Credentail;
-import com.easemob.server.example.vo.Token;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.jersey.vo.Credentail;
+import com.easemob.server.example.jersey.vo.Token;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;

@@ -1,4 +1,5 @@
-package com.easemob.server.example.utils;
+package com.easemob.server.example.comm;
+
 
 public interface Constants {
 
