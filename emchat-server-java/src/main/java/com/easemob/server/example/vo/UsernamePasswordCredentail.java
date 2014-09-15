@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
+import com.easemob.server.example.utils.Constants;
 import com.easemob.server.example.utils.Roles;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -26,7 +27,8 @@ public class UsernamePasswordCredentail extends Credentail {
 			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
 		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
-			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET;
+			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET.resolveTemplate("org_name",
+					Constants.APPKEY.split("#")[0]).resolveTemplate("app_name", Constants.APPKEY.split("#")[1]);
 		}
 	}
 
@@ -51,9 +53,6 @@ public class UsernamePasswordCredentail extends Credentail {
 
 				List<NameValuePair> headers = new ArrayList<NameValuePair>();
 				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
-
-				// ObjectNode tokenRequest = JerseyUtils.sendRequest(getTokenRequestTarget(), objectNode, null,
-				// HTTPMethod.METHOD_POST, headers);
 
 				Invocation.Builder inBuilder = getTokenRequestTarget().request();
 

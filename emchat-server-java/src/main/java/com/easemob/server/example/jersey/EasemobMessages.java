@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * REST API Demo: 发送消息 REST API Jersey2.9实现
  * 
- * Doc URL: http://developer.easemob.com/docs/emchat/rest/sendmessage.html
+ * Doc URL: http://www.easemob.com/docs/rest/sendmessage/
  * 
  * @author Lynch 2014-07-12
  * 

@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
+import com.easemob.server.example.utils.Constants;
 import com.easemob.server.example.utils.HTTPMethod;
 import com.easemob.server.example.utils.JerseyUtils;
 import com.easemob.server.example.utils.Roles;
@@ -24,7 +25,9 @@ public class ClientSecretCredentail extends Credentail {
 			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
 		} else if (role.equals(Roles.USER_ROLE_ORGADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
-			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET;
+			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET
+					.resolveTemplate("org_name", Constants.APPKEY.split("#")[0]).resolveTemplate("app_name",
+							Constants.APPKEY.split("#")[1]);
 		}
 	}
 
