@@ -177,7 +177,7 @@ public class JerseyUtils {
 	private static JerseyClient getJerseyClient(boolean isSSL) throws NoSuchAlgorithmException,
 			KeyManagementException {
 
-		ClientBuilder clientBuilder = JerseyClientBuilder.newBuilder();
+		ClientBuilder clientBuilder = JerseyClientBuilder.newBuilder().register(MultiPartFeature.class);
 
 		// Create a secure JerseyClient
 		if (isSSL) {
