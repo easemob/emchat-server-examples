@@ -8,7 +8,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -17,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.comm.Roles;
-import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * UsernamePasswordCredentail
  * 
  * @author Lynch 2014-09-15
  *
@@ -60,8 +59,6 @@ public class UsernamePasswordCredentail extends Credentail {
 	public Token getToken() {
 		if (null == token || token.isExpired()) {
 			try {
-
-				HttpClient client = HTTPClientUtils.getClient(true);
 
 				ObjectNode objectNode = factory.objectNode();
 				objectNode.put("grant_type", "password");

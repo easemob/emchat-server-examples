@@ -5,6 +5,7 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
+ * Credentail
  * 
  * @author Lynch 2014-09-15
  *

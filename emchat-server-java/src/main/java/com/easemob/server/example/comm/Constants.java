@@ -1,6 +1,7 @@
 package com.easemob.server.example.comm;
 
 /**
+ * Constants
  * 
  * @author Lynch 2014-09-15
  *

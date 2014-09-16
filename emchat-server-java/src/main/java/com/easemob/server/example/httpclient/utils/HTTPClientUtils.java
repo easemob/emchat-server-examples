@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * HTTPClient 工具类
  * 
  * @author Lynch 2014-09-15
  *

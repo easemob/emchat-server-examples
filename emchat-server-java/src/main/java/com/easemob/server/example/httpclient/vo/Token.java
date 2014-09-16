@@ -4,6 +4,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /**
+ * Token
  * 
  * @author Lynch 2014-09-15
  *

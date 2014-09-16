@@ -6,6 +6,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 
 /**
+ * HTTPClient EndPoints
  * 
  * @author Lynch 2014-09-15
  *

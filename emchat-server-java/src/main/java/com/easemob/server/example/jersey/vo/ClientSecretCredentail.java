@@ -14,6 +14,7 @@ import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * ClientSecretCredentail
  * 
  * @author Lynch 2014-09-15
  *

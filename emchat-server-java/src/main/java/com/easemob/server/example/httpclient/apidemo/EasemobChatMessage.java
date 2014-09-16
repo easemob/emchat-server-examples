@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * REST API Demo : 聊天消息导出REST API 实现 利用HttpClient实现
+ * REST API Demo : 聊天消息导出REST API HttpClient4.3实现
  * 
  * Doc URL: http://developer.easemob.com/docs/emchat/rest/chatmessage.html
  * 

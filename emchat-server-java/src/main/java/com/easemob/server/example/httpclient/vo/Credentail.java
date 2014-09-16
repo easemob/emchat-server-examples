@@ -2,9 +2,13 @@ package com.easemob.server.example.httpclient.vo;
 
 import java.net.URL;
 
+import org.apache.http.client.HttpClient;
+
+import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
+ * Credentail
  * 
  * @author Lynch 2014-09-15
  *
@@ -16,6 +20,8 @@ public abstract class Credentail {
 	protected String tokenKey2;
 
 	protected JsonNodeFactory factory = new JsonNodeFactory(false);
+
+	protected HttpClient client = HTTPClientUtils.getClient(true);
 
 	protected Token token;
 

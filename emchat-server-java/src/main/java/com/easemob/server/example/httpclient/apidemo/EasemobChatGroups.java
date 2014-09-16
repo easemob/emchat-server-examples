@@ -17,6 +17,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * REST API Demo : 群组管理 HttpClient4.3实现
+ * 
+ * Doc URL: http://www.easemob.com/docs/rest/groups/
  * 
  * @author Lynch 2014-09-15
  *

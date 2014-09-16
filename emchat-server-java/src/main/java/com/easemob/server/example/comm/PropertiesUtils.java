@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * 
+ * PropertiesUtils
  * 
  * @author Lynch 2014-09-15
  *
