@@ -1,16 +1,18 @@
 package com.easemob.server.example.httpclient.apidemo;
 
-import org.glassfish.jersey.client.JerseyWebTarget;
+import java.net.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.EndPoints;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
-import com.easemob.server.example.jersey.vo.Credentail;
-import com.easemob.server.example.jersey.vo.EndPoints;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class EasemobChatGroups {
+
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
@@ -29,7 +32,6 @@ public class EasemobChatGroups {
 	/**
 	 * 获取APP中所有的群组ID
 	 * 
-	 * 
 	 * @return
 	 */
 	public static ObjectNode getAllChatgroupids() {
@@ -37,7 +39,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -50,11 +52,8 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]);
-
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, null, credentail,
+					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,7 +71,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -85,11 +84,11 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupIDs.toString());
+			URL groupDetailsByChatgroupidUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
+					+ "/chatgroups/" + chatgroupIDs.toString());
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, null, credentail,
+					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,11 +163,8 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]);
-
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail, dataObjectNode,
+					HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -198,11 +194,10 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid);
+			URL deleteChatGroupsUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
+					+ chatgroupid);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -233,11 +228,10 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users");
-
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
+					+ chatgroupid + "/users");
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -268,12 +262,11 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
-					.path(userprimarykey);
+			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
+					+ chatgroupid + "/users");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+					HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -303,12 +296,11 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
-					.path(userprimarykey);
+			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
+					+ chatgroupid + "/users/" + userprimarykey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+					HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
