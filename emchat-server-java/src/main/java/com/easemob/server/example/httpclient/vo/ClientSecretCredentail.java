@@ -4,7 +4,7 @@ import java.net.URL;
 
 /**
  * 
- * @author lynch
+ * @author Lynch 2014-09-15
  *
  */
 public class ClientSecretCredentail extends Credentail {

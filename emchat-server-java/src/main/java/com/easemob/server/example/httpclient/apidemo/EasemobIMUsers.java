@@ -1,5 +1,6 @@
 package com.easemob.server.example.httpclient.apidemo;
 
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -223,7 +224,9 @@ public class EasemobIMUsers {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null, HTTPMethod.METHOD_GET);
+			URL userPrimaryUrl = HTTPClientUtils
+					.getURL(Constants.APPKEY.replace("#", "/") + "/users/" + userPrimaryKey);
+			objectNode = HTTPClientUtils.sendHTTPRequest(userPrimaryUrl, credentail, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -255,8 +258,9 @@ public class EasemobIMUsers {
 
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null, HTTPMethod.METHOD_GET);
+			URL queryUserPrimaryUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users"
+					+ "?ql=select * where username=" + username);
+			objectNode = HTTPClientUtils.sendHTTPRequest(queryUserPrimaryUrl, credentail, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -290,8 +294,9 @@ public class EasemobIMUsers {
 
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+			URL deleteUserPrimaryUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
+					+ userPrimaryKey);
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteUserPrimaryUrl, credentail, null,
 					HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
@@ -322,13 +327,21 @@ public class EasemobIMUsers {
 
 			return objectNode;
 		}
+		if (StringUtils.isEmpty(queryStr)) {
+			LOGGER.error("queryStr must be provided .");
+
+			objectNode.put("message", "queryStr must be provided .");
+
+			return objectNode;
+		}
 
 		try {
 
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+			URL deleteIMUserByUsernameBatchUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users"
+					+ "?ql=" + queryStr + "&limit=" + limit);
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteIMUserByUsernameBatchUrl, credentail, null,
 					HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
@@ -386,8 +399,10 @@ public class EasemobIMUsers {
 
 		try {
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, null, dataObjectNode,
-					HTTPMethod.METHOD_DELETE);
+			URL modifyIMUserPasswordWithOldPasswdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
+					+ "/users/" + userPrimaryKey + "/password");
+			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithOldPasswdUrl, null, dataObjectNode,
+					HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -436,8 +451,10 @@ public class EasemobIMUsers {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, dataObjectNode,
-					HTTPMethod.METHOD_DELETE);
+			URL modifyIMUserPasswordWithAdminTokenUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
+					+ "/users/" + userPrimaryKey + "/password");
+			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithAdminTokenUrl, credentail,
+					dataObjectNode, HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -487,8 +504,11 @@ public class EasemobIMUsers {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
-					HTTPMethod.METHOD_DELETE);
+			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
+					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
+
+			objectNode = HTTPClientUtils
+					.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -543,9 +563,10 @@ public class EasemobIMUsers {
 		try {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			URL addFriendBatchUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
+					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKeys.toString());
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
-					HTTPMethod.METHOD_DELETE);
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendBatchUrl, credentail, null, HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -554,6 +575,7 @@ public class EasemobIMUsers {
 		return objectNode;
 	}
 
+	/*************************************************************************************************************************/
 	/**
 	 * 指定前缀和数量生成用户基本数据
 	 * 

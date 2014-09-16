@@ -43,7 +43,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 /**
  * Jersey2.9 Utils
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  * 
  */
 @SuppressWarnings("all")

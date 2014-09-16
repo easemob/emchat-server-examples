@@ -1,6 +1,10 @@
 package com.easemob.server.example.comm;
 
-
+/**
+ * 
+ * @author Lynch 2014-09-15
+ *
+ */
 public interface Constants {
 
 	// API_HTTP_SCHEMA

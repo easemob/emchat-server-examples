@@ -15,6 +15,11 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.Roles;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * 
+ * @author Lynch 2014-09-15
+ *
+ */
 public class UsernamePasswordCredentail extends Credentail {
 
 	private static JerseyWebTarget USERNAMEPASSWORD_TOKEN_TARGET = null;

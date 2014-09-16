@@ -3,7 +3,7 @@ package com.easemob.server.example.comm;
 /**
  * HTTP Methods
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  * 
  */
 public interface HTTPMethod {

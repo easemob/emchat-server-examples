@@ -13,6 +13,11 @@ import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * 
+ * @author Lynch 2014-09-15
+ *
+ */
 public class ClientSecretCredentail extends Credentail {
 
 	private static JerseyWebTarget CLIENT_TOKEN_TARGET = null;

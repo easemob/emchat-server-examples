@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
- * @author lynch
+ * @author Lynch 2014-09-15
  *
  */
 public class UsernamePasswordCredentail extends Credentail {
@@ -69,17 +70,16 @@ public class UsernamePasswordCredentail extends Credentail {
 				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
 				if (null != headers && !headers.isEmpty()) {
-
 					for (NameValuePair nameValuePair : headers) {
 						httpPost.addHeader(nameValuePair.getName(), nameValuePair.getValue());
 					}
-
 				}
+				httpPost.setEntity(new StringEntity(objectNode.toString(), "UTF-8"));
 
 				HttpResponse tokenResponse = client.execute(httpPost);
 				HttpEntity entity = tokenResponse.getEntity();
 
-				String results = EntityUtils.toString(entity, "utf-8");
+				String results = EntityUtils.toString(entity, "UTF-8");
 
 				LOGGER.info("-----------------------------返回结果-------------------------------statuscode:"
 						+ tokenResponse.getStatusLine().toString());

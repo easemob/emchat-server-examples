@@ -3,7 +3,7 @@ package com.easemob.server.example.comm;
 /**
  * User Roles
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  * 
  */
 public interface Roles {

@@ -9,7 +9,7 @@ import com.easemob.server.example.jersey.utils.JerseyUtils;
 /**
  * JerseyWebTarget EndPoints
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  *
  */
 public interface EndPoints {

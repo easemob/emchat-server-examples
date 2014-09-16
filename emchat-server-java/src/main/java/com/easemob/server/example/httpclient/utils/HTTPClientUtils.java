@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  *
  */
 public class HTTPClientUtils {
@@ -48,22 +48,23 @@ public class HTTPClientUtils {
 	 * @param str
 	 * @return
 	 */
-	public static ObjectNode sendHTTPRequest(URL url, Credentail credentail, ObjectNode dataBody, String method) {
+	public static ObjectNode sendHTTPRequest(URL url, Credentail credentail, Object dataBody, String method) {
 
 		HttpClient httpClient = getClient(true);
+
 		ObjectNode resObjectNode = factory.objectNode();
 
 		try {
 
 			HttpResponse response = null;
 
-			if (method.equals(HTTPMethod.METHOD_GET)) {
+			if (method.equals(HTTPMethod.METHOD_POST)) {
 				HttpPost httpPost = new HttpPost(url.toURI());
 
 				if (credentail != null) {
 					Token.applyAuthentication(httpPost, credentail);
 				}
-				httpPost.setEntity(new StringEntity(dataBody.asText(), "UTF-8"));
+				httpPost.setEntity(new StringEntity(dataBody.toString(), "UTF-8"));
 
 				response = httpClient.execute(httpPost);
 			} else if (method.equals(HTTPMethod.METHOD_PUT)) {
@@ -71,7 +72,7 @@ public class HTTPClientUtils {
 				if (credentail != null) {
 					Token.applyAuthentication(httpPut, credentail);
 				}
-				httpPut.setEntity(new StringEntity(dataBody.asText(), "UTF-8"));
+				httpPut.setEntity(new StringEntity(dataBody.toString(), "UTF-8"));
 
 				response = httpClient.execute(httpPut);
 			} else if (method.equals(HTTPMethod.METHOD_GET)) {
@@ -152,7 +153,7 @@ public class HTTPClientUtils {
 		URL url = null;
 
 		try {
-			url = new URL(Constants.API_HTTP_SCHEMA, Constants.API_SERVER_HOST, path);
+			url = new URL(Constants.API_HTTP_SCHEMA, Constants.API_SERVER_HOST, "/" + path);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

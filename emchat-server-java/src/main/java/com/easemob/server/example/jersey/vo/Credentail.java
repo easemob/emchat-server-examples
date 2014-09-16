@@ -4,6 +4,11 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
+/**
+ * 
+ * @author Lynch 2014-09-15
+ *
+ */
 public abstract class Credentail {
 
 	protected String grantType;

@@ -5,7 +5,7 @@ import javax.ws.rs.client.Invocation;
 /**
  * Access Token
  * 
- * @author Lynch
+ * @author Lynch 2014-09-15
  * 
  */
 public class Token {

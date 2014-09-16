@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
 import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -66,7 +67,7 @@ class EasemobFiles {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -115,7 +116,7 @@ class EasemobFiles {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -140,21 +141,6 @@ class EasemobFiles {
 		objectNode.put("message", "File download successfully .");
 
 		return objectNode;
-	}
-
-	public static void main(String[] args) {
-		String uploadFilePath = "/home/lynch/Pictures/zjg.jpg";
-		File uploadFile = new File(uploadFilePath);
-
-		EasemobFiles.mediaUpload(uploadFile);
-		/*
-		 * { "action":"post",
-		 * "application":"2962b340-0a3b-11e4-b21b-d3b66dbe207b","params":{},"path":"/chatfiles","uri":
-		 * "https://a1.easemob.com/belo/chatapp/chatfiles"
-		 * ,"entities":[{"uuid":"daa5d7e0-3c8b-11e4-92b2-777c4a492472","type"
-		 * :"chatfile","share-secret":"2qXX6jyLEeStl-0vCW84r8Njy_GtRk5xMatJsYY7Q0pkp6Eu"
-		 * }],"timestamp":1410753209438,"duration":2,"organization":"belo","applicationName":"chatapp"}
-		 */
 	}
 
 }

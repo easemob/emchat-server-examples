@@ -5,7 +5,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 /**
  * 
- * @author lynch
+ * @author Lynch 2014-09-15
  *
  */
 public class Token {

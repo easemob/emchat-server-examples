@@ -11,6 +11,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
 import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,7 +76,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -134,7 +135,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -228,7 +229,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -265,7 +266,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -305,7 +306,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -345,7 +346,7 @@ public class EasemobIMUsers {
 
 		try {
 
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -460,7 +461,7 @@ public class EasemobIMUsers {
 		}
 
 		try {
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -514,7 +515,7 @@ public class EasemobIMUsers {
 		}
 
 		try {
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
@@ -576,7 +577,7 @@ public class EasemobIMUsers {
 		friendUserPrimaryKeysStr = friendUserPrimaryKeysStr.substring(0, friendUserPrimaryKeysStr.lastIndexOf(",") - 1);
 
 		try {
-			UsernamePasswordCredentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;

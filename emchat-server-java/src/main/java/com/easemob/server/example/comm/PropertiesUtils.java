@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * 
+ * 
+ * @author Lynch 2014-09-15
+ *
+ */
 public class PropertiesUtils {
 
 	public static Properties getProperties() {

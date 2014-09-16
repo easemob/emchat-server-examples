@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
  * 
- * @author lynch
+ * @author Lynch 2014-09-15
  *
  */
 public abstract class Credentail {
