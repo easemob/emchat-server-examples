@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -84,7 +85,7 @@ public class UsernamePasswordCredentail extends Credentail {
 				LOGGER.info("-----------------------------返回结果-------------------------------statuscode:"
 						+ tokenResponse.getStatusLine().toString());
 
-				if (tokenResponse.getStatusLine().getStatusCode() == 200) {
+				if (tokenResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 					ObjectNode objectNode2 = factory.objectNode();
 					objectNode2 = objectNode2.putObject(results);
 					String accessToken = objectNode2.get("access_token").textValue();

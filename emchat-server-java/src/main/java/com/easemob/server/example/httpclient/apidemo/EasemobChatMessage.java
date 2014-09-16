@@ -1,16 +1,19 @@
 package com.easemob.server.example.httpclient.apidemo;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.net.URL;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * REST API Demo : 聊天消息导出REST API 实现 利用HttpClient实现
@@ -21,143 +24,90 @@ import org.apache.http.util.EntityUtils;
  * 
  */
 public class EasemobChatMessage {
-	String param = "";
 
-	long totalSize = 0;
+	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
 
-	public boolean sendFiletoServerHttp(final String localFilePath, final String remoteUrl,
-			final Map<String, String> headers) throws Exception {
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
-		return false;
-
-	}
+	private static final String APPKEY = Constants.APPKEY;
 
 	/**
-	 * 检测用户是否在线
-	 * 
-	 * @param token
-	 * @param user
-	 * @return
-	 */
-	public static boolean getUserStatus(String appKey, String token, String targetUserName) throws Exception {
-
-		return false;
-	}
-
-	/**
-	 * 获取用户token
+	 * 获取聊天消息
 	 * 
 	 * @param appKey
-	 * @param username
-	 * @param password
-	 * @return
-	 * @throws IOException
+	 * @param host
+	 * @param token
+	 * @param reqBody
+	 * @param method
+	 * @param uuid
 	 */
-	public static String getAccessToken(String appKey, String username, String password) throws IOException {
-		String token = "";
+	public static ObjectNode getChatMessages(ObjectNode queryStrNode) {
 
-		return token;
+		ObjectNode objectNode = factory.objectNode();
 
-	}
+		// check appKey format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
-	/**
-	 * 发送文本消息
-	 * 
-	 * @param textContent
-	 *            消息内容
-	 * @param username
-	 *            发送人
-	 * @return true发送成功 false 发送失败
-	 * @throws IOException
-	 */
-	public static Map<String, String> sendTextMessage(String appKey, String token, String textContent, String fromUser,
-			List<String> toUsernames) throws IOException {
-		Map<String, String> result = null;
+			objectNode.put("message", "Bad format of Appkey");
 
-		return result;
-	}
-
-	/**
-	 * 发送图片消息
-	 * 
-	 * @param textContent
-	 *            消息内容
-	 * @param username
-	 *            发送人
-	 * @return true发送成功 false 发送失败
-	 * @throws Exception
-	 */
-	public static void sendImageMessage(final String appKey, final String token, final String filePath,
-			String fromUser, final List<String> toUsernames) throws Exception {
-
-	}
-
-	/**
-	 * 以Post方式发送请求
-	 * 
-	 * @param url
-	 *            请求地址
-	 * @param params
-	 *            参数 ，
-	 * @return
-	 * @throws Exception
-	 */
-	public static String httpPost(String url, String params, Map<String, String> headers) throws Exception {
-		String response = null;
-
-		return response;
-	}
-
-	/**
-	 * 以Get方式发送请求
-	 * 
-	 * @param url
-	 *            请求路径
-	 * @param params
-	 *            请求参数
-	 * @return
-	 */
-	public static String httpGet(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
-
-		String response = null;
-		HttpClient httpclient = new DefaultHttpClient();
-
-		if (params != null) {
-			url = url + "?";
-			for (Entry<String, String> item : params.entrySet()) {
-				url += item.getKey() + "=" + item.getValue();
-				url += "&";
-			}
-			url = url.substring(0, url.length() - 1);
+			return objectNode;
 		}
 
-		// 创建HttpGet对象
-		HttpGet httpGet = new HttpGet(url);
-
-		if (headers != null) {
-			for (Entry<String, String> header : headers.entrySet()) {
-				httpGet.addHeader(header.getKey(), header.getValue());
-			}
-
-		}
-
-		HttpResponse httpResponse;
 		try {
-			// 使用execute方法发送HTTP GET请求，并返回HttpResponse对象
-			httpResponse = httpclient.execute(httpGet);
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-				// 获得返回结果
-				response = EntityUtils.toString(httpResponse.getEntity());
-			} else {
-				response = "返回码：" + statusCode;
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages");
+			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
+				chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages?" + "ql="
+						+ queryStrNode.get("ql").asText());
 			}
+			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
+				chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages?" + "limit"
+						+ queryStrNode.get("limit").asText());
+			}
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credentail, null, HTTPMethod.METHOD_GET);
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception(e.getMessage());
 		}
-		return response;
 
+		return objectNode;
+	}
+
+	/**
+	 * Main Test
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		// 聊天消息 获取最新的20条记录
+		ObjectNode queryStrNode = factory.objectNode();
+		queryStrNode.put("ql", "order+by+timestamp+desc");
+		queryStrNode.put("limit", "20");
+		ObjectNode messages = getChatMessages(queryStrNode);
+
+		// 聊天消息 获取7天以内的消息
+		String currentTimestamp = String.valueOf(System.currentTimeMillis());
+		String senvenDayAgo = String.valueOf(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
+		ObjectNode queryStrNode1 = factory.objectNode();
+		queryStrNode1.put("ql", "select * where " + senvenDayAgo + " < timestamp and timestamp < " + currentTimestamp);
+		ObjectNode messages1 = getChatMessages(queryStrNode1);
+
+		// 聊天消息 分页获取
+		ObjectNode queryStrNode2 = factory.objectNode();
+		queryStrNode2.put("ql", "order+by+timestamp+desc");
+		queryStrNode2.put("limit", "20");
+		// 第一页
+		ObjectNode messages2 = getChatMessages(queryStrNode2);
+		// 第二页
+		String cursor = messages2.get("cursor").asText();
+		queryStrNode2.put("cursor", cursor);
+		ObjectNode messages3 = getChatMessages(queryStrNode2);
 	}
 
 }
