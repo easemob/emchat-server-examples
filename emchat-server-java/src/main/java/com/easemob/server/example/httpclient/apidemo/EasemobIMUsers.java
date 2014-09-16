@@ -1,6 +1,22 @@
 package com.easemob.server.example.httpclient.apidemo;
 
-import java.util.Map;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.HTTPMethod;
+import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.EndPoints;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * REST API Demo :用户体系集成 REST API HttpClient4.3实现
@@ -12,88 +28,550 @@ import java.util.Map;
  */
 public class EasemobIMUsers {
 
-	/**
-	 * 创建用户
-	 * 
-	 * @param host
-	 *            IP或者域名
-	 * @param port
-	 *            端口
-	 * @param appKey
-	 *            easemob-demo#chatdemo
-	 * @param postBody
-	 *            封装了用户属性的json对象
-	 * @param token
-	 *            admin级别token
-	 * @return
-	 */
-	public static String createNewUser(String host, String appKey, Map<String, Object> body, String token) {
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
+	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
 
-		String rest = orgName + "/" + appName + "/users";
-
-		String reqURL = "https://" + host + "/" + rest;
-		String result = "";
-		return result;
-	}
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	/**
-	 * 删除用户
+	 * 注册IM用户[单个]
 	 * 
-	 * @param host
-	 *            IP或者域名
-	 * @param port
-	 *            端口
-	 * @param appKey
-	 *            easemob-demo#chatdemo
-	 * @param id
-	 *            usename or uuid
-	 * @param token
-	 *            admin级别token
+	 * 给指定Constants.APPKEY创建一个新的用户
+	 * 
+	 * @param dataNode
 	 * @return
 	 */
-	public static String deleteUser(String host, String appKey, String id, String token) {
+	public static ObjectNode createNewIMUserSingle(ObjectNode dataNode) {
 
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
+		ObjectNode objectNode = factory.objectNode();
 
-		String rest = orgName + "/" + appName + "/users/" + id;
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
-		String reqURL = "https://" + host + "/" + rest;
-		String result = "";
+			objectNode.put("message", "Bad format of Constants.APPKEY");
 
-		return result;
-	}
-
-	/**
-	 * 获取token
-	 * 
-	 * @param host
-	 *            IP或者域名
-	 * @param port
-	 *            端口
-	 * @param appKey
-	 *            easemob-demo#chatdemo
-	 * @param isAdmin
-	 *            org管理员token true, IM用户token false
-	 * @param postBody
-	 *            POST请求体
-	 * @return
-	 */
-	public static String getAccessToken(String host, String appKey, Boolean isAdmin, Map<String, Object> postBody) {
-		String orgName = appKey.substring(0, appKey.lastIndexOf("#"));
-		String appName = appKey.substring(appKey.lastIndexOf("#") + 1);
-		String accessToken = "";
-		String rest = "management/token";
-		if (!isAdmin) {
-			rest = orgName + "/" + appName + "/token";
+			return objectNode;
 		}
 
-		String reqURL = "https://" + host + "/" + rest;
-		String result = "";
+		objectNode.removeAll();
 
-		return accessToken;
+		// check properties that must be provided
+		if (null != dataNode && !dataNode.has("username")) {
+			LOGGER.error("Property that named username must be provided .");
+
+			objectNode.put("message", "Property that named username must be provided .");
+
+			return objectNode;
+		}
+		if (null != dataNode && !dataNode.has("password")) {
+			LOGGER.error("Property that named password must be provided .");
+
+			objectNode.put("message", "Property that named password must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, dataNode,
+					HTTPMethod.METHOD_POST);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 注册IM用户[批量]
+	 * 
+	 * 给指定Constants.APPKEY创建一批用户
+	 * 
+	 * @param dataArrayNode
+	 * @return
+	 */
+	public static ObjectNode createNewIMUserBatch(ArrayNode dataArrayNode) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		// check properties that must be provided
+		if (dataArrayNode.isArray()) {
+			for (JsonNode jsonNode : dataArrayNode) {
+				if (null != jsonNode && !jsonNode.has("username")) {
+					LOGGER.error("Property that named username must be provided .");
+
+					objectNode.put("message", "Property that named username must be provided .");
+
+					return objectNode;
+				}
+				if (null != jsonNode && !jsonNode.has("password")) {
+					LOGGER.error("Property that named password must be provided .");
+
+					objectNode.put("message", "Property that named password must be provided .");
+
+					return objectNode;
+				}
+			}
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, dataArrayNode,
+					HTTPMethod.METHOD_POST);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 注册IM用户[批量生成用户然后注册]
+	 * 
+	 * 给指定Constants.APPKEY创建一批用户
+	 * 
+	 * @param usernamePrefix
+	 *            生成用户名的前缀
+	 * @param perNumber
+	 *            批量注册时一次注册的数量
+	 * @param totalNumber
+	 *            生成用户注册的用户总数
+	 * @return
+	 */
+	public static ObjectNode createNewIMUserBatchGen(String usernamePrefix, Long perNumber, Long totalNumber) {
+		ObjectNode objectNode = factory.objectNode();
+
+		if (totalNumber == 0 || perNumber == 0) {
+			return objectNode;
+		}
+
+		System.out.println("你即将注册" + totalNumber + "个用户，如果大于" + perNumber + "了,会分批注册,每次注册" + perNumber + "个");
+
+		ArrayNode genericArrayNode = EasemobIMUsers.genericArrayNode(usernamePrefix, totalNumber);
+		if (totalNumber <= perNumber) {
+			objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+		} else {
+
+			for (int i = 0; i < genericArrayNode.size(); i++) {
+				ArrayNode tmpArrayNode = factory.arrayNode();
+				tmpArrayNode.add(genericArrayNode.get(i));
+				// 300 records on one migration
+				if ((i + 1) % perNumber == 0) {
+					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					tmpArrayNode.removeAll();
+					continue;
+				}
+
+				// the rest records that less than the times of 300
+				if (i > (genericArrayNode.size() / perNumber * perNumber - 1)) {
+					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					tmpArrayNode.removeAll();
+				}
+			}
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 获取IM用户[主键查询]
+	 * 
+	 * @param userPrimaryKey
+	 *            用户主键：username或者uuid
+	 * @return
+	 */
+	public static ObjectNode getIMUsersByPrimaryKey(String userPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		// check properties that must be provided
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("The primaryKey that will be useed to query must be provided .");
+
+			objectNode.put("message", "The primaryKey that will be useed to query must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null, HTTPMethod.METHOD_GET);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 获取IM用户[条件查询]
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public static ObjectNode getIMUserByQueryStringNOPagenation(String username) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null, HTTPMethod.METHOD_GET);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 删除IM用户[单个]
+	 * 
+	 * 删除指定Constants.APPKEY下IM单个用户
+	 *
+	 * 
+	 * @param userPrimaryKey
+	 * @return
+	 */
+	public static ObjectNode deleteIMUserByUserPrimaryKey(String userPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 删除IM用户[批量]
+	 * 
+	 * 批量指定Constants.APPKEY下删除IM用户
+	 * 
+	 * @param limit
+	 * @param queryStr
+	 * @return
+	 */
+	public static ObjectNode deleteIMUserByUsernameBatch(Long limit, String queryStr) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		try {
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 重置IM用户密码 提供原始密码
+	 * 
+	 * 需提供username或者uuid,原始密码，新密码
+	 * 
+	 * @param userPrimaryKey
+	 * @param dataObjectNode
+	 * @return
+	 */
+	public static ObjectNode modifyIMUserPasswordWithOldPasswd(String userPrimaryKey, ObjectNode dataObjectNode) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("oldpassword")) {
+			LOGGER.error("Property that named oldpassword must be provided .");
+
+			objectNode.put("message", "Property that named oldpassword must be provided .");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
+			LOGGER.error("Property that named newpassword must be provided .");
+
+			objectNode.put("message", "Property that named newpassword must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, null, dataObjectNode,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 重置IM用户密码 提供管理员token
+	 * 
+	 * @param userPrimaryKey
+	 * @param dataObjectNode
+	 * @return
+	 */
+	public static ObjectNode modifyIMUserPasswordWithAdminToken(String userPrimaryKey, ObjectNode dataObjectNode) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(userPrimaryKey)) {
+			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
+			LOGGER.error("Property that named newpassword must be provided .");
+
+			objectNode.put("message", "Property that named newpassword must be provided .");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, dataObjectNode,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 添加好友[单个]
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode addFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 添加好友[批量]
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKeys
+	 * @return
+	 */
+	public static ObjectNode addFriendBatch(String ownerUserPrimaryKey, List<String> friendUserPrimaryKeys) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (null == friendUserPrimaryKeys) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		String friendUserPrimaryKeysStr = "";
+		for (String friendUserPrimaryKey : friendUserPrimaryKeys) {
+			friendUserPrimaryKeysStr = friendUserPrimaryKey + ",";
+		}
+		friendUserPrimaryKeysStr = friendUserPrimaryKeysStr.substring(0, friendUserPrimaryKeysStr.lastIndexOf(",") - 1);
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, null,
+					HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+
+	/**
+	 * 指定前缀和数量生成用户基本数据
+	 * 
+	 * @param usernamePrefix
+	 * @param number
+	 * @return
+	 */
+	public static ArrayNode genericArrayNode(String usernamePrefix, Long number) {
+		ArrayNode arrayNode = factory.arrayNode();
+		for (int i = 0; i < number; i++) {
+			ObjectNode userNode = factory.objectNode();
+			userNode.put("username", usernamePrefix + "_" + i);
+			userNode.put("password", Constants.DEFAULT_PASSWORD);
+
+			arrayNode.add(userNode);
+		}
+
+		return arrayNode;
 	}
 
 }
