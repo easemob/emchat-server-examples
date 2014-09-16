@@ -18,6 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -86,10 +90,15 @@ public class UsernamePasswordCredentail extends Credentail {
 						+ tokenResponse.getStatusLine().toString());
 
 				if (tokenResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					ObjectNode objectNode2 = factory.objectNode();
-					objectNode2 = objectNode2.putObject(results);
-					String accessToken = objectNode2.get("access_token").textValue();
-					Long expiredAt = objectNode2.get("expires_in").asLong() + 7 * 24 * 60 * 60;
+
+					ObjectMapper mapper = new ObjectMapper();
+
+					JsonFactory factory = mapper.getJsonFactory();
+					JsonParser jp = factory.createJsonParser(results);
+					JsonNode json = mapper.readTree(jp);
+
+					String accessToken = json.get("access_token").asText();
+					Long expiredAt = json.get("expires_in").asLong() + 7 * 24 * 60 * 60;
 
 					token = new Token(accessToken, expiredAt);
 				}
