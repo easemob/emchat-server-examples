@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.017" errors="0" skipped="0" tests="1" name="emchat_server_java_mvn.restapi.AppTest">
+<testsuite failures="0" time="0.012" errors="0" skipped="0" tests="1" name="emchat_server_java_mvn.restapi.AppTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/opt/dev/jdk1.7.0_67/jre/lib/amd64"/>
@@ -60,5 +60,5 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.017" classname="emchat_server_java_mvn.restapi.AppTest" name="testApp"/>
+  <testcase time="0.012" classname="emchat_server_java_mvn.restapi.AppTest" name="testApp"/>
 </testsuite>
