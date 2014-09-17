@@ -144,11 +144,8 @@ class EasemobFiles {
 	}
 
 	public static void main(String[] args) {
-		String fileUUID = "2a6752c0-3e14-11e4-aebc-b1ed5d2b37da";
-		String shareSecret = "KmdSyj4UEeS4QukxV8AP7_gqgxm7lrij5JkdiM06kf6LlFcF";
-		File localPath = new File("/home/lynch/ddd.aa");
-		boolean isThumbnail = false;
-		mediaDownload(fileUUID, shareSecret, localPath, isThumbnail);
+		File uploadFile = new File("/home/lynch/Downloads/invite1.mp3");
+		mediaUpload(uploadFile);
 	}
 
 }
