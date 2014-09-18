@@ -115,7 +115,11 @@ public class HTTPClientUtils {
 				String responseContent = EntityUtils.toString(entity, "UTF-8");
 				EntityUtils.consume(entity);
 
-				resObjectNode = resObjectNode.putObject(responseContent);
+				ObjectMapper mapper = new ObjectMapper();
+				JsonFactory factory = mapper.getJsonFactory();
+				JsonParser jp = factory.createJsonParser(responseContent);
+
+				resObjectNode = mapper.readTree(jp);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException();

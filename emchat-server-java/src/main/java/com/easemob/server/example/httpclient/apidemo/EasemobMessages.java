@@ -69,7 +69,7 @@ public class EasemobMessages {
 			URL userStatusUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
 					+ targetUserPrimaryKey + "/status");
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(userStatusUrl, null, credentail, HTTPMethod.METHOD_GET);
+			objectNode = HTTPClientUtils.sendHTTPRequest(userStatusUrl, credentail, null, HTTPMethod.METHOD_GET);
 
 			String userStatus = objectNode.get("data").path(targetUserPrimaryKey).asText();
 			if ("online".equals(userStatus)) {

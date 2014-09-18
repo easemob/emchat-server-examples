@@ -402,7 +402,7 @@ public class EasemobIMUsers {
 			URL modifyIMUserPasswordWithOldPasswdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/users/" + userPrimaryKey + "/password");
 			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithOldPasswdUrl, null, dataObjectNode,
-					HTTPMethod.METHOD_POST);
+					HTTPMethod.METHOD_PUT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -454,7 +454,7 @@ public class EasemobIMUsers {
 			URL modifyIMUserPasswordWithAdminTokenUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/users/" + userPrimaryKey + "/password");
 			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithAdminTokenUrl, credentail,
-					dataObjectNode, HTTPMethod.METHOD_DELETE);
+					dataObjectNode, HTTPMethod.METHOD_PUT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -507,8 +507,7 @@ public class EasemobIMUsers {
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
 					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
 
-			objectNode = HTTPClientUtils
-					.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_DELETE);
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();

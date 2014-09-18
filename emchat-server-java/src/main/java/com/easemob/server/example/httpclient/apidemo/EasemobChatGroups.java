@@ -9,6 +9,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.easemob.server.example.httpclient.vo.ClientSecretCredentail;
 import com.easemob.server.example.httpclient.vo.Credentail;
 import com.easemob.server.example.httpclient.vo.EndPoints;
 import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
@@ -50,11 +51,13 @@ public class EasemobChatGroups {
 		}
 
 		try {
-
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, null, credentail,
+			/*
+			 * Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+			 * Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			 */
+			Credentail credentail2 = new ClientSecretCredentail(Constants.APP_CLIENT_ID, Constants.APP_CLIENT_SECRET,
+					Roles.USER_ROLE_APPADMIN);
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail2, null,
 					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -89,7 +92,7 @@ public class EasemobChatGroups {
 			URL groupDetailsByChatgroupidUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/chatgroups/" + chatgroupIDs.toString());
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, null, credentail,
+			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, credentail, null,
 					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -199,7 +202,8 @@ public class EasemobChatGroups {
 			URL deleteChatGroupsUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null, HTTPMethod.METHOD_GET);
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null,
+					HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -309,5 +313,9 @@ public class EasemobChatGroups {
 		}
 
 		return objectNode;
+	}
+
+	public static void main(String[] args) {
+		getAllChatgroupids();
 	}
 }

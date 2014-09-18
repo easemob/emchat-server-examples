@@ -29,7 +29,7 @@ public class ClientSecretCredentail extends Credentail {
 		if (role.equals(Roles.USER_ROLE_ORGADMIN)) {
 			// ORG管理员
 			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
-		} else if (role.equals(Roles.USER_ROLE_ORGADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
+		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
 			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET
 					.resolveTemplate("org_name", Constants.APPKEY.split("#")[0]).resolveTemplate("app_name",
