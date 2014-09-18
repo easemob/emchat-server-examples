@@ -206,7 +206,7 @@ public class EasemobChatGroups {
 			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -454,7 +454,7 @@ public class EasemobIMUsers {
 			URL modifyIMUserPasswordWithAdminTokenUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/users/" + userPrimaryKey + "/password");
 			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithAdminTokenUrl, credentail,
-					dataObjectNode, HTTPMethod.METHOD_DELETE);
+					dataObjectNode, HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -507,8 +507,7 @@ public class EasemobIMUsers {
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
 					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
 
-			objectNode = HTTPClientUtils
-					.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_DELETE);
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -566,7 +565,7 @@ public class EasemobIMUsers {
 			URL addFriendBatchUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
 					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKeys.toString());
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendBatchUrl, credentail, null, HTTPMethod.METHOD_DELETE);
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendBatchUrl, credentail, null, HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -54,7 +54,7 @@ public class EasemobChatGroups {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, null, credentail,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail, null,
 					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -89,7 +89,7 @@ public class EasemobChatGroups {
 			URL groupDetailsByChatgroupidUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/chatgroups/" + chatgroupIDs.toString());
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, null, credentail,
+			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, credentail, null,
 					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -199,7 +199,8 @@ public class EasemobChatGroups {
 			URL deleteChatGroupsUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null, HTTPMethod.METHOD_GET);
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null,
+					HTTPMethod.METHOD_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();

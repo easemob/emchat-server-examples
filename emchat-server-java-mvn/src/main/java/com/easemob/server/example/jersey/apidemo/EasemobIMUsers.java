@@ -415,7 +415,7 @@ public class EasemobIMUsers {
 			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, null, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, null, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -468,7 +468,7 @@ public class EasemobIMUsers {
 			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -524,7 +524,7 @@ public class EasemobIMUsers {
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
 					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -586,7 +586,7 @@ public class EasemobIMUsers {
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
 					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKeysStr);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -45,7 +45,7 @@ public class ClientSecretCredentail extends Credentail {
 		if (role.equals(Roles.USER_ROLE_ORGADMIN)) {
 			// ORG管理员
 			CLIENTSECRETCREDENTAIL_TOKEN_URL = EndPoints.TOKEN_ORG_URL;
-		} else if (role.equals(Roles.USER_ROLE_ORGADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
+		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
 			CLIENTSECRETCREDENTAIL_TOKEN_URL = EndPoints.TOKEN_APP_URL;
 		}
