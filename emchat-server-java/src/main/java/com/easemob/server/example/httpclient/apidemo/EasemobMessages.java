@@ -13,6 +13,7 @@ import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 import com.easemob.server.example.httpclient.vo.Credentail;
 import com.easemob.server.example.httpclient.vo.EndPoints;
 import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -101,7 +102,7 @@ public class EasemobMessages {
 	 * 
 	 * @return 请求响应
 	 */
-	public static ObjectNode sendMessages(String targetType, String[] target, ObjectNode msg, String from,
+	public static ObjectNode sendMessages(String targetType, ArrayNode target, ObjectNode msg, String from,
 			ObjectNode ext) {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -118,7 +119,7 @@ public class EasemobMessages {
 		}
 
 		// check properties that must be provided
-		if ("users".equals(targetType) || "chatgroups".equals(targetType)) {
+		if (!("users".equals(targetType) || "chatgroups".equals(targetType))) {
 			LOGGER.error("TargetType must be users or chatgroups .");
 
 			objectNode.put("message", "TargetType must be users or chatgroups .");
@@ -129,7 +130,7 @@ public class EasemobMessages {
 		try {
 			// 构造消息体
 			dataNode.put("target_type", targetType);
-			dataNode.put("target", target.toString());
+			dataNode.put("target", target);
 			dataNode.put("msg", msg);
 			dataNode.put("from", from);
 			dataNode.put("ext", ext);
@@ -137,16 +138,17 @@ public class EasemobMessages {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MANAGEMENT_URL, credentail, dataNode,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MESSAGES_URL, credentail, dataNode,
 					HTTPMethod.METHOD_POST);
 
 			objectNode = (ObjectNode) objectNode.get("data");
-			for (int i = 0; i < target.length; i++) {
-				String resultStr = objectNode.path(target[i]).asText();
+			for (int i = 0; i < target.size(); i++) {
+				String resultStr = objectNode.path(target.path(i).asText()).asText();
 				if ("success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target.path(i)
+							.asText()));
 				} else if (!"success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] failed .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] failed .", target.path(i).asText()));
 				}
 			}
 
@@ -155,5 +157,20 @@ public class EasemobMessages {
 		}
 
 		return objectNode;
+	}
+
+	public static void main(String[] args) {
+		String targetType = "users";
+		ArrayNode target = factory.arrayNode();
+		target.add("stliu");
+		ObjectNode msg = factory.objectNode();
+		msg.put("type", "txt");
+		msg.put("msg", "HelloKitty");
+		String from = "stliu777";
+		ObjectNode ext = factory.objectNode();
+		ext.put("attr1", "attr1v1");
+		ext.put("attr2", "attr2v1");
+		sendMessages(targetType, target, msg, from, ext);
+
 	}
 }
