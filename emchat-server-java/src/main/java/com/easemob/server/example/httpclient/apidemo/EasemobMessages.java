@@ -162,11 +162,11 @@ public class EasemobMessages {
 	public static void main(String[] args) {
 		String targetType = "users";
 		ArrayNode target = factory.arrayNode();
-		target.add("stliu");
+		target.add("531");
 		ObjectNode msg = factory.objectNode();
 		msg.put("type", "txt");
 		msg.put("msg", "HelloKitty");
-		String from = "stliu777";
+		String from = "cool";
 		ObjectNode ext = factory.objectNode();
 		ext.put("attr1", "attr1v1");
 		ext.put("attr2", "attr2v1");

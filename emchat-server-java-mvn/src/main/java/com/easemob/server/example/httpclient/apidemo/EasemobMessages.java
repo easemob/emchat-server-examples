@@ -13,6 +13,7 @@ import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 import com.easemob.server.example.httpclient.vo.Credentail;
 import com.easemob.server.example.httpclient.vo.EndPoints;
 import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -101,7 +102,7 @@ public class EasemobMessages {
 	 * 
 	 * @return 请求响应
 	 */
-	public static ObjectNode sendMessages(String targetType, String[] target, ObjectNode msg, String from,
+	public static ObjectNode sendMessages(String targetType, ArrayNode target, ObjectNode msg, String from,
 			ObjectNode ext) {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -137,16 +138,17 @@ public class EasemobMessages {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MANAGEMENT_URL, credentail, dataNode,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MESSAGES_URL, credentail, dataNode,
 					HTTPMethod.METHOD_POST);
 
 			objectNode = (ObjectNode) objectNode.get("data");
-			for (int i = 0; i < target.length; i++) {
-				String resultStr = objectNode.path(target[i]).asText();
+			for (int i = 0; i < target.size(); i++) {
+				String resultStr = objectNode.path(target.get(i).asText()).asText();
 				if ("success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target.get(i)
+							.asText()));
 				} else if (!"success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] failed .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] failed .", target.get(i).asText()));
 				}
 			}
 

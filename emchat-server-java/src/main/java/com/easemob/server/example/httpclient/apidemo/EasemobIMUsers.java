@@ -574,6 +574,56 @@ public class EasemobIMUsers {
 		return objectNode;
 	}
 
+	/**
+	 * IM用户登录
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKeys
+	 * @return
+	 */
+	public static ObjectNode imUserLogin(String ownerUserPrimaryKey, String password) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+		if (StringUtils.isEmpty(password)) {
+			LOGGER.error("Your password must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your password must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			ObjectNode dataNode = factory.objectNode();
+			dataNode.put("grant_type", "password");
+			dataNode.put("username", ownerUserPrimaryKey);
+			dataNode.put("password", password);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.TOKEN_APP_URL, null, dataNode,
+					HTTPMethod.METHOD_POST);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
+		}
+
+		return objectNode;
+	}
+
 	/*************************************************************************************************************************/
 	/**
 	 * 指定前缀和数量生成用户基本数据
@@ -593,6 +643,12 @@ public class EasemobIMUsers {
 		}
 
 		return arrayNode;
+	}
+
+	public static void main(String[] args) {
+		String ownerUserPrimaryKey = "xieyajie";
+		String password = "1111111";
+		imUserLogin(ownerUserPrimaryKey, password);
 	}
 
 }

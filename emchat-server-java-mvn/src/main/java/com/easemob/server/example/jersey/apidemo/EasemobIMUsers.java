@@ -1,8 +1,11 @@
 package com.easemob.server.example.jersey.apidemo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -596,13 +599,67 @@ public class EasemobIMUsers {
 	}
 
 	/**
+	 * IM用户登录
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKeys
+	 * @return
+	 */
+	public static ObjectNode imUserLogin(String ownerUserPrimaryKey, String password) {
+
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+		if (StringUtils.isEmpty(password)) {
+			LOGGER.error("Your password must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your password must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			ObjectNode dataNode = factory.objectNode();
+			dataNode.put("grant_type", "password");
+			dataNode.put("username", ownerUserPrimaryKey);
+			dataNode.put("password", password);
+
+			List<NameValuePair> headers = new ArrayList<NameValuePair>();
+			headers.add(new BasicNameValuePair("Content-Type", "application/json"));
+
+			objectNode = JerseyUtils.sendRequest(
+					EndPoints.TOKEN_APP_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
+							"app_name", APPKEY.split("#")[1]), dataNode, null, HTTPMethod.METHOD_POST, headers);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
+		}
+
+		return objectNode;
+	}
+
+	/**
 	 * 指定前缀和数量生成用户基本数据
 	 * 
 	 * @param usernamePrefix
 	 * @param number
 	 * @return
 	 */
-	public static ArrayNode genericArrayNode(String usernamePrefix, Long number) {
+	private static ArrayNode genericArrayNode(String usernamePrefix, Long number) {
 		ArrayNode arrayNode = factory.arrayNode();
 		for (int i = 0; i < number; i++) {
 			ObjectNode userNode = factory.objectNode();
