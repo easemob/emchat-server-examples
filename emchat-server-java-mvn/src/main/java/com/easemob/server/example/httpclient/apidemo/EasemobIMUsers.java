@@ -1,7 +1,6 @@
 package com.easemob.server.example.httpclient.apidemo;
 
 import java.net.URL;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -508,64 +507,6 @@ public class EasemobIMUsers {
 					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
 
 			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_POST);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return objectNode;
-	}
-
-	/**
-	 * 添加好友[批量]
-	 * 
-	 * @param ownerUserPrimaryKey
-	 * @param friendUserPrimaryKeys
-	 * @return
-	 */
-	public static ObjectNode addFriendBatch(String ownerUserPrimaryKey, List<String> friendUserPrimaryKeys) {
-
-		ObjectNode objectNode = factory.objectNode();
-
-		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
-			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
-
-			objectNode.put("message", "Bad format of Constants.APPKEY");
-
-			return objectNode;
-		}
-
-		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
-			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
-
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
-
-			return objectNode;
-		}
-
-		if (null == friendUserPrimaryKeys) {
-			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
-
-			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
-
-			return objectNode;
-		}
-
-		String friendUserPrimaryKeysStr = "";
-		for (String friendUserPrimaryKey : friendUserPrimaryKeys) {
-			friendUserPrimaryKeysStr = friendUserPrimaryKey + ",";
-		}
-		friendUserPrimaryKeysStr = friendUserPrimaryKeysStr.substring(0, friendUserPrimaryKeysStr.lastIndexOf(",") - 1);
-
-		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			URL addFriendBatchUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKeys.toString());
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendBatchUrl, credentail, null, HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
 			e.printStackTrace();

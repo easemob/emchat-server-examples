@@ -537,68 +537,6 @@ public class EasemobIMUsers {
 	}
 
 	/**
-	 * 添加好友[批量]
-	 * 
-	 * @param ownerUserPrimaryKey
-	 * @param friendUserPrimaryKeys
-	 * @return
-	 */
-	public static ObjectNode addFriendBatch(String ownerUserPrimaryKey, List<String> friendUserPrimaryKeys) {
-
-		ObjectNode objectNode = factory.objectNode();
-
-		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
-			LOGGER.error("Bad format of Appkey: " + APPKEY);
-
-			objectNode.put("message", "Bad format of Appkey");
-
-			return objectNode;
-		}
-
-		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
-			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
-
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
-
-			return objectNode;
-		}
-
-		if (null == friendUserPrimaryKeys) {
-			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
-
-			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
-
-			return objectNode;
-		}
-
-		String friendUserPrimaryKeysStr = "";
-		for (String friendUserPrimaryKey : friendUserPrimaryKeys) {
-			friendUserPrimaryKeysStr = friendUserPrimaryKey + ",";
-		}
-		friendUserPrimaryKeysStr = friendUserPrimaryKeysStr.substring(0, friendUserPrimaryKeysStr.lastIndexOf(",") - 1);
-
-		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1])
-					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
-					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKeysStr);
-
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return objectNode;
-	}
-
-	/**
 	 * IM用户登录
 	 * 
 	 * @param ownerUserPrimaryKey
