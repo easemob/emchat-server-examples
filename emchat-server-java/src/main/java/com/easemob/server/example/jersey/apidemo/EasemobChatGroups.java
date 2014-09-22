@@ -155,7 +155,7 @@ public class EasemobChatGroups {
 
 			return objectNode;
 		}
-		if (!dataObjectNode.has("members") || dataObjectNode.path("members").isArray()) {
+		if (!dataObjectNode.has("members") || !dataObjectNode.path("members").isArray()) {
 			LOGGER.error("Property that named members must be provided .");
 
 			objectNode.put("message", "Property that named members must be provided .");
@@ -319,6 +319,20 @@ public class EasemobChatGroups {
 		}
 
 		return objectNode;
+	}
+	
+	public static void main(String[] args) {
+		ObjectNode dataObjectNode = JsonNodeFactory.instance.objectNode();
+		dataObjectNode.put("groupname", "测试群组");
+		dataObjectNode.put("desc", "测试群组");
+		dataObjectNode.put("approval", "false");
+		dataObjectNode.put("public", "false");
+		dataObjectNode.put("owner", "vrhfk5lxsz");
+		ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
+		arrayNode.add("pfxfc9ggkz");
+		arrayNode.add("xffslraxae");
+		dataObjectNode.put("members", arrayNode);
+		creatChatGroups(dataObjectNode);
 	}
 
 }
