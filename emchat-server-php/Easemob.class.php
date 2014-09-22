@@ -87,10 +87,10 @@ class Easemob {
 	 * @param $options['newpassword'] 新密码        	
 	 */
 	public function editPassword($options) {
-		$url = $this->url . "users/" . $options ['username'] . "/" . $options ['password'];
+		$url = $this->url . "users/" . $options ['username'] . "/password";
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $options, $header );
+		$result = $this->postCurl ( $url, $options, $header, $type = 'PUT');
 		return $result;
 	}
 	/**
