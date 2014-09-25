@@ -45,7 +45,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -99,7 +99,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -201,7 +201,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -245,7 +245,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -281,7 +281,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -319,7 +319,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -363,7 +363,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -421,7 +421,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -474,7 +474,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -527,7 +527,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");

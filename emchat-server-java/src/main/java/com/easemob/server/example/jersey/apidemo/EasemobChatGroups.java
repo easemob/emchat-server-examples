@@ -8,9 +8,11 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.ClientSecretCredentail;
 import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
 import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -41,7 +43,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -72,11 +74,11 @@ public class EasemobChatGroups {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode getGroupDetailsByChatgroupid(String[] chatgroupIDs) {
+	public static ObjectNode getGroupDetailsByChatgroupid(ArrayNode chatgroupIDs) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -85,13 +87,16 @@ public class EasemobChatGroups {
 		}
 
 		try {
-
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			String groupStr = "";
+			for (int i = 0; i < chatgroupIDs.size(); i++) {
+				groupStr = groupStr + "," + chatgroupIDs.get(i).textValue();
+			}
+			Credentail credentail = new ClientSecretCredentail(Constants.APP_CLIENT_ID, Constants.APP_CLIENT_SECRET,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupIDs.toString());
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(groupStr.substring(1));
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
 
@@ -111,13 +116,14 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
-			LOGGER.error("Bad format of Appkey: " + APPKEY);
-
-			objectNode.put("message", "Bad format of Appkey");
-
-			return objectNode;
-		}
+		/*
+		 * if (!JerseyUtils.match("[0-9a-zA-Z_]+#[0-9a-zA-Z]+", APPKEY)) { LOGGER.error("Bad format of Appkey: " +
+		 * APPKEY);
+		 * 
+		 * objectNode.put("message", "Bad format of Appkey");
+		 * 
+		 * return objectNode; }
+		 */
 
 		// check properties that must be provided
 		if (!dataObjectNode.has("groupname")) {
@@ -155,7 +161,7 @@ public class EasemobChatGroups {
 
 			return objectNode;
 		}
-		if (!dataObjectNode.has("members") || dataObjectNode.path("members").isArray()) {
+		if (!dataObjectNode.has("members") || !dataObjectNode.path("members").isArray()) {
 			LOGGER.error("Property that named members must be provided .");
 
 			objectNode.put("message", "Property that named members must be provided .");
@@ -189,7 +195,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -224,7 +230,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -259,7 +265,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -294,7 +300,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -319,6 +325,25 @@ public class EasemobChatGroups {
 		}
 
 		return objectNode;
+	}
+
+	public static void main(String[] args) {
+		ObjectNode dataObjectNode = JsonNodeFactory.instance.objectNode();
+		dataObjectNode.put("groupname", "测试群组");
+		dataObjectNode.put("desc", "测试群组");
+		dataObjectNode.put("approval", "false");
+		dataObjectNode.put("public", "false");
+		dataObjectNode.put("owner", "vrhfk5lxsz");
+		ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
+		arrayNode.add("pfxfc9ggkz");
+		arrayNode.add("xffslraxae");
+		dataObjectNode.put("members", arrayNode);
+		// creatChatGroups(dataObjectNode);
+
+		ArrayNode chatgroupIDs = JsonNodeFactory.instance.arrayNode();
+		chatgroupIDs.add("1410511142870");
+		chatgroupIDs.add("1410511142870");
+		getGroupDetailsByChatgroupid(chatgroupIDs);
 	}
 
 }

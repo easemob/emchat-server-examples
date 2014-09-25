@@ -51,7 +51,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -108,7 +108,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -138,8 +138,8 @@ public class EasemobIMUsers {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(Constants.ORG_ADMIN_USERNAME,
+					Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);
 
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
@@ -181,19 +181,20 @@ public class EasemobIMUsers {
 			objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
 		} else {
 
+			ArrayNode tmpArrayNode = factory.arrayNode();
+
 			for (int i = 0; i < genericArrayNode.size(); i++) {
-				ArrayNode tmpArrayNode = factory.arrayNode();
 				tmpArrayNode.add(genericArrayNode.get(i));
 				// 300 records on one migration
 				if ((i + 1) % perNumber == 0) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers.createNewIMUserBatch(tmpArrayNode);
 					tmpArrayNode.removeAll();
 					continue;
 				}
 
 				// the rest records that less than the times of 300
 				if (i > (genericArrayNode.size() / perNumber * perNumber - 1)) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers.createNewIMUserBatch(tmpArrayNode);
 					tmpArrayNode.removeAll();
 				}
 			}
@@ -213,7 +214,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -259,7 +260,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -299,7 +300,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -339,7 +340,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -347,20 +348,26 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 
-		try {
+		for (int i = 0; i < 300; i++) {
+			System.out.println("***********************" + i + "**************************8");
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						Credentail credentail = new UsernamePasswordCredentail(Constants.ORG_ADMIN_USERNAME,
+								Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+						JerseyWebTarget webTarget = null;
+						webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+								.resolveTemplate("app_name", APPKEY.split("#")[1]).queryParam("limit", 1000);
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).queryParam("ql", queryStr)
-					.queryParam("limit", String.valueOf(limit));
+						JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		return objectNode;
@@ -379,7 +386,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -438,7 +445,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -492,7 +499,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -548,7 +555,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");

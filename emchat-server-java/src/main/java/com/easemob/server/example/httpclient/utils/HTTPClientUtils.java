@@ -293,4 +293,11 @@ public class HTTPClientUtils {
 
 		return matcher.lookingAt();
 	}
+
+	public static void main(String[] args) {
+
+		boolean match = match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY);
+
+		System.out.println(match);
+	}
 }

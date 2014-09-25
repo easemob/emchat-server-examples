@@ -102,7 +102,7 @@ public class EasemobFiles {
 
 		File downLoadedFile = null;
 
-		if (!HTTPClientUtils.match("[0-9a-zA-Z-_]+#[0-9a-zA-Z-_]+", APPKEY)) {
+		if (!HTTPClientUtils.match("[0-9a-zA-Z\\-]+#[0-9a-zA-Z-_]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
