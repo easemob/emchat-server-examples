@@ -67,7 +67,7 @@ public class ClientSecretCredentail extends Credentail {
 				}
 
 				String accessToken = tokenRequest.get("access_token").asText();
-				long expiredAt = tokenRequest.get("expire_in").asLong() + 7 * 24 * 60 * 60;
+				long expiredAt = tokenRequest.get("expires_in").asLong() + 7 * 24 * 60 * 60;
 
 				token = new Token(accessToken, expiredAt);
 			} catch (Exception e) {

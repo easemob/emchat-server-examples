@@ -75,7 +75,8 @@ public class JerseyUtils {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
 			if (credentail != null) {
-				Token.applyAuthentication(inBuilder, credentail);
+				//inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
+				 Token.applyAuthentication(inBuilder, credentail);
 			}
 
 			if (null != headers && !headers.isEmpty()) {
@@ -131,7 +132,7 @@ public class JerseyUtils {
 		 */
 
 		if (credentail != null) {
-			inBuilder.header("Authorization", "Bearer YWMtOA2XfjSjEeSfNMGCHe8JTgAAAUl4mo5EXornuX2Hp3Cvcuq-OlXEJ1xSwyA");
+			inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
 		}
 
 		if (null != headers && !headers.isEmpty()) {

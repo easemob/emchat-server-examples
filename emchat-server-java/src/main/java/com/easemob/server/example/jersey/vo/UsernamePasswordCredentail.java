@@ -77,7 +77,7 @@ public class UsernamePasswordCredentail extends Credentail {
 					return token;
 				}
 
-				String accessToken = tokenRequest.get("access_token").textValue();
+				String accessToken = tokenRequest.get("access_token").asText();
 				Long expiredAt = tokenRequest.get("expires_in").asLong() + 7 * 24 * 60 * 60;
 
 				token = new Token(accessToken, expiredAt);

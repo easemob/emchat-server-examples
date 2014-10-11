@@ -10,6 +10,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
+import com.easemob.server.example.httpclient.vo.ClientSecretCredentail;
 import com.easemob.server.example.httpclient.vo.Credentail;
 import com.easemob.server.example.httpclient.vo.EndPoints;
 import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
@@ -45,7 +46,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -99,7 +100,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -201,7 +202,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -245,7 +246,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -281,7 +282,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -319,7 +320,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -363,7 +364,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -421,7 +422,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -461,7 +462,7 @@ public class EasemobIMUsers {
 
 		return objectNode;
 	}
-
+	
 	/**
 	 * 添加好友[单个]
 	 * 
@@ -474,7 +475,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Constants.APPKEY");
@@ -506,7 +507,105 @@ public class EasemobIMUsers {
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
 					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, null, HTTPMethod.METHOD_POST);
+			ObjectNode body = factory.objectNode();
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, body, HTTPMethod.METHOD_POST);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+	
+	/**
+	 * 删除好友
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode deleteFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
+					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
+
+			ObjectNode body = factory.objectNode();
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, body, HTTPMethod.METHOD_DELETE);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+	
+	/**
+	 * 删除好友
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode getFriends(String ownerUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			LOGGER.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			
+			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
+					+ ownerUserPrimaryKey + "/contacts/users");
+
+			ObjectNode body = factory.objectNode();
+			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credentail, body, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -527,7 +626,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + Constants.APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -589,7 +688,11 @@ public class EasemobIMUsers {
 	public static void main(String[] args) {
 		String ownerUserPrimaryKey = "xieyajie";
 		String password = "1111111";
-		imUserLogin(ownerUserPrimaryKey, password);
+//		imUserLogin(ownerUserPrimaryKey, password);
+		
+//		deleteFriendSingle("u1","u2");
+		
+		getFriends("u1");
 	}
 
 }

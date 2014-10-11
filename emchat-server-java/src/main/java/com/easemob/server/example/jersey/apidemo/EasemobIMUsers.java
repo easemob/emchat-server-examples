@@ -14,6 +14,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
+import com.easemob.server.example.jersey.vo.ClientSecretCredentail;
 import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
 import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
@@ -51,7 +52,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -108,7 +109,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -213,7 +214,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -259,7 +260,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -299,7 +300,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -339,7 +340,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -379,7 +380,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -438,7 +439,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -492,7 +493,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -527,7 +528,113 @@ public class EasemobIMUsers {
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
 					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
+			ObjectNode body = factory.objectNode();
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_POST, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+	
+	
+	/**
+	 * 解除好友关系
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * @param friendUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode deleteFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
+			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message",
+					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
+					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
+
+			ObjectNode body = factory.objectNode();
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_DELETE, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return objectNode;
+	}
+	
+	/**
+	 * 查看好友
+	 * 
+	 * @param ownerUserPrimaryKey
+	 * 
+	 * @return
+	 */
+	public static ObjectNode getFriends(String ownerUserPrimaryKey) {
+		ObjectNode objectNode = factory.objectNode();
+
+		// check appKey format
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
+			LOGGER.error("Bad format of Appkey: " + APPKEY);
+
+			objectNode.put("message", "Bad format of Appkey");
+
+			return objectNode;
+		}
+
+		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
+			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			
+			JerseyWebTarget webTarget = null;
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
+					.resolveTemplate("friendUserPrimaryKey", "");
+
+			ObjectNode body = factory.objectNode();
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -548,7 +655,7 @@ public class EasemobIMUsers {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -608,6 +715,10 @@ public class EasemobIMUsers {
 		}
 
 		return arrayNode;
+	}
+	
+	public static void main(String[] args) {
+		getFriends("u1");
 	}
 
 }

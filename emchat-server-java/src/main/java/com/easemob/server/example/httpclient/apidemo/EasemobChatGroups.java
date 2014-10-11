@@ -9,7 +9,6 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
-import com.easemob.server.example.httpclient.vo.ClientSecretCredentail;
 import com.easemob.server.example.httpclient.vo.Credentail;
 import com.easemob.server.example.httpclient.vo.EndPoints;
 import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
@@ -42,7 +41,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -51,13 +50,11 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			/*
-			 * Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-			 * Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			 */
-			Credentail credentail2 = new ClientSecretCredentail(Constants.APP_CLIENT_ID, Constants.APP_CLIENT_SECRET,
-					Roles.USER_ROLE_APPADMIN);
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail2, null,
+
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail, null,
 					HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -76,7 +73,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -111,7 +108,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -155,7 +152,7 @@ public class EasemobChatGroups {
 
 			return objectNode;
 		}
-		if (!dataObjectNode.has("members") || dataObjectNode.path("members").isArray()) {
+		if (!dataObjectNode.has("members") || !dataObjectNode.path("members").isArray()) {
 			LOGGER.error("Property that named members must be provided .");
 
 			objectNode.put("message", "Property that named members must be provided .");
@@ -186,7 +183,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -221,7 +218,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -255,7 +252,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -271,7 +268,9 @@ public class EasemobChatGroups {
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid + "/users");
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+			ObjectNode dataobjectNode = factory.objectNode();
+			
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, dataobjectNode,
 					HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
@@ -289,7 +288,7 @@ public class EasemobChatGroups {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!HTTPClientUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");

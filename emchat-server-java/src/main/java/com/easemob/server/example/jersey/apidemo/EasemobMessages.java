@@ -12,6 +12,7 @@ import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
 import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -43,7 +44,7 @@ public class EasemobMessages {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -101,7 +102,7 @@ public class EasemobMessages {
 	 * 
 	 * @return 请求响应
 	 */
-	public static ObjectNode sendMessages(String targetType, String[] target, ObjectNode msg, String from,
+	public static ObjectNode sendMessages(String targetType, ArrayNode target, ObjectNode msg, String from,
 			ObjectNode ext) {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -109,7 +110,7 @@ public class EasemobMessages {
 		ObjectNode dataNode = factory.objectNode();
 
 		// check appKey format
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -118,7 +119,7 @@ public class EasemobMessages {
 		}
 
 		// check properties that must be provided
-		if ("users".equals(targetType) || "chatgroups".equals(targetType)) {
+		if (!("users".equals(targetType) || "chatgroups".equals(targetType))) {
 			LOGGER.error("TargetType must be users or chatgroups .");
 
 			objectNode.put("message", "TargetType must be users or chatgroups .");
@@ -141,15 +142,15 @@ public class EasemobMessages {
 			webTarget = EndPoints.MESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
 					"app_name", APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataNode, credentail, HTTPMethod.METHOD_POST, null);
 
 			objectNode = (ObjectNode) objectNode.get("data");
-			for (int i = 0; i < target.length; i++) {
-				String resultStr = objectNode.path(target[i]).asText();
+			for (int i = 0; i < target.size(); i++) {
+				String resultStr = objectNode.path(target.path(i).asText()).asText();
 				if ("success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] successfully .", target.path(i).asText()));
 				} else if (!"success".equals(resultStr)) {
-					LOGGER.error(String.format("Message has been send to user[%s] failed .", target[i]));
+					LOGGER.error(String.format("Message has been send to user[%s] failed .", target.path(i).asText()));
 				}
 			}
 

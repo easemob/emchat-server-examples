@@ -57,7 +57,7 @@ class EasemobFiles {
 			return objectNode;
 		}
 
-		if (!JerseyUtils.match("[0-9a-zA-Z]+#[0-9a-zA-Z]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -106,7 +106,7 @@ class EasemobFiles {
 
 		File downLoadedFile = null;
 
-		if (!JerseyUtils.match("[0-9a-zA-Z-_]+#[0-9a-zA-Z-_]+", APPKEY)) {
+		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
 
 			objectNode.put("message", "Bad format of Appkey");
@@ -122,7 +122,8 @@ class EasemobFiles {
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(fileUUID);
-
+			webTarget = webTarget.queryParam("share-secret", "shareSecret").queryParam("Authorization",
+					"Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			headers.add(new BasicNameValuePair("share-secret", shareSecret));
 			headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
@@ -144,8 +145,16 @@ class EasemobFiles {
 	}
 
 	public static void main(String[] args) {
-		File uploadFile = new File("/home/lynch/Downloads/invite1.mp3");
-		mediaUpload(uploadFile);
+		File localPath = new File("/home/lynch/Downloads/invite3.png");
+		String fileUUID = "6f2d3d10-4865-11e4-8de6-33cd2cee963f";
+		String shareSecret = "by09GkhlEeSd_lklcKzQoPlFAO608MunnThPSBO5UB2L6rb6";
+		/*
+		 * { "action" : "post", "application" : "4d7e4ba0-dc4a-11e3-90d5-e1ffbaacdaf5", "path" : "/chatfiles", "uri" :
+		 * "https://a1.easemob.com/easemob-demo/chatdemoui/chatfiles", "entities" : [ { "uuid" :
+		 * "6f2d3d10-4865-11e4-8de6-33cd2cee963f", "type" : "chatfile", "share-secret" :
+		 * "by09GkhlEeSd_lklcKzQoPlFAO608MunnThPSBO5UB2L6rb6" } ], "timestamp" : 1412056122209, "duration" : 3,
+		 * "organization" : "easemob-demo", "applicationName" : "chatdemoui" }
+		 */
+		mediaDownload(fileUUID, shareSecret, localPath, false);
 	}
-
 }

@@ -27,10 +27,4 @@ public interface Constants {
 	// DEFAULT_PASSWORD
 	public static String DEFAULT_PASSWORD = "1234456";
 
-	// DataMigration
-	// SOURCE_SVR_HOST
-	public static String SOURCE_SVR_HOST = PropertiesUtils.getProperties().getProperty("SOURCE_SVR_HOST");
-	// TARGET_SVR_HOST
-	public static String TARGET_SVR_HOST = PropertiesUtils.getProperties().getProperty("TARGET_SVR_HOST");
-
 }
