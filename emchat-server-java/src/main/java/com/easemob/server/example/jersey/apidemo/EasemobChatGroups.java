@@ -326,8 +326,8 @@ public class EasemobChatGroups {
 		ObjectNode dataObjectNode = JsonNodeFactory.instance.objectNode();
 		dataObjectNode.put("groupname", "测试群组");
 		dataObjectNode.put("desc", "测试群组");
-		dataObjectNode.put("approval", "false");
-		dataObjectNode.put("public", "false");
+		dataObjectNode.put("approval", false);
+		dataObjectNode.put("public", false);
 		dataObjectNode.put("owner", "vrhfk5lxsz");
 		ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
 		arrayNode.add("pfxfc9ggkz");
