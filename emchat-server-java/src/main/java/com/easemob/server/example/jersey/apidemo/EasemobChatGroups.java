@@ -328,10 +328,10 @@ public class EasemobChatGroups {
 		dataObjectNode.put("desc", "测试群组");
 		dataObjectNode.put("approval", false);
 		dataObjectNode.put("public", false);
-		dataObjectNode.put("owner", "vrhfk5lxsz");
+		dataObjectNode.put("owner", "5cxhactgdj");
 		ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
-		arrayNode.add("pfxfc9ggkz");
-		arrayNode.add("xffslraxae");
+		arrayNode.add("mh2kbjyop1");
+		arrayNode.add("q4xpsfjfvf");
 		dataObjectNode.put("members", arrayNode);
 		creatChatGroups(dataObjectNode);
 	}

@@ -33,7 +33,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobIMUsers {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
+	private static Logger LOGGER = LoggerFactory
+			.getLogger(EasemobIMUsers.class);
 
 	private static final String APPKEY = Constants.APPKEY;
 
@@ -66,28 +67,33 @@ public class EasemobIMUsers {
 		if (null != dataNode && !dataNode.has("username")) {
 			LOGGER.error("Property that named username must be provided .");
 
-			objectNode.put("message", "Property that named username must be provided .");
+			objectNode.put("message",
+					"Property that named username must be provided .");
 
 			return objectNode;
 		}
 		if (null != dataNode && !dataNode.has("password")) {
 			LOGGER.error("Property that named password must be provided .");
 
-			objectNode.put("message", "Property that named password must be provided .");
+			objectNode.put("message",
+					"Property that named password must be provided .");
 
 			return objectNode;
 		}
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
-					"app_name", APPKEY.split("#")[1]);
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name",
+					APPKEY.split("#")[0]).resolveTemplate("app_name",
+					APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataNode, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataNode,
+					credentail, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,14 +129,16 @@ public class EasemobIMUsers {
 				if (null != jsonNode && !jsonNode.has("username")) {
 					LOGGER.error("Property that named username must be provided .");
 
-					objectNode.put("message", "Property that named username must be provided .");
+					objectNode.put("message",
+							"Property that named username must be provided .");
 
 					return objectNode;
 				}
 				if (null != jsonNode && !jsonNode.has("password")) {
 					LOGGER.error("Property that named password must be provided .");
 
-					objectNode.put("message", "Property that named password must be provided .");
+					objectNode.put("message",
+							"Property that named password must be provided .");
 
 					return objectNode;
 				}
@@ -139,14 +147,17 @@ public class EasemobIMUsers {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
-					"app_name", APPKEY.split("#")[1]);
+			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name",
+					APPKEY.split("#")[0]).resolveTemplate("app_name",
+					APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataArrayNode, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataArrayNode,
+					credentail, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,16 +179,19 @@ public class EasemobIMUsers {
 	 *            生成用户注册的用户总数
 	 * @return
 	 */
-	public static ObjectNode createNewIMUserBatchGen(String usernamePrefix, Long perNumber, Long totalNumber) {
+	public static ObjectNode createNewIMUserBatchGen(String usernamePrefix,
+			Long perNumber, Long totalNumber) {
 		ObjectNode objectNode = factory.objectNode();
 
 		if (totalNumber == 0 || perNumber == 0) {
 			return objectNode;
 		}
 
-		System.out.println("你即将注册" + totalNumber + "个用户，如果大于" + perNumber + "了,会分批注册,每次注册" + perNumber + "个");
+		System.out.println("你即将注册" + totalNumber + "个用户，如果大于" + perNumber
+				+ "了,会分批注册,每次注册" + perNumber + "个");
 
-		ArrayNode genericArrayNode = EasemobIMUsers.genericArrayNode(usernamePrefix, totalNumber);
+		ArrayNode genericArrayNode = EasemobIMUsers.genericArrayNode(
+				usernamePrefix, totalNumber);
 		if (totalNumber <= perNumber) {
 			objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
 		} else {
@@ -187,14 +201,16 @@ public class EasemobIMUsers {
 				tmpArrayNode.add(genericArrayNode.get(i));
 				// 300 records on one migration
 				if ((i + 1) % perNumber == 0) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers
+							.createNewIMUserBatch(genericArrayNode);
 					tmpArrayNode.removeAll();
 					continue;
 				}
 
 				// the rest records that less than the times of 300
 				if (i > (genericArrayNode.size() / perNumber * perNumber - 1)) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers
+							.createNewIMUserBatch(genericArrayNode);
 					tmpArrayNode.removeAll();
 				}
 			}
@@ -226,21 +242,27 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(userPrimaryKey)) {
 			LOGGER.error("The primaryKey that will be useed to query must be provided .");
 
-			objectNode.put("message", "The primaryKey that will be useed to query must be provided .");
+			objectNode
+					.put("message",
+							"The primaryKey that will be useed to query must be provided .");
 
 			return objectNode;
 		}
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey);
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.path(userPrimaryKey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail,
+					HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -270,15 +292,19 @@ public class EasemobIMUsers {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1])
-					.queryParam("ql", "select * where name = '" + username + "'");
+					.queryParam("ql",
+							"select * where name = '" + username + "'");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail,
+					HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -310,14 +336,18 @@ public class EasemobIMUsers {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey);
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.path(userPrimaryKey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail,
+					HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -335,7 +365,8 @@ public class EasemobIMUsers {
 	 * @param queryStr
 	 * @return
 	 */
-	public static ObjectNode deleteIMUserByUsernameBatch(Long limit, String queryStr) {
+	public static ObjectNode deleteIMUserByUsernameBatch(Long limit,
+			String queryStr) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -350,15 +381,19 @@ public class EasemobIMUsers {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).queryParam("ql", queryStr)
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.queryParam("ql", queryStr)
 					.queryParam("limit", String.valueOf(limit));
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail,
+					HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -376,7 +411,8 @@ public class EasemobIMUsers {
 	 * @param dataObjectNode
 	 * @return
 	 */
-	public static ObjectNode modifyIMUserPasswordWithOldPasswd(String userPrimaryKey, ObjectNode dataObjectNode) {
+	public static ObjectNode modifyIMUserPasswordWithOldPasswd(
+			String userPrimaryKey, ObjectNode dataObjectNode) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
@@ -391,8 +427,9 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(userPrimaryKey)) {
 			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message",
-					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
@@ -400,7 +437,8 @@ public class EasemobIMUsers {
 		if (null != dataObjectNode && !dataObjectNode.has("oldpassword")) {
 			LOGGER.error("Property that named oldpassword must be provided .");
 
-			objectNode.put("message", "Property that named oldpassword must be provided .");
+			objectNode.put("message",
+					"Property that named oldpassword must be provided .");
 
 			return objectNode;
 		}
@@ -408,7 +446,8 @@ public class EasemobIMUsers {
 		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
 			LOGGER.error("Property that named newpassword must be provided .");
 
-			objectNode.put("message", "Property that named newpassword must be provided .");
+			objectNode.put("message",
+					"Property that named newpassword must be provided .");
 
 			return objectNode;
 		}
@@ -416,10 +455,13 @@ public class EasemobIMUsers {
 		try {
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.path(userPrimaryKey).path("password");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, null, HTTPMethod.METHOD_PUT, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode,
+					null, HTTPMethod.METHOD_PUT, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -435,7 +477,8 @@ public class EasemobIMUsers {
 	 * @param dataObjectNode
 	 * @return
 	 */
-	public static ObjectNode modifyIMUserPasswordWithAdminToken(String userPrimaryKey, ObjectNode dataObjectNode) {
+	public static ObjectNode modifyIMUserPasswordWithAdminToken(
+			String userPrimaryKey, ObjectNode dataObjectNode) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
@@ -450,8 +493,9 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(userPrimaryKey)) {
 			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message",
-					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
@@ -459,20 +503,25 @@ public class EasemobIMUsers {
 		if (null != dataObjectNode && !dataObjectNode.has("newpassword")) {
 			LOGGER.error("Property that named newpassword must be provided .");
 
-			objectNode.put("message", "Property that named newpassword must be provided .");
+			objectNode.put("message",
+					"Property that named newpassword must be provided .");
 
 			return objectNode;
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(userPrimaryKey).path("password");
+			webTarget = EndPoints.USERS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1])
+					.path(userPrimaryKey).path("password");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_PUT, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode,
+					credentail, HTTPMethod.METHOD_PUT, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -489,7 +538,8 @@ public class EasemobIMUsers {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode addFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+	public static ObjectNode addFriendSingle(String ownerUserPrimaryKey,
+			String friendUserPrimaryKey) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
@@ -504,7 +554,9 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
 			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
@@ -512,24 +564,29 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
 			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
 
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1])
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
-					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
+					.resolveTemplate("friendUserPrimaryKey",
+							friendUserPrimaryKey);
 
 			ObjectNode body = factory.objectNode();
-			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail,
+					HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -537,8 +594,7 @@ public class EasemobIMUsers {
 
 		return objectNode;
 	}
-	
-	
+
 	/**
 	 * 解除好友关系
 	 * 
@@ -547,7 +603,8 @@ public class EasemobIMUsers {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode deleteFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+	public static ObjectNode deleteFriendSingle(String ownerUserPrimaryKey,
+			String friendUserPrimaryKey) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
@@ -562,7 +619,9 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
 			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
@@ -570,24 +629,29 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
 			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
+
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1])
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
-					.resolveTemplate("friendUserPrimaryKey", friendUserPrimaryKey);
+					.resolveTemplate("friendUserPrimaryKey",
+							friendUserPrimaryKey);
 
 			ObjectNode body = factory.objectNode();
-			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail,
+					HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -595,7 +659,7 @@ public class EasemobIMUsers {
 
 		return objectNode;
 	}
-	
+
 	/**
 	 * 查看好友
 	 * 
@@ -618,23 +682,28 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
 			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			
+			Credentail credentail = new UsernamePasswordCredentail(
+					Constants.APP_ADMIN_USERNAME, Constants.APP_ADMIN_PASSWORD,
+					Roles.USER_ROLE_APPADMIN);
+
 			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			webTarget = EndPoints.USERS_ADDFRIENDS_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1])
 					.resolveTemplate("ownerUserPrimaryKey", ownerUserPrimaryKey)
 					.resolveTemplate("friendUserPrimaryKey", "");
 
 			ObjectNode body = factory.objectNode();
-			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, body, credentail,
+					HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -650,7 +719,8 @@ public class EasemobIMUsers {
 	 * @param friendUserPrimaryKeys
 	 * @return
 	 */
-	public static ObjectNode imUserLogin(String ownerUserPrimaryKey, String password) {
+	public static ObjectNode imUserLogin(String ownerUserPrimaryKey,
+			String password) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -665,14 +735,18 @@ public class EasemobIMUsers {
 		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
 			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
 		if (StringUtils.isEmpty(password)) {
 			LOGGER.error("Your password must be provided，the value is username or uuid of imuser.");
 
-			objectNode.put("message", "Your password must be provided，the value is username or uuid of imuser.");
+			objectNode
+					.put("message",
+							"Your password must be provided，the value is username or uuid of imuser.");
 
 			return objectNode;
 		}
@@ -684,14 +758,17 @@ public class EasemobIMUsers {
 			dataNode.put("password", password);
 
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
-			headers.add(new BasicNameValuePair("Content-Type", "application/json"));
+			headers.add(new BasicNameValuePair("Content-Type",
+					"application/json"));
 
-			objectNode = JerseyUtils.sendRequest(
-					EndPoints.TOKEN_APP_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
-							"app_name", APPKEY.split("#")[1]), dataNode, null, HTTPMethod.METHOD_POST, headers);
+			objectNode = JerseyUtils.sendRequest(EndPoints.TOKEN_APP_TARGET
+					.resolveTemplate("org_name", APPKEY.split("#")[0])
+					.resolveTemplate("app_name", APPKEY.split("#")[1]),
+					dataNode, null, HTTPMethod.METHOD_POST, headers);
 
 		} catch (Exception e) {
-			throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
+			throw new RuntimeException(
+					"Some errors ocuured while fetching a token by usename and passowrd .");
 		}
 
 		return objectNode;
@@ -716,9 +793,18 @@ public class EasemobIMUsers {
 
 		return arrayNode;
 	}
-	
+
 	public static void main(String[] args) {
-		getFriends("u1");
+		ObjectNode dataNode = JsonNodeFactory.instance.objectNode();
+		dataNode.put("username", "kenshinntets-Tom1");
+		dataNode.put("password", "12345567");
+//		ObjectNode resNode = createNewIMUserSingle(dataNode);
+		// {"action":"post","application":"4d7e4ba0-dc4a-11e3-90d5-e1ffbaacdaf5","path":"/users","uri":"https://a1.easemob.com/easemob-demo/chatdemoui/users","entities":[{"uuid":"240a5cfa-52d8-11e4-8fd0-a36007b50c18","type":"user","created":1413204899903,"modified":1413204899903,"username":"kenshinntets-Tom1","activated":true}],"timestamp":1413204899902,"duration":298,"organization":"easemob-demo","applicationName":"chatdemoui"}
+		
+//		ObjectNode resNode2 = getIMUsersByPrimaryKey("kenshinntets-Tom1");
+		
+		ObjectNode resNode3 = deleteIMUserByUserPrimaryKey("kenshinntets-Tom1");
+	
 	}
 
 }

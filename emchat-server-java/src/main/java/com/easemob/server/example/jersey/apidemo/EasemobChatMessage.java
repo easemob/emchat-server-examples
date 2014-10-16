@@ -65,7 +65,7 @@ public class EasemobChatMessage {
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
 				webTarget.queryParam("ql", queryStrNode.get("ql").asText());
 			}
-			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
+			if (null != queryStrNode && null != queryStrNode.get("limit") &&!StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
 				webTarget.queryParam("limit", queryStrNode.get("limit").asText());
 			}
 
@@ -95,7 +95,7 @@ public class EasemobChatMessage {
 		String currentTimestamp = String.valueOf(System.currentTimeMillis());
 		String senvenDayAgo = String.valueOf(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000);
 		ObjectNode queryStrNode1 = factory.objectNode();
-		queryStrNode1.put("ql", "select * where " + senvenDayAgo + " < timestamp and timestamp < " + currentTimestamp);
+		queryStrNode1.put("ql", "select * where  timestamp > " + senvenDayAgo + " and timestamp < " + currentTimestamp);
 		ObjectNode messages1 = getChatMessages(queryStrNode1);
 
 		// 聊天消息 分页获取
