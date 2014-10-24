@@ -59,16 +59,16 @@ public class EasemobChatMessage {
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
-			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages");
+			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages");
+			String rest = "";
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
-				chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages?" + "ql="
-						+ queryStrNode.get("ql").asText());
+				rest = "ql="+ queryStrNode.get("ql").asText();
 			}
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
-				chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/messages?" + "limit"
-						+ queryStrNode.get("limit").asText());
+				rest = rest + "&limit=" + queryStrNode.get("limit").asText();
 			}
-
+			chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + rest);
+			
 			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credentail, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -87,7 +87,7 @@ public class EasemobChatMessage {
 
 		// 聊天消息 获取最新的20条记录
 		ObjectNode queryStrNode = factory.objectNode();
-		queryStrNode.put("ql", "order+by+timestamp+desc");
+		queryStrNode.put("ql", "select+*+where+from='mm1'+and+to='mm2'");
 		queryStrNode.put("limit", "20");
 		ObjectNode messages = getChatMessages(queryStrNode);
 

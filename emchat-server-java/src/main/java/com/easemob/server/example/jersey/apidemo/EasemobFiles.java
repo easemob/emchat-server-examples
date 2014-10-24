@@ -155,6 +155,9 @@ class EasemobFiles {
 		 * "by09GkhlEeSd_lklcKzQoPlFAO608MunnThPSBO5UB2L6rb6" } ], "timestamp" : 1412056122209, "duration" : 3,
 		 * "organization" : "easemob-demo", "applicationName" : "chatdemoui" }
 		 */
-		mediaDownload(fileUUID, shareSecret, localPath, false);
+//		mediaDownload(fileUUID, shareSecret, localPath, false);
+		
+		File uploadFile = new File("/home/lynch/music.MP3");
+		mediaUpload(uploadFile);
 	}
 }
