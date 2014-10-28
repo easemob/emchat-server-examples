@@ -571,7 +571,7 @@ public class EasemobIMUsers {
 	}
 	
 	/**
-	 * 删除好友
+	 * 获取用户所有好友
 	 * 
 	 * @param ownerUserPrimaryKey
 	 * 
