@@ -95,7 +95,7 @@ public class ClientSecretCredentail extends Credentail {
 					JsonNode json = mapper.readTree(jp);
 
 					String accessToken = json.get("access_token").asText();
-					Long expiredAt = json.get("expires_in").asLong() + 7 * 24 * 60 * 60;
+					Long expiredAt = System.currentTimeMillis() + json.get("expires_in").asLong();
 
 					token = new Token(accessToken, expiredAt);
 				}
