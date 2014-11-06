@@ -95,7 +95,7 @@ public class UsernamePasswordCredentail extends Credentail {
 					JsonNode json = mapper.readTree(jp);
 
 					String accessToken = json.get("access_token").asText();
-					Long expiredAt = System.currentTimeMillis() + tokenRequest.get("expires_in").asLong();
+					Long expiredAt = System.currentTimeMillis() + json.get("expires_in").asLong();
 
 					token = new Token(accessToken, expiredAt);
 				}
