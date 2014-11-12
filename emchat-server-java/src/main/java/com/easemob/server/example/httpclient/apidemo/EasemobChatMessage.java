@@ -67,6 +67,9 @@ public class EasemobChatMessage {
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
 				rest = rest + "&limit=" + queryStrNode.get("limit").asText();
 			}
+			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("cursor").asText())) {
+				rest = rest + "&cursor=" + queryStrNode.get("cursor").asText();
+			}
 			chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + rest);
 			
 			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credentail, null, HTTPMethod.METHOD_GET);
