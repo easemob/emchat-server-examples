@@ -63,10 +63,13 @@ public class EasemobChatMessage {
 			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
-				webTarget.queryParam("ql", queryStrNode.get("ql").asText());
+				webTarget = webTarget.queryParam("ql", queryStrNode.get("ql").asText());
 			}
 			if (null != queryStrNode && null != queryStrNode.get("limit") &&!StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
-				webTarget.queryParam("limit", queryStrNode.get("limit").asText());
+				webTarget = webTarget.queryParam("limit", queryStrNode.get("limit").asText());
+			}
+			if (null != queryStrNode && null != queryStrNode.get("cursor") &&!StringUtils.isEmpty(queryStrNode.get("cursor").asText())) {
+				webTarget = webTarget.queryParam("cursor", queryStrNode.get("cursor").asText());
 			}
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
