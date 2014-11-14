@@ -186,7 +186,7 @@ def delete_user(org, app, auth, username):
     DELETE /{org}/{app}/users/{username}
     """
     url = EASEMOB_HOST+("/%s/%s/users/%s" % (org, app, username))
-    return post(url, {}, auth)
+    return delete(url, auth)
 
 def send_file(org, app, auth, file_path, secret=True):
     """上传文件
