@@ -2,6 +2,7 @@ package com.easemob.server.example.httpclient.apidemo;
 
 import java.net.URL;
 
+import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +11,9 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
-import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.Credential;
 import com.easemob.server.example.httpclient.vo.EndPoints;
-import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredential;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,6 +30,10 @@ public class EasemobMessages {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
 
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
 	private static final String APPKEY = Constants.APPKEY;
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
@@ -36,11 +41,11 @@ public class EasemobMessages {
 	/**
 	 * 检测用户是否在线
 	 * 
-	 * @param token
-	 * @param user
+	 * @param username
+     *
 	 * @return
 	 */
-	public static ObjectNode getUserStatus(String targetUserPrimaryKey) {
+	public static ObjectNode getUserStatus(String username) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -54,7 +59,7 @@ public class EasemobMessages {
 		}
 
 		// check properties that must be provided
-		if (StringUtils.isEmpty(targetUserPrimaryKey)) {
+		if (StringUtils.isEmpty(username)) {
 			LOGGER.error("You must provided a targetUserPrimaryKey .");
 
 			objectNode.put("message", "You must provided a targetUserPrimaryKey .");
@@ -64,19 +69,18 @@ public class EasemobMessages {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+
 
 			URL userStatusUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ targetUserPrimaryKey + "/status");
+					+ username + "/status");
 
-			objectNode = HTTPClientUtils.sendHTTPRequest(userStatusUrl, credentail, null, HTTPMethod.METHOD_GET);
+			objectNode = HTTPClientUtils.sendHTTPRequest(userStatusUrl, credential, null, HTTPMethod.METHOD_GET);
 
-			String userStatus = objectNode.get("data").path(targetUserPrimaryKey).asText();
+			String userStatus = objectNode.get("data").path(username).asText();
 			if ("online".equals(userStatus)) {
-				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserPrimaryKey, userStatus));
+				LOGGER.error(String.format("The status of user[%s] is : [%s] .", username, userStatus));
 			} else if ("offline".equals(userStatus)) {
-				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserPrimaryKey, userStatus));
+				LOGGER.error(String.format("The status of user[%s] is : [%s] .", username, userStatus));
 			}
 
 		} catch (Exception e) {
@@ -135,10 +139,7 @@ public class EasemobMessages {
 			dataNode.put("from", from);
 			dataNode.put("ext", ext);
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MESSAGES_URL, credentail, dataNode,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.MESSAGES_URL, credential, dataNode,
 					HTTPMethod.METHOD_POST);
 
 			objectNode = (ObjectNode) objectNode.get("data");

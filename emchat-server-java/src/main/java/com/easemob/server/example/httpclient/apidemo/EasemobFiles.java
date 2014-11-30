@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
-import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.Credential;
 import com.easemob.server.example.httpclient.vo.EndPoints;
-import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredential;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -35,14 +36,15 @@ public class EasemobFiles {
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
 	/**
 	 * 图片/语音文件上传
 	 * 
-	 * 
-	 * @param appKey
-	 * @param host
-	 * @param accessToken
-	 * @param filePath
+	 * @param uploadFile
+     *
 	 */
 	public static ObjectNode mediaUpload(File uploadFile) {
 
@@ -67,13 +69,10 @@ public class EasemobFiles {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			headers.add(new BasicNameValuePair("restrict-access", "true"));
 
-			objectNode = HTTPClientUtils.uploadFile(EndPoints.CHATFILES_URL, uploadFile, credentail, headers);
+			objectNode = HTTPClientUtils.uploadFile(EndPoints.CHATFILES_URL, uploadFile, credential, headers);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,9 +111,6 @@ public class EasemobFiles {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			if (!StringUtils.isEmpty(shareSecret)) {
 				headers.add(new BasicNameValuePair("share-secret", shareSecret));
@@ -126,7 +122,7 @@ public class EasemobFiles {
 
 			URL mediaDownloadUrl = HTTPClientUtils
 					.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + fileUUID);
-			downLoadedFile = HTTPClientUtils.downLoadFile(mediaDownloadUrl, credentail, headers, localPath);
+			downLoadedFile = HTTPClientUtils.downLoadFile(mediaDownloadUrl, credential, headers, localPath);
 
 		} catch (Exception e) {
 			e.printStackTrace();

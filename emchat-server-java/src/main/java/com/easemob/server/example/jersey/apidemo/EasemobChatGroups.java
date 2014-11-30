@@ -1,5 +1,8 @@
 package com.easemob.server.example.jersey.apidemo;
 
+import com.easemob.server.example.jersey.vo.ClientSecretCredential;
+import com.easemob.server.example.jersey.vo.Credential;
+import com.easemob.server.example.jersey.vo.UsernamePasswordCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
@@ -9,9 +12,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
-import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -27,8 +28,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class EasemobChatGroups {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
-	
-	public static void main(String[] args) {
+
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    public static void main(String[] args) {
 		/** 获取APP中所有的群组ID 
 		 * curl示例: 
 		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups" -H "Authorization: Bearer YWMtP_8IisA-EeK-a5cNq4Jt3QAAAT7fI10IbPuKdRxUTjA9CNiZMnQIgk0LEUE"
@@ -151,14 +157,11 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,14 +189,11 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupIDs.toString());
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -265,14 +265,11 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credential, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -299,14 +296,11 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -334,14 +328,11 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -369,15 +360,12 @@ public class EasemobChatGroups {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
 					.path(userprimarykey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_POST, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -403,16 +391,12 @@ public class EasemobChatGroups {
 		}
 
 		try {
-
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
 					.path(userprimarykey);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_DELETE, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_DELETE, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -442,9 +426,8 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			objectNode = JerseyUtils.sendRequest(EndPoints.USERS_TARGET.path(username).path("joined_chatgroups"), null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(EndPoints.USERS_TARGET.path(username).path("joined_chatgroups"), null,
+                    credential, HTTPMethod.METHOD_GET, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -480,9 +463,8 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			objectNode = JerseyUtils.sendRequest(EndPoints.CHATGROUPS_TARGET.path(toAddBacthChatgroupid).path("users"), usernames, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(EndPoints.CHATGROUPS_TARGET.path(toAddBacthChatgroupid).path("users"), usernames,
+                    credential, HTTPMethod.METHOD_POST, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

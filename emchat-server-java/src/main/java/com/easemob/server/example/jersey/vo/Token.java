@@ -21,7 +21,7 @@ public class Token {
 		this.expiredAt = expiredAt;
 	}
 
-	public static void applyAuthentication(Invocation.Builder builder, Credentail credentail) {
+	public static void applyAuthentication(Invocation.Builder builder, Credential credentail) {
 		applyAuthentication(builder, credentail.getToken());
 	}
 

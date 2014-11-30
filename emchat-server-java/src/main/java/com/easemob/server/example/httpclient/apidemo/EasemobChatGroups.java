@@ -2,6 +2,8 @@ package com.easemob.server.example.httpclient.apidemo;
 
 import java.net.URL;
 
+import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +12,8 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
-import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.Credential;
 import com.easemob.server.example.httpclient.vo.EndPoints;
-import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,7 +30,12 @@ public class EasemobChatGroups {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
 
-	public static void main(String[] args) {
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    public static void main(String[] args) {
 		/** 获取APP中所有的群组ID 
 		 * curl示例: 
 		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups" -H "Authorization: Bearer YWMtP_8IisA-EeK-a5cNq4Jt3QAAAT7fI10IbPuKdRxUTjA9CNiZMnQIgk0LEUE"
@@ -145,9 +151,7 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credential, null,
 					HTTPMethod.METHOD_GET);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,11 +175,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL groupDetailsByChatgroupidUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/chatgroups/" + chatgroupIDs.toString());
-			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(groupDetailsByChatgroupidUrl, credential, null,
 					HTTPMethod.METHOD_GET);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,9 +232,7 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credentail, dataObjectNode,
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.CHATGROUPS_URL, credential, dataObjectNode,
 					HTTPMethod.METHOD_POST);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -255,11 +255,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL deleteChatGroupsUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid);
-			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(deleteChatGroupsUrl, credential, null,
 					HTTPMethod.METHOD_DELETE);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -282,11 +280,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid + "/users");
-			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credential, null,
 					HTTPMethod.METHOD_GET);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -309,12 +305,10 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid + "/users/" + userprimarykey);
 			ObjectNode dataobjectNode = factory.objectNode();
-			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, dataobjectNode,
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credential, dataobjectNode,
 					HTTPMethod.METHOD_POST);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -337,11 +331,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
 					+ chatgroupid + "/users/" + userprimarykey);
-			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credential, null,
 					HTTPMethod.METHOD_DELETE);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -371,11 +363,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL getJoinedChatgroupsForIMUserUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/users/" + username + "/joined_chatgroups");
-			objectNode = HTTPClientUtils.sendHTTPRequest(getJoinedChatgroupsForIMUserUrl, credentail, null,
+			objectNode = HTTPClientUtils.sendHTTPRequest(getJoinedChatgroupsForIMUserUrl, credential, null,
 					HTTPMethod.METHOD_GET);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -412,11 +402,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 			URL getJoinedChatgroupsForIMUserUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
 					+ "/chatgroups/" + toAddBacthChatgroupid + "/users");
-			objectNode = HTTPClientUtils.sendHTTPRequest(getJoinedChatgroupsForIMUserUrl, credentail, usernames,
+			objectNode = HTTPClientUtils.sendHTTPRequest(getJoinedChatgroupsForIMUserUrl, credential, usernames,
 					HTTPMethod.METHOD_POST);
 		} catch (Exception e) {
 			e.printStackTrace();

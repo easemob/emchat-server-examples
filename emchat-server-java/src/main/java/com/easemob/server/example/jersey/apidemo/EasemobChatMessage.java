@@ -1,5 +1,7 @@
 package com.easemob.server.example.jersey.apidemo;
 
+import com.easemob.server.example.jersey.vo.ClientSecretCredential;
+import com.easemob.server.example.jersey.vo.Credential;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
@@ -9,9 +11,7 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
-import com.easemob.server.example.jersey.vo.Credentail;
 import com.easemob.server.example.jersey.vo.EndPoints;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -31,15 +31,16 @@ public class EasemobChatMessage {
 
 	private static final String APPKEY = Constants.APPKEY;
 
-	/**
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    /**
 	 * 获取聊天消息
 	 * 
-	 * @param appKey
-	 * @param host
-	 * @param token
-	 * @param reqBody
-	 * @param method
-	 * @param uuid
+	 * @param queryStrNode
+	 *
 	 */
 	public static ObjectNode getChatMessages(ObjectNode queryStrNode) {
 
@@ -56,9 +57,6 @@ public class EasemobChatMessage {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATMESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
@@ -72,7 +70,7 @@ public class EasemobChatMessage {
 				webTarget = webTarget.queryParam("cursor", queryStrNode.get("cursor").asText());
 			}
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();

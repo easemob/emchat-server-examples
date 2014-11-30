@@ -2,6 +2,7 @@ package com.easemob.server.example.httpclient.apidemo;
 
 import java.net.URL;
 
+import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,8 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
-import com.easemob.server.example.httpclient.vo.Credentail;
-import com.easemob.server.example.httpclient.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.httpclient.vo.Credential;
+import com.easemob.server.example.httpclient.vo.UsernamePasswordCredential;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -31,15 +32,16 @@ public class EasemobChatMessage {
 
 	private static final String APPKEY = Constants.APPKEY;
 
-	/**
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    /**
 	 * 获取聊天消息
 	 * 
-	 * @param appKey
-	 * @param host
-	 * @param token
-	 * @param reqBody
-	 * @param method
-	 * @param uuid
+	 * @param queryStrNode
+	 *
 	 */
 	public static ObjectNode getChatMessages(ObjectNode queryStrNode) {
 
@@ -56,9 +58,6 @@ public class EasemobChatMessage {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages");
 			String rest = "";
 			if (null != queryStrNode && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
@@ -72,7 +71,7 @@ public class EasemobChatMessage {
 			}
 			chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + rest);
 			
-			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credentail, null, HTTPMethod.METHOD_GET);
+			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credential, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
 			e.printStackTrace();

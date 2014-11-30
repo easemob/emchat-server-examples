@@ -1,5 +1,6 @@
 package com.easemob.server.example.jersey.apidemo;
 
+import com.easemob.server.example.jersey.vo.ClientSecretCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
@@ -9,9 +10,9 @@ import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
-import com.easemob.server.example.jersey.vo.Credentail;
+import com.easemob.server.example.jersey.vo.Credential;
 import com.easemob.server.example.jersey.vo.EndPoints;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.jersey.vo.UsernamePasswordCredential;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,11 +33,15 @@ public class EasemobMessages {
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
-	/**
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    /**
 	 * 检测用户是否在线
 	 * 
-	 * @param token
-	 * @param user
+	 * @param targetUserPrimaryKey
 	 * @return
 	 */
 	public static ObjectNode getUserStatus(String targetUserPrimaryKey) {
@@ -63,14 +68,11 @@ public class EasemobMessages {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(targetUserPrimaryKey).path("status");
 
-			objectNode = JerseyUtils.sendRequest(webTarget, null, credentail, HTTPMethod.METHOD_GET, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
 			String userStatus = objectNode.get("data").path(targetUserPrimaryKey).asText();
 			if ("online".equals(userStatus)) {
@@ -135,14 +137,11 @@ public class EasemobMessages {
 			dataNode.put("from", from);
 			dataNode.put("ext", ext);
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.MESSAGES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
 					"app_name", APPKEY.split("#")[1]);
 
-			objectNode = JerseyUtils.sendRequest(webTarget, dataNode, credentail, HTTPMethod.METHOD_POST, null);
+			objectNode = JerseyUtils.sendRequest(webTarget, dataNode, credential, HTTPMethod.METHOD_POST, null);
 
 			objectNode = (ObjectNode) objectNode.get("data");
 			for (int i = 0; i < target.size(); i++) {

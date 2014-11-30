@@ -1,10 +1,7 @@
-package com.easemob.server.example.httpclient.vo;
+package com.easemob.server.example.jersey.vo;
 
-import java.net.URL;
+import org.glassfish.jersey.client.JerseyWebTarget;
 
-import org.apache.http.client.HttpClient;
-
-import com.easemob.server.example.httpclient.utils.HTTPClientUtils;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
@@ -13,19 +10,16 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
  * @author Lynch 2014-09-15
  *
  */
-public abstract class Credentail {
+public abstract class Credential {
 
 	protected String grantType;
 	protected String tokenKey1;
 	protected String tokenKey2;
-
 	protected JsonNodeFactory factory = new JsonNodeFactory(false);
-
-	protected HttpClient client = HTTPClientUtils.getClient(true);
 
 	protected Token token;
 
-	protected abstract URL getUrl();
+	protected abstract JerseyWebTarget getTokenRequestTarget();
 
 	protected abstract GrantType getGrantType();
 
@@ -33,15 +27,15 @@ public abstract class Credentail {
 		CLIENT_CREDENTIALS, PASSWORD
 	}
 
-	public Credentail() {
+	public Credential() {
 	}
 
-	public Credentail(String tokenKey1, String tokenKey2) {
+	public Credential(String tokenKey1, String tokenKey2) {
 		this.tokenKey1 = tokenKey1;
 		this.tokenKey2 = tokenKey2;
 	}
 
-	public Credentail(Token token) {
+	public Credential(Token token) {
 		this.token = token;
 	}
 
@@ -72,7 +66,7 @@ public abstract class Credentail {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Credentail other = (Credentail) obj;
+		Credential other = (Credential) obj;
 		if (grantType == null) {
 			if (other.grantType != null)
 				return false;
@@ -95,4 +89,5 @@ public abstract class Credentail {
 			return false;
 		return true;
 	}
+
 }

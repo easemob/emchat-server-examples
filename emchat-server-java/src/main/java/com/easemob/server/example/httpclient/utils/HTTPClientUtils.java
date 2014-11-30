@@ -38,7 +38,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
-import com.easemob.server.example.httpclient.vo.Credentail;
+import com.easemob.server.example.httpclient.vo.Credential;
 import com.easemob.server.example.httpclient.vo.Token;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -64,7 +64,7 @@ public class HTTPClientUtils {
 	 * @param str
 	 * @return
 	 */
-	public static ObjectNode sendHTTPRequest(URL url, Credentail credentail, Object dataBody, String method) {
+	public static ObjectNode sendHTTPRequest(URL url, Credential credentail, Object dataBody, String method) {
 
 		HttpClient httpClient = getClient(true);
 
@@ -138,7 +138,7 @@ public class HTTPClientUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(URL url, Credentail credentail, List<NameValuePair> headers, File localPath) {
+	public static File downLoadFile(URL url, Credential credentail, List<NameValuePair> headers, File localPath) {
 
 		HttpClient httpClient = getClient(true);
 
@@ -182,7 +182,7 @@ public class HTTPClientUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode uploadFile(URL url, File file, Credentail credentail, List<NameValuePair> headers)
+	public static ObjectNode uploadFile(URL url, File file, Credential credentail, List<NameValuePair> headers)
 			throws RuntimeException {
 		HttpClient httpClient = getClient(true);
 

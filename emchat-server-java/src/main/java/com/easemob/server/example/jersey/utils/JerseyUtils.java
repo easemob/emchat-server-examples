@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.comm.HTTPMethod;
-import com.easemob.server.example.jersey.vo.Credentail;
+import com.easemob.server.example.jersey.vo.Credential;
 import com.easemob.server.example.jersey.vo.Token;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -58,7 +58,7 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credentail credentail,
+	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credential credentail,
 			String method, List<NameValuePair> headers) throws RuntimeException {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -123,7 +123,7 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credentail credentail,
+	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credential credentail,
 			List<NameValuePair> headers, File localPath) throws IOException {
 
 		Invocation.Builder inBuilder = jerseyWebTarget.request();
@@ -158,7 +158,7 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, Credentail credentail,
+	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, Credential credentail,
 			List<NameValuePair> headers) throws RuntimeException {
 		ObjectNode objectNode = factory.objectNode();
 

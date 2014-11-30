@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easemob.server.example.jersey.vo.ClientSecretCredential;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
@@ -13,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.Roles;
 import com.easemob.server.example.jersey.utils.JerseyUtils;
-import com.easemob.server.example.jersey.vo.Credentail;
+import com.easemob.server.example.jersey.vo.Credential;
 import com.easemob.server.example.jersey.vo.EndPoints;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredentail;
+import com.easemob.server.example.jersey.vo.UsernamePasswordCredential;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -35,14 +36,15 @@ class EasemobFiles {
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
-	/**
+    // 通过app的client_id和client_secret来获取app管理员token
+    private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+
+
+    /**
 	 * 图片/语音文件上传
 	 * 
-	 * 
-	 * @param appKey
-	 * @param host
-	 * @param accessToken
-	 * @param filePath
+	 * @param uploadFile
 	 */
 	public static ObjectNode mediaUpload(File uploadFile) {
 
@@ -66,10 +68,6 @@ class EasemobFiles {
 		}
 
 		try {
-
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
 					"app_name", APPKEY.split("#")[1]);
@@ -77,7 +75,7 @@ class EasemobFiles {
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			headers.add(new BasicNameValuePair("restrict-access", "true"));
 
-			objectNode = JerseyUtils.uploadFile(webTarget, uploadFile, credentail, headers);
+			objectNode = JerseyUtils.uploadFile(webTarget, uploadFile, credential, headers);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,9 +114,6 @@ class EasemobFiles {
 
 		try {
 
-			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
-					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
-
 			JerseyWebTarget webTarget = null;
 			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(fileUUID);
@@ -131,7 +126,7 @@ class EasemobFiles {
 				headers.add(new BasicNameValuePair("thumbnail", "true"));
 			}
 
-			downLoadedFile = JerseyUtils.downLoadFile(webTarget, credentail, headers, localPath);
+			downLoadedFile = JerseyUtils.downLoadFile(webTarget, credential, headers, localPath);
 
 		} catch (Exception e) {
 			e.printStackTrace();

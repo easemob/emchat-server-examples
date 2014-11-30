@@ -3,64 +3,75 @@ package com.easemob.server.example.jersey.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.jersey.client.JerseyWebTarget;
 
 import com.easemob.server.example.comm.Constants;
-import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.Roles;
-import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * ClientSecretCredentail
+ * UsernamePasswordCredentail
  * 
  * @author Lynch 2014-09-15
  *
  */
-public class ClientSecretCredentail extends Credentail {
+public class UsernamePasswordCredential extends Credential {
 
-	private static JerseyWebTarget CLIENT_TOKEN_TARGET = null;
+	private static JerseyWebTarget USERNAMEPASSWORD_TOKEN_TARGET = null;
 
-	public ClientSecretCredentail(String clientID, String clientSecret, String role) {
-		super(clientID, clientSecret);
+	public UsernamePasswordCredential(String username, String password, String role) {
+		super(username, password);
 
 		if (role.equals(Roles.USER_ROLE_ORGADMIN)) {
 			// ORG管理员
-			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
+			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_ORG_TARGET;
 		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
-			CLIENT_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET
-					.resolveTemplate("org_name", Constants.APPKEY.split("#")[0]).resolveTemplate("app_name",
-							Constants.APPKEY.split("#")[1]);
+			USERNAMEPASSWORD_TOKEN_TARGET = EndPoints.TOKEN_APP_TARGET.resolveTemplate("org_name",
+					Constants.APPKEY.split("#")[0]).resolveTemplate("app_name", Constants.APPKEY.split("#")[1]);
 		}
 	}
 
 	@Override
 	protected GrantType getGrantType() {
-		return GrantType.CLIENT_CREDENTIALS;
+		return GrantType.PASSWORD;
 	}
 
 	@Override
 	protected JerseyWebTarget getTokenRequestTarget() {
-		return CLIENT_TOKEN_TARGET;
+		return USERNAMEPASSWORD_TOKEN_TARGET;
 	}
 
 	@Override
 	public Token getToken() {
-
 		if (null == token || token.isExpired()) {
 			try {
 				ObjectNode objectNode = factory.objectNode();
-				objectNode.put("grant_type", "client_credentials");
-				objectNode.put("client_id", tokenKey1);
-				objectNode.put("client_secret", tokenKey2);
+				objectNode.put("grant_type", "password");
+				objectNode.put("username", tokenKey1);
+				objectNode.put("password", tokenKey2);
+
 				List<NameValuePair> headers = new ArrayList<NameValuePair>();
 				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
-				ObjectNode tokenRequest = JerseyUtils.sendRequest(getTokenRequestTarget(), objectNode, null,
-						HTTPMethod.METHOD_POST, headers);
+				Invocation.Builder inBuilder = getTokenRequestTarget().request();
+
+				if (null != headers && !headers.isEmpty()) {
+
+					for (NameValuePair nameValuePair : headers) {
+						inBuilder.header(nameValuePair.getName(), nameValuePair.getValue());
+					}
+
+				}
+
+				ObjectNode tokenRequest = inBuilder.post(Entity.entity(objectNode, MediaType.APPLICATION_JSON),
+						ObjectNode.class);
 
 				if (null != tokenRequest.get("error")) {
 					return token;
@@ -70,6 +81,7 @@ public class ClientSecretCredentail extends Credentail {
 				Long expiredAt = System.currentTimeMillis() + tokenRequest.get("expires_in").asLong();
 
 				token = new Token(accessToken, expiredAt);
+
 			} catch (Exception e) {
 				throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
 			}

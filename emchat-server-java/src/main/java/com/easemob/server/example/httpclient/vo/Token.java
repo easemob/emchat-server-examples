@@ -21,7 +21,7 @@ public class Token {
 		this.expiredAt = expiredAt;
 	}
 
-	public static void applyAuthentication(HttpEntityEnclosingRequestBase httpMethodEntity, Credentail credentail) {
+	public static void applyAuthentication(HttpEntityEnclosingRequestBase httpMethodEntity, Credential credentail) {
 		applyAuthentication(httpMethodEntity, credentail.getToken());
 	}
 
@@ -29,7 +29,7 @@ public class Token {
 		httpMethodEntity.addHeader("Authorization", "Bearer " + token.toString());
 	}
 
-	public static void applyAuthentication(HttpRequestBase httpMethodEntity, Credentail credentail) {
+	public static void applyAuthentication(HttpRequestBase httpMethodEntity, Credential credentail) {
 		applyAuthentication(httpMethodEntity, credentail.getToken());
 	}
 

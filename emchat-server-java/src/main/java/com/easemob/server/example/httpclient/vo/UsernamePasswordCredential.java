@@ -23,53 +23,53 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * ClientSecretCredentail
+ * UsernamePasswordCredentail
  * 
  * @author Lynch 2014-09-15
  *
  */
-public class ClientSecretCredentail extends Credentail {
+public class UsernamePasswordCredential extends Credential {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientSecretCredentail.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UsernamePasswordCredential.class);
 
-	private static URL CLIENTSECRETCREDENTAIL_TOKEN_URL = null;
+	private static URL USERNAMEPASSWORD_TOKEN_URL = null;
 
-	@Override
-	protected URL getUrl() {
-		return CLIENTSECRETCREDENTAIL_TOKEN_URL;
-	}
-
-	public ClientSecretCredentail(String clientID, String clientSecret, String role) {
-		super(clientID, clientSecret);
-
+	public UsernamePasswordCredential(String username, String password, String role) {
+		super(username, password);
 		if (role.equals(Roles.USER_ROLE_ORGADMIN)) {
 			// ORG管理员
-			CLIENTSECRETCREDENTAIL_TOKEN_URL = EndPoints.TOKEN_ORG_URL;
+			USERNAMEPASSWORD_TOKEN_URL = EndPoints.TOKEN_ORG_URL;
 		} else if (role.equals(Roles.USER_ROLE_APPADMIN) || role.equals(Roles.USER_ROLE_IMUSER)) {
 			// APP管理员、IM用户
-			CLIENTSECRETCREDENTAIL_TOKEN_URL = EndPoints.TOKEN_APP_URL;
+			USERNAMEPASSWORD_TOKEN_URL = EndPoints.TOKEN_APP_URL;
 		}
 	}
 
 	@Override
+	protected URL getUrl() {
+		return USERNAMEPASSWORD_TOKEN_URL;
+	}
+
+	@Override
 	protected GrantType getGrantType() {
-		return GrantType.CLIENT_CREDENTIALS;
+		return GrantType.PASSWORD;
 	}
 
 	@Override
 	public Token getToken() {
-
 		if (null == token || token.isExpired()) {
 			try {
+
 				ObjectNode objectNode = factory.objectNode();
-				objectNode.put("grant_type", "client_credentials");
-				objectNode.put("client_id", tokenKey1);
-				objectNode.put("client_secret", tokenKey2);
-				List<NameValuePair> headers = new ArrayList<NameValuePair>();
-				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
+				objectNode.put("grant_type", "password");
+				objectNode.put("username", tokenKey1);
+				objectNode.put("password", tokenKey2);
 
 				HttpPost httpPost = new HttpPost();
-				httpPost.setURI(CLIENTSECRETCREDENTAIL_TOKEN_URL.toURI());
+				httpPost.setURI(USERNAMEPASSWORD_TOKEN_URL.toURI());
+
+				List<NameValuePair> headers = new ArrayList<NameValuePair>();
+				headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
 				if (null != headers && !headers.isEmpty()) {
 					for (NameValuePair nameValuePair : headers) {
@@ -99,6 +99,7 @@ public class ClientSecretCredentail extends Credentail {
 
 					token = new Token(accessToken, expiredAt);
 				}
+
 			} catch (Exception e) {
 				throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
 			}
@@ -106,5 +107,4 @@ public class ClientSecretCredentail extends Credentail {
 
 		return token;
 	}
-
 }
