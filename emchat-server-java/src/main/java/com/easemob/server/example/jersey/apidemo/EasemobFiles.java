@@ -36,10 +36,97 @@ class EasemobFiles {
 
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
+    // 以下两种方式任选其一
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
             Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+    // 通过org管理员的username和password来获取org管理员token
+    /*private static Credential credentialOrgAdmin = new ClientSecretCredential(Constants.ORG_ADMIN_USERNAME,
+            Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);*/
 
+    public static void main(String[] args) {
+        /**
+         * 上传图片文件
+         * curl示例
+         * curl --verbose --header "Authorization: Bearer {token}" --header "restrict-access:true" --form file=@/Users/stliu/a.jpg
+         * https://a1.easemob.com/easemob-playground/test1/chatfiles
+         */
+        File uploadImgFile = new File("/home/lynch/Pictures/24849.jpg");
+        ObjectNode imgDataNode = mediaUpload(uploadImgFile);
+        if (null != imgDataNode) {
+            LOGGER.info("上传图片文件: " + imgDataNode.toString());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * 下载图片文件
+         * curl示例
+         * curl -O -H "share-secret: " --header "Authorization: Bearer {token}" -H "Accept: application/octet-stream"
+         * http://a1.easemob.com/easemob-playground/test1/chatfiles/0c0f5f3a-e66b-11e3-8863-f1c202c2b3ae
+         */
+        String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
+        String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
+        File downloadedImgFileLocalPath = new File(uploadImgFile.getPath().substring(0, uploadImgFile.getPath().lastIndexOf(".")) + "-1.jpg");
+        boolean isThumbnail = false;
+        ObjectNode downloadImgDataNode = mediaDownload(imgFileUUID, shareSecret, downloadedImgFileLocalPath, isThumbnail);
+        if (null != downloadImgDataNode) {
+            LOGGER.info("下载图片文件: " + downloadImgDataNode.toString());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * 下载缩略图
+         * curl示例
+         * curl -O -H "thumbnail: true" -H "share-secret: {secret}" -H "Authorization: Bearer {token}" -H "Accept: application/octet-stream"
+         * http://a1.easemob.com/easemob-playground/test1/chatfiles/0c0f5f3a-e66b-11e3-8863-f1c202c2b3ae
+         */
+        File downloadedLocalPathThumnailImg = new File(uploadImgFile.getPath().substring(0, uploadImgFile.getPath().lastIndexOf(".")) + "-2.jpg");
+        isThumbnail = true;
+        ObjectNode downloadThumnailImgDataNode = mediaDownload(imgFileUUID, shareSecret, downloadedLocalPathThumnailImg, isThumbnail);
+        if (null != downloadThumnailImgDataNode) {
+            LOGGER.info("下载缩略图: " + downloadThumnailImgDataNode.toString());
+        }
+
+        /**
+         * 上传语音文件
+         * curl示例
+         * curl --verbose --header "Authorization: Bearer {token}" --header "restrict-access:true" --form file=@/Users/stliu/music.MP3
+         * https://a1.easemob.com/easemob-playground/test1/chatfiles
+         */
+        File uploadAudioFile = new File("/home/lynch/Music/music.MP3");
+        ObjectNode audioDataNode = mediaUpload(uploadAudioFile);
+        if (null != audioDataNode) {
+            LOGGER.info("上传语音文件: " + audioDataNode.toString());
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * 下载语音文件
+         * curl示例
+         * curl -O -H "share-secret: {secret}" --header "Authorization: Bearer {token}" -H "Accept: application/octet-stream"
+         * http://a1.easemob.com/easemob-playground/test1/chatfiles/0c0f5f3a-e66b-11e3-8863-f1c202c2b3ae
+         */
+        String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
+        String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
+        File audioFileLocalPath = new File(uploadAudioFile.getPath().substring(0, uploadAudioFile.getPath().lastIndexOf(".")) + "-1.MP3");
+        ObjectNode downloadAudioDataNode = mediaDownload(audioFileUUID, audioFileShareSecret, audioFileLocalPath, null);
+        if (null != downloadAudioDataNode) {
+            LOGGER.info("下载语音文件: " + downloadAudioDataNode.toString());
+        }
+    }
 
     /**
 	 * 图片/语音文件上传
@@ -68,8 +155,7 @@ class EasemobFiles {
 		}
 
 		try {
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
+			JerseyWebTarget webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate(
 					"app_name", APPKEY.split("#")[1]);
 
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
@@ -98,61 +184,32 @@ class EasemobFiles {
 	 *            是否下载缩略图 true:缩略图 false:非缩略图
 	 * @return
 	 */
-	public static ObjectNode mediaDownload(String fileUUID, String shareSecret, File localPath, boolean isThumbnail) {
-
+	public static ObjectNode mediaDownload(String fileUUID, String shareSecret, File localPath, Boolean isThumbnail) {
 		ObjectNode objectNode = factory.objectNode();
-
 		File downLoadedFile = null;
-
 		if (!JerseyUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
 			LOGGER.error("Bad format of Appkey: " + APPKEY);
-
 			objectNode.put("message", "Bad format of Appkey");
-
 			return objectNode;
 		}
 
 		try {
-
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(fileUUID);
-			webTarget = webTarget.queryParam("share-secret", "shareSecret").queryParam("Authorization",
-					"Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
 			List<NameValuePair> headers = new ArrayList<NameValuePair>();
 			headers.add(new BasicNameValuePair("share-secret", shareSecret));
 			headers.add(new BasicNameValuePair("Accept", "application/octet-stream"));
-			if (isThumbnail) {
-				headers.add(new BasicNameValuePair("thumbnail", "true"));
+			if (isThumbnail != null && isThumbnail) {
+				headers.add(new BasicNameValuePair("thumbnail", String.valueOf(isThumbnail)));
 			}
-
 			downLoadedFile = JerseyUtils.downLoadFile(webTarget, credential, headers, localPath);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		LOGGER.error("File download successfully，file path : " + downLoadedFile.getAbsolutePath() + ".");
-
 		objectNode.put("message", "File download successfully .");
-
 		return objectNode;
 	}
 
-	public static void main(String[] args) {
-		File localPath = new File("/home/lynch/Downloads/invite3.png");
-		String fileUUID = "6f2d3d10-4865-11e4-8de6-33cd2cee963f";
-		String shareSecret = "by09GkhlEeSd_lklcKzQoPlFAO608MunnThPSBO5UB2L6rb6";
-		/*
-		 * { "action" : "post", "application" : "4d7e4ba0-dc4a-11e3-90d5-e1ffbaacdaf5", "path" : "/chatfiles", "uri" :
-		 * "https://a1.easemob.com/easemob-demo/chatdemoui/chatfiles", "entities" : [ { "uuid" :
-		 * "6f2d3d10-4865-11e4-8de6-33cd2cee963f", "type" : "chatfile", "share-secret" :
-		 * "by09GkhlEeSd_lklcKzQoPlFAO608MunnThPSBO5UB2L6rb6" } ], "timestamp" : 1412056122209, "duration" : 3,
-		 * "organization" : "easemob-demo", "applicationName" : "chatdemoui" }
-		 */
-//		mediaDownload(fileUUID, shareSecret, localPath, false);
-		
-		File uploadFile = new File("/home/lynch/music.MP3");
-		mediaUpload(uploadFile);
-	}
 }

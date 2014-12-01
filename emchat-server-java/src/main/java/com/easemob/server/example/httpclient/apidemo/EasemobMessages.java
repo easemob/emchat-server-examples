@@ -1,5 +1,6 @@
 package com.easemob.server.example.httpclient.apidemo;
 
+import java.io.File;
 import java.net.URL;
 
 import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
@@ -29,14 +30,107 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class EasemobMessages {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
+    private static final String APPKEY = Constants.APPKEY;
+    private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
+    // 以下两种方式任选其一
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
             Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+    // 通过org管理员的username和password来获取org管理员token
+    /*private static Credential credentialOrgAdmin = new ClientSecretCredential(Constants.ORG_ADMIN_USERNAME,
+            Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);*/
 
-	private static final String APPKEY = Constants.APPKEY;
+    public static void main(String[] args) {
+        //  检测用户是否在线
+        String targetuserPrimaryKey = "kenshinnuser000";
+        ObjectNode usernode = getUserStatus(targetuserPrimaryKey);
+        if (null != usernode) {
+            LOGGER.info("检测用户是否在线: " + usernode.toString());
+        }
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+        // 给用户发一条文本消息
+        String from = "kenshinnuser000";
+        String targetTypeus = "users";
+        ObjectNode ext = factory.objectNode();
+        ArrayNode targetusers = factory.arrayNode();
+        targetusers.add("kenshinnuser001");
+        targetusers.add("kenshinnuser002");
+        ObjectNode txtmsg = factory.objectNode();
+        txtmsg.put("msg", "Hello Easemob!");
+        txtmsg.put("type","txt");
+        ObjectNode sendTxtMessageusernode = sendMessages(targetTypeus, targetusers, txtmsg, from, ext);
+        if (null != sendTxtMessageusernode) {
+            LOGGER.info("给用户发一条文本消息: " + sendTxtMessageusernode.toString());
+        }
+        // 给一个群组发文本消息
+        String targetTypegr = "chatgroups";
+        ArrayNode  chatgroupidsNode = (ArrayNode) EasemobChatGroups.getAllChatgroupids().path("data");
+        ArrayNode targetgroup = factory.arrayNode();
+        targetgroup.add(chatgroupidsNode.get(0).path("groupid").asText());
+        ObjectNode sendTxtMessagegroupnode = sendMessages(targetTypegr, targetgroup, txtmsg, from, ext);
+        if (null != sendTxtMessagegroupnode) {
+            LOGGER.info("给一个群组发文本消息: " + sendTxtMessagegroupnode.toString());
+        }
+
+        // 给用户发一条图片消息
+        File uploadImgFile = new File("/home/lynch/Pictures/24849.jpg");
+        ObjectNode imgDataNode = EasemobFiles.mediaUpload(uploadImgFile);
+        String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
+        String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
+        if (null != imgDataNode) {
+            LOGGER.info("上传图片文件: " + imgDataNode.toString());
+        }
+        ObjectNode imgmsg = factory.objectNode();
+        imgmsg.put("type","img");
+        imgmsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + imgFileUUID).toString());
+        imgmsg.put("filename", "24849.jpg");
+        imgmsg.put("length", 10);
+        imgmsg.put("secret", shareSecret);
+        ObjectNode sendimgMessageusernode = sendMessages(targetTypeus, targetusers, imgmsg, from, ext);
+        if (null != sendimgMessageusernode) {
+            LOGGER.info("给一个群组发文本消息: " + sendimgMessageusernode.toString());
+        }
+        // 给一个群组发图片消息
+        ObjectNode sendimgMessagegroupnode = sendMessages(targetTypegr, targetgroup, imgmsg, from, ext);
+        if (null != sendimgMessagegroupnode) {
+            LOGGER.info("给一个群组发文本消息: " + sendimgMessagegroupnode.toString());
+        }
+
+        // 给用户发一条语音消息
+        File uploadAudioFile = new File("/home/lynch/Music/music.MP3");
+        ObjectNode audioDataNode = EasemobFiles.mediaUpload(uploadAudioFile);
+        String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
+        String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
+        if (null != audioDataNode) {
+            LOGGER.info("上传语音文件: " + audioDataNode.toString());
+        }
+        ObjectNode audiomsg = factory.objectNode();
+        audiomsg.put("type","audio");
+        audiomsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + audioFileUUID).toString());
+        audiomsg.put("filename", "music.MP3");
+        audiomsg.put("length", 10);
+        audiomsg.put("secret", audioFileShareSecret);
+        ObjectNode sendaudioMessageusernode = sendMessages(targetTypeus, targetusers, audiomsg, from, ext);
+        if (null != sendaudioMessageusernode) {
+            LOGGER.info("给用户发一条语音消息: " + sendaudioMessageusernode.toString());
+        }
+
+        // 给一个群组发语音消息
+        ObjectNode sendaudioMessagegroupnode = sendMessages(targetTypegr, targetgroup, audiomsg, from, ext);
+        if (null != sendaudioMessagegroupnode) {
+            LOGGER.info("给一个群组发语音消息: " + sendaudioMessagegroupnode.toString());
+        }
+
+        // 给用户发一条透传消息
+        ObjectNode cmdmsg = factory.objectNode();
+        cmdmsg.put("action", "gogogo");
+        cmdmsg.put("type","cmd");
+        ObjectNode sendcmdMessageusernode = sendMessages(targetTypeus, targetusers, cmdmsg, from, ext);
+        if (null != sendcmdMessageusernode) {
+            LOGGER.info("给用户发一条透传消息: " + sendcmdMessageusernode.toString());
+        }
+    }
 
 	/**
 	 * 检测用户是否在线
@@ -160,18 +254,4 @@ public class EasemobMessages {
 		return objectNode;
 	}
 
-	public static void main(String[] args) {
-		String targetType = "users";
-		ArrayNode target = factory.arrayNode();
-		target.add("531");
-		ObjectNode msg = factory.objectNode();
-		msg.put("type", "txt");
-		msg.put("msg", "HelloKitty");
-		String from = "cool";
-		ObjectNode ext = factory.objectNode();
-		ext.put("attr1", "attr1v1");
-		ext.put("attr2", "attr2v1");
-		sendMessages(targetType, target, msg, from, ext);
-
-	}
 }

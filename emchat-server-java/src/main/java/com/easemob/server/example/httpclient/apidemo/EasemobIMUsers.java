@@ -32,10 +32,135 @@ public class EasemobIMUsers {
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
 	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 
+    // 以下两种方式任选其一
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
             Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
+    // 通过org管理员的username和password来获取org管理员token
+    /*private static Credential credentialOrgAdmin = new ClientSecretCredential(Constants.ORG_ADMIN_USERNAME,
+            Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);*/
 
+    public static void main(String[] args) {
+        /**
+         * 注册IM用户[单个]
+         */
+        ObjectNode datanode = JsonNodeFactory.instance.objectNode();
+        datanode.put("username","kenshinnuser100");
+        datanode.put("password", Constants.DEFAULT_PASSWORD);
+        ObjectNode createNewIMUserSingleNode = createNewIMUserSingle(datanode);
+        if (null != createNewIMUserSingleNode) {
+            LOGGER.info("注册IM用户[单个]: " + createNewIMUserSingleNode.toString());
+        }
+
+        /**
+         * IM用户登录
+         */
+        ObjectNode imUserLoginNode = imUserLogin(datanode.get("username").asText(), datanode.get("password").asText());
+        if (null != imUserLoginNode) {
+            LOGGER.info("IM用户登录: " + imUserLoginNode.toString());
+        }
+
+        /**
+         * 注册IM用户[批量生成用户然后注册]
+         */
+        String usernamePrefix = "kenshinnuser";
+        Long perNumber = 10l;
+        Long totalNumber = 100l;
+        ObjectNode createNewIMUserBatchGenNode = createNewIMUserBatchGen(usernamePrefix, perNumber, totalNumber);
+        if (null != createNewIMUserBatchGenNode) {
+            LOGGER.info("注册IM用户[批量]: " + createNewIMUserBatchGenNode.toString());
+        }
+
+        /**
+         * 获取IM用户[主键查询]
+         */
+        String userPrimaryKey = "kenshinnuser100";
+        ObjectNode getIMUsersByPrimaryKeyNode = getIMUsersByPrimaryKey(userPrimaryKey);
+        if (null != getIMUsersByPrimaryKeyNode) {
+            LOGGER.info("获取IM用户[主键查询]: " + getIMUsersByPrimaryKeyNode.toString());
+        }
+
+        /**
+         * 获取IM用户[条件查询]
+         */
+        String username = "kenshinnuser100";
+        ObjectNode getIMUserByQueryStringNOPagenationNode = getIMUserByQueryStringNOPagenation(username);
+        if (null != getIMUserByQueryStringNOPagenationNode) {
+            LOGGER.info("获取IM用户[条件查询]: " + getIMUserByQueryStringNOPagenationNode.toString());
+        }
+
+        /**
+         * 重置IM用户密码 提供原始密码
+         */
+        ObjectNode json = JsonNodeFactory.instance.objectNode();
+        json.put("oldpassword", Constants.DEFAULT_PASSWORD);
+        json.put("newpassword", Constants.DEFAULT_PASSWORD);
+        ObjectNode modifyIMUserPasswordWithOldPasswdNode = modifyIMUserPasswordWithOldPasswd(username, json);
+        if (null != modifyIMUserPasswordWithOldPasswdNode) {
+            LOGGER.info("重置IM用户密码 提供原始密码: " + modifyIMUserPasswordWithOldPasswdNode.toString());
+        }
+        ObjectNode imUserLoginNode1 = imUserLogin(username, json.get("newpassword").asText());
+        if (null != imUserLoginNode1) {
+            LOGGER.info("重置IM用户密码后,IM用户登录: " + imUserLoginNode1.toString());
+        }
+
+        /**
+         * 重置IM用户密码 提供管理员token
+         */
+        ObjectNode json2 = JsonNodeFactory.instance.objectNode();
+        json2.put("newpassword", Constants.DEFAULT_PASSWORD);
+        ObjectNode modifyIMUserPasswordWithAdminTokenNode = modifyIMUserPasswordWithAdminToken(username, json2);
+        if (null != modifyIMUserPasswordWithAdminTokenNode) {
+            LOGGER.info("重置IM用户密码 提供管理员token: " + modifyIMUserPasswordWithAdminTokenNode.toString());
+        }
+        ObjectNode imUserLoginNode2 = imUserLogin(username, json2.get("newpassword").asText());
+        if (null != imUserLoginNode2) {
+            LOGGER.info("重置IM用户密码后,IM用户登录: " + imUserLoginNode2.toString());
+        }
+
+        /**
+         * 添加好友[单个]
+         */
+        String ownerUserPrimaryKey = username;
+        String friendUserPrimaryKey = "kenshinnuser099";
+        ObjectNode addFriendSingleNode = addFriendSingle(ownerUserPrimaryKey, friendUserPrimaryKey);
+        if (null != addFriendSingleNode) {
+            LOGGER.info("添加好友[单个]: " + addFriendSingleNode.toString());
+        }
+
+        /**
+         * 查看好友
+         */
+        ObjectNode getFriendsNode = getFriends(ownerUserPrimaryKey);
+        if (null != getFriendsNode) {
+            LOGGER.info("查看好友: " + getFriendsNode.toString());
+        }
+
+        /**
+         * 解除好友关系
+         **/
+        ObjectNode deleteFriendSingleNode = deleteFriendSingle(ownerUserPrimaryKey, friendUserPrimaryKey);
+        if (null != deleteFriendSingleNode) {
+            LOGGER.info("解除好友关系: " + deleteFriendSingleNode.toString());
+        }
+
+        /**
+         * 删除IM用户[单个]
+         */
+        ObjectNode deleteIMUserByUserPrimaryKeyNode = deleteIMUserByUserPrimaryKey(userPrimaryKey);
+        if (null != deleteIMUserByUserPrimaryKeyNode) {
+            LOGGER.info("删除IM用户[单个]: " + deleteIMUserByUserPrimaryKeyNode.toString());
+        }
+
+        /**
+         * 删除IM用户[批量]
+         */
+        Long limit = 2l;
+        ObjectNode deleteIMUserByUsernameBatchNode = deleteIMUserByUsernameBatch(limit, null);
+        if (null != deleteIMUserByUsernameBatchNode) {
+            LOGGER.info("删除IM用户[批量]: " + deleteIMUserByUsernameBatchNode.toString());
+        }
+    }
 
     /**
 	 * 注册IM用户[单个]
@@ -663,16 +788,6 @@ public class EasemobIMUsers {
 		}
 
 		return arrayNode;
-	}
-
-	public static void main(String[] args) {
-		String ownerUserPrimaryKey = "xieyajie";
-		String password = "1111111";
-//		imUserLogin(ownerUserPrimaryKey, password);
-		
-//		deleteFriendSingle("u1","u2");
-		
-		getFriends("u1");
 	}
 
 }

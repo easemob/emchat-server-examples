@@ -18,7 +18,10 @@ public interface Constants {
 	public static String APP_CLIENT_ID = PropertiesUtils.getProperties().getProperty("APP_CLIENT_ID");
 	// APP_CLIENT_SECRET
 	public static String APP_CLIENT_SECRET = PropertiesUtils.getProperties().getProperty("APP_CLIENT_SECRET");
+    // ORG_ADMIN_USERNAME
+    public static String ORG_ADMIN_USERNAME = PropertiesUtils.getProperties().getProperty("ORG_ADMIN_USERNAME");
+    // ORG_ADMIN_PASSWORD
+    public static String ORG_ADMIN_PASSWORD = PropertiesUtils.getProperties().getProperty("ORG_ADMIN_PASSWORD");
 	// DEFAULT_PASSWORD
 	public static String DEFAULT_PASSWORD = "1234456";
-
 }

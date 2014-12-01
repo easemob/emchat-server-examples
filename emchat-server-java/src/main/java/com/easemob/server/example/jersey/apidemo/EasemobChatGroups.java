@@ -2,7 +2,6 @@ package com.easemob.server.example.jersey.apidemo;
 
 import com.easemob.server.example.jersey.vo.ClientSecretCredential;
 import com.easemob.server.example.jersey.vo.Credential;
-import com.easemob.server.example.jersey.vo.UsernamePasswordCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
@@ -29,15 +28,19 @@ public class EasemobChatGroups {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
 
+    // 以下两种方式任选其一
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
             Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
 
+    // 通过org管理员的username和password来获取org管理员token
+    /*private static Credential credentialOrgAdmin = new ClientSecretCredential(Constants.ORG_ADMIN_USERNAME,
+            Constants.ORG_ADMIN_PASSWORD, Roles.USER_ROLE_ORGADMIN);*/
 
     public static void main(String[] args) {
 		/** 获取APP中所有的群组ID 
 		 * curl示例: 
-		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups" -H "Authorization: Bearer YWMtP_8IisA-EeK-a5cNq4Jt3QAAAT7fI10IbPuKdRxUTjA9CNiZMnQIgk0LEUE"
+		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups" -H "Authorization: Bearer {token}"
 		 */
 		ObjectNode chatgroupidsNode = getAllChatgroupids();
 		System.out.println(chatgroupidsNode.toString());
@@ -45,7 +48,8 @@ public class EasemobChatGroups {
 		/**  
 		 * 获取一个或者多个群组的详情
 		 * curl示例
-		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups/1414379474926191,1405735927133519" -H "Authorization: Bearer YWMtP_8IisA-EeK-a5cNq4Jt3QAAAT7fI10IbPuKdRxUTjA9CNiZMnQIgk0LEUE"
+		 * curl -X GET -i "https://a1.easemob.com/easemob-playground/test1/chatgroups/1414379474926191,1405735927133519"
+         * -H "Authorization: Bearer {token}"
 		 */
 		String[] chatgroupIDs = {"1414379474926191", "1405735927133519"};
 		ObjectNode groupDetailNode = getGroupDetailsByChatgroupid(chatgroupIDs);
@@ -53,7 +57,7 @@ public class EasemobChatGroups {
 	
 		/** 创建群组 
 		 * curl示例
-		 * curl -X POST 'https://a1.easemob.com/easemob-playground/test1/chatgroups' -H 'Authorization: Bearer YWMtG4T5wkOTEeST5V-9lp7f-wAAAUnafsqrQFnCU4gI0-rQImw45TXUWSIrXI8' -d '{"groupname":"测试群组","desc":"测试群组","public":true,"approval":true,"owner":"xiaojianguo001","maxusers":333,"members":["xiaojianguo002","xiaojianguo003"]}'
+		 * curl -X POST 'https://a1.easemob.com/easemob-playground/test1/chatgroups' -H 'Authorization: Bearer {token}' -d '{"groupname":"测试群组","desc":"测试群组","public":true,"approval":true,"owner":"xiaojianguo001","maxusers":333,"members":["xiaojianguo002","xiaojianguo003"]}'
 		 */
 		ObjectNode dataObjectNode = JsonNodeFactory.instance.objectNode();
 		dataObjectNode.put("groupname", "测试群组");
@@ -72,7 +76,7 @@ public class EasemobChatGroups {
 		/**
 		 * 删除群组
 		 * curl示例
-		 * curl -X DELETE 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519' -H 'Authorization: Bearer YWMtG4T5wkOTEeST5V-9lp7f-wAAAUnafsqrQFnCU4gI0-rQImw45TXUWSIrXI8'
+		 * curl -X DELETE 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519' -H 'Authorization: Bearer {token}'
 		 */
 		String toDelChatgroupid = "1405735927133519";
 		ObjectNode deleteChatGroupNode =  deleteChatGroups(toDelChatgroupid) ;
@@ -81,7 +85,7 @@ public class EasemobChatGroups {
 		/**
 		 * 获取群组中的所有成员
 		 * curl示例
-		 * curl -X GET 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users' -H 'Authorization: Bearer YWMtgNIiTFAwEeSB9olyTIXFtwAAAUotKvWaUOaUuqeuhNMgOgozO4popVZe-Ls'
+		 * curl -X GET 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users' -H 'Authorization: Bearer {token}'
 		 */
 		String chatgroupid = "1405735927133519";
 		ObjectNode getAllMemberssByGroupIdNode = getAllMemberssByGroupId(chatgroupid);
@@ -90,7 +94,7 @@ public class EasemobChatGroups {
 		/**
 		 * 在群组中添加一个人
 		 * curl示例
-		 * curl -X POST 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users/xiaojianguo002' -H 'Authorization: Bearer YWMtgNIiTFAwEeSB9olyTIXFtwAAAUotKvWaUOaUuqeuhNMgOgozO4popVZe-Ls'
+		 * curl -X POST 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users/xiaojianguo002' -H 'Authorization: Bearer {token}'
 		 */
 		String addToChatgroupid = "1405735927133519";
 		String toAddUsername = "xiaojianguo002";
@@ -100,7 +104,7 @@ public class EasemobChatGroups {
 		/**
 		 * 在群组中减少一个人
 		 * curl示例
-		 * curl -X DELETE 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users/xiaojianguo002' -H 'Authorization: Bearer YWMtgNIiTFAwEeSB9olyTIXFtwAAAUotKvWaUOaUuqeuhNMgOgozO4popVZe-Ls'
+		 * curl -X DELETE 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users/xiaojianguo002' -H 'Authorization: Bearer {token}'
 		 */
 		String delFromChatgroupid = "1405735927133519";
 		String toRemoveUsername = "xiaojianguo002";
@@ -110,7 +114,7 @@ public class EasemobChatGroups {
 		/**
 		 * 获取一个用户参与的所有群组
 		 * curl示例
-		 * curl -X GET 'https://a1.easemob.com/easemob-playground/test1/users/xiaojianguo002/joined_chatgroups' -H 'Authorization: Bearer YWMtF4ZxXlLmEeS7kWnCMObSnQAAAUo-7HZU-bP7-SJzYGCaUdumxsGelt8pmss'
+		 * curl -X GET 'https://a1.easemob.com/easemob-playground/test1/users/xiaojianguo002/joined_chatgroups' -H 'Authorization: Bearer {token}'
 		 */
 		String username = "xiaojianguo002";
 		ObjectNode getJoinedChatgroupsForIMUserNode = getJoinedChatgroupsForIMUser(username);
@@ -119,7 +123,7 @@ public class EasemobChatGroups {
 		/**
 		 * 群组批量添加成员
 		 * curl示例
-		 * curl -X POST -i 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users' -H 'Authorization: Bearer YWMtF4ZxXlLmEeS7kWnCMObSnQAAAUo-7HZU-bP7-SJzYGCaUdumxsGelt8pmE4' -d '{"usernames":["xiaojianguo002","xiaojianguo003"]}'
+		 * curl -X POST -i 'https://a1.easemob.com/easemob-playground/test1/chatgroups/1405735927133519/users' -H 'Authorization: Bearer {token}' -d '{"usernames":["xiaojianguo002","xiaojianguo003"]}'
 		 */
 		String toAddBacthChatgroupid = "1405735927133519";
 		ArrayNode usernames = JsonNodeFactory.instance.arrayNode();
