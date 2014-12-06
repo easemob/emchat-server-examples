@@ -79,6 +79,22 @@ class Easemob {
 		return $result;
 	}
 	
+	
+	/**
+	 * 批量查询用户
+	 * @param int $limit
+	 * @return mixed
+	 */
+	public function getAllUsers($limit)
+	{
+		$url = $this->url . "users?limit=" . $limit;
+		$access_token = $this->getToken();
+		$header [] = 'Authorization: Bearer ' . $access_token;
+		$result = $this->postCurl($url, '', $header, $type = 'GET');
+		return $result;
+	}
+	
+	
 	/**
 	 * 重置用户密码
 	 *
@@ -103,6 +119,7 @@ class Easemob {
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
+		return $result;
 	}
 	
 	/**
@@ -121,6 +138,7 @@ class Easemob {
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
+		return $result;
 	}
 	
 	/**
@@ -136,6 +154,7 @@ class Easemob {
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header );
+		return $result;
 	}
 	/**
 	 * 删除好友
@@ -150,6 +169,7 @@ class Easemob {
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
+		return $result;
 	}
 	/**
 	 * 查看用户的好友
@@ -162,6 +182,7 @@ class Easemob {
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
+		return $result;
 	}
 	// +----------------------------------------------------------------------
 	// | 聊天相关的方法
@@ -376,9 +397,10 @@ class Easemob {
 		curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 ); // 获取的信息以文件流的形式返回
 		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, $type );
 		$result = curl_exec ( $curl ); // 执行操作
-		$res = object_array ( json_decode ( $result ) );
+		//$res = object_array ( json_decode ( $result ) );	//类里面没有这个函数
+		$res = json_decode ( $result );
 		$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
-		pre ( $res );
+		//pre ( $res );		//类里面没有这个函数
 		return $res;
 		curl_close ( $curl ); // 关闭CURL会话
 	}
