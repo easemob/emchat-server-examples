@@ -67,7 +67,8 @@ public class ClientSecretCredential extends Credential {
 				}
 
 				String accessToken = tokenRequest.get("access_token").asText();
-				Long expiredAt = System.currentTimeMillis() + tokenRequest.get("expires_in").asLong();
+
+				Long expiredAt = System.currentTimeMillis() + tokenRequest.get("expires_in").asLong() * 1000;
 
 				token = new Token(accessToken, expiredAt);
 			} catch (Exception e) {

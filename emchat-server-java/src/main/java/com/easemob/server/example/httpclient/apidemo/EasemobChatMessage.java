@@ -61,7 +61,6 @@ public class EasemobChatMessage {
 
         // 聊天消息 分页获取
         ObjectNode queryStrNode2 = factory.objectNode();
-        queryStrNode2.put("ql", "order+by+timestamp+desc");
         queryStrNode2.put("limit", "20");
         // 第一页
         ObjectNode messages2 = getChatMessages(queryStrNode2);
