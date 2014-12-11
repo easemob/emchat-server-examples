@@ -376,10 +376,10 @@ class Easemob {
 		curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 ); // 获取的信息以文件流的形式返回
 		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, $type );
 		$result = curl_exec ( $curl ); // 执行操作
-		$res = object_array ( json_decode ( $result ) );
-		$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
-		pre ( $res );
-		return $res;
+		//$res = object_array ( json_decode ( $result ) );
+		//$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
+		//pre ( $res );
+		return $result;
 		curl_close ( $curl ); // 关闭CURL会话
 	}
 }
