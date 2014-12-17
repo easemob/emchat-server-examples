@@ -87,10 +87,10 @@ class Easemob {
 	 * @param $options['newpassword'] 新密码        	
 	 */
 	public function editPassword($options) {
-		$url = $this->url . "users/" . $options ['username'] . "/" . $options ['password'];
+		$url = $this->url . "users/" . $options ['username'] . "/password";
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $options, $header );
+		$result = $this->postCurl ( $url, $options, $header, $type = 'PUT');
 		return $result;
 	}
 	/**
@@ -301,7 +301,7 @@ class Easemob {
 	 *        	$username
 	 */
 	public function delGroupsUser($group_id, $username) {
-		$url = $this->url . "chatgroups/" . $group_id . "/users";
+		$url = $this->url . "chatgroups/" . $group_id . "/users" . $username;
 		$access_token = $this->getToken ();
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
@@ -376,10 +376,10 @@ class Easemob {
 		curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 ); // 获取的信息以文件流的形式返回
 		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, $type );
 		$result = curl_exec ( $curl ); // 执行操作
-		$res = object_array ( json_decode ( $result ) );
-		$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
-		pre ( $res );
-		return $res;
+		//$res = object_array ( json_decode ( $result ) );
+		//$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
+		//pre ( $res );
+		return $result;
 		curl_close ( $curl ); // 关闭CURL会话
 	}
 }
