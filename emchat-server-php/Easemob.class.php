@@ -379,7 +379,7 @@ class Easemob {
 		//$res = object_array ( json_decode ( $result ) );
 		//$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
 		//pre ( $res );
-		return $result;
 		curl_close ( $curl ); // 关闭CURL会话
+		return $result
 	}
 }
