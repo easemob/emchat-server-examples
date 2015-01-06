@@ -88,7 +88,7 @@ public class EasemobChatMessage {
 
 			String rest = "";
 			if (null != queryStrNode && queryStrNode.get("ql") != null && !StringUtils.isEmpty(queryStrNode.get("ql").asText())) {
-				rest = "ql="+ queryStrNode.get("ql").asText();
+				rest = "ql="+ java.net.URLEncoder.encode(queryStrNode.get("ql").asText(), "utf-8");
 			}
 			if (null != queryStrNode && queryStrNode.get("limit") != null && !StringUtils.isEmpty(queryStrNode.get("limit").asText())) {
 				rest = rest + "&limit=" + queryStrNode.get("limit").asText();
@@ -96,7 +96,7 @@ public class EasemobChatMessage {
 			if (null != queryStrNode && queryStrNode.get("cursor") != null && !StringUtils.isEmpty(queryStrNode.get("cursor").asText())) {
 				rest = rest + "&cursor=" + queryStrNode.get("cursor").asText();
 			}
-			String encodedQr = java.net.URLEncoder.encode(rest, "utf-8");
+		
 			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + encodedQr);
 			
 			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credential, null, HTTPMethod.METHOD_GET);
