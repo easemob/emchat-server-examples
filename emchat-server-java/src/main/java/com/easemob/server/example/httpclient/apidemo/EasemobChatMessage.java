@@ -97,7 +97,7 @@ public class EasemobChatMessage {
 				rest = rest + "&cursor=" + queryStrNode.get("cursor").asText();
 			}
 		
-			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + encodedQr);
+			URL chatMessagesUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatmessages?" + rest);
 			
 			objectNode = HTTPClientUtils.sendHTTPRequest(chatMessagesUrl, credential, null, HTTPMethod.METHOD_GET);
 
