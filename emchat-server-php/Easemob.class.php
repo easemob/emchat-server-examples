@@ -380,6 +380,6 @@ class Easemob {
 		//$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
 		//pre ( $res );
 		curl_close ( $curl ); // 关闭CURL会话
-		return $result
+		return $result;
 	}
 }
