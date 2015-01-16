@@ -62,7 +62,7 @@ class Easemob {
 	public function accreditRegister($options) {
 		$url = $this->url . "users";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, $options, $header );
 		
 		return $result;
@@ -76,7 +76,7 @@ class Easemob {
 	public function userDetails($username) {
 		$url = $this->url . "users/" . $username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = 'GET' );
 		
 		return $result;
@@ -92,7 +92,7 @@ class Easemob {
 	public function editPassword($options) {
 		$url = $this->url . "users/" . $options ['username'] . "/password";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, $options, $header, $type = 'PUT');
 		
 		return $result;
@@ -105,7 +105,7 @@ class Easemob {
 	public function deleteUser($username) {
 		$url = $this->url . "users/" . $username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
 	}
 	
@@ -123,7 +123,7 @@ class Easemob {
 			$url = $this->url . "users?ql=" . $ql . "&limit=" . $limit;
 		}
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
 	}
 	
@@ -138,7 +138,7 @@ class Easemob {
 	public function addFriend($owner_username, $friend_username) {
 		$url = $this->url . "users/" . $owner_username . "/contacts/users/" . $friend_username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header );
 	}
 	/**
@@ -152,7 +152,7 @@ class Easemob {
 	public function deleteFriend($owner_username, $friend_username) {
 		$url = $this->url . "users/" . $owner_username . "/contacts/users/" . $friend_username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
 	}
 	/**
@@ -164,7 +164,7 @@ class Easemob {
 	public function showFriend($owner_username) {
 		$url = $this->url . "users/" . $owner_username . "/contacts/users/";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
 	}
 	// +----------------------------------------------------------------------
@@ -179,7 +179,7 @@ class Easemob {
 	public function isOnline($username) {
 		$url = $this->url . "users/" . $username . "/status";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
 		
 		return $result;
@@ -207,7 +207,7 @@ class Easemob {
 		$option ['ext'] = $ext;
 		$url = $this->url . "messages";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, $option, $header );
 		
 		return $result;
@@ -218,7 +218,7 @@ class Easemob {
 	public function chatGroups() {
 		$url = $this->url . "chatgroups";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
 		
 		return $result;
@@ -241,7 +241,7 @@ class Easemob {
 	public function createGroups($option) {
 		$url = $this->url . "chatgroups";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, $option, $header );
 		
 		return $result;
@@ -255,7 +255,7 @@ class Easemob {
 	public function chatGroupsDetails($group_id) {
 		$url = $this->url . "chatgroups/" . $group_id;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
 		
 		return $result;
@@ -269,7 +269,7 @@ class Easemob {
 	public function deleteGroups($group_id) {
 		$url = $this->url . "chatgroups/" . $group_id;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
 		
 		return $result;
@@ -283,7 +283,7 @@ class Easemob {
 	public function groupsUser($group_id) {
 		$url = $this->url . "chatgroups/" . $group_id . "/users";
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
 		
 		return $result;
@@ -299,7 +299,7 @@ class Easemob {
 	public function addGroupsUser($group_id, $username) {
 		$url = $this->url . "chatgroups/" . $group_id . "/users/" . $username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "POST" );
 		
 		return $result;
@@ -315,7 +315,7 @@ class Easemob {
 	public function delGroupsUser($group_id, $username) {
 		$url = $this->url . "chatgroups/" . $group_id . "/users/" . $username;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
 		
 		return $result;
@@ -336,7 +336,7 @@ class Easemob {
 		$cursor = ! empty ( $cursor ) ? "&cursor=" . $cursor : '';
 		$url = $this->url . "chatmessages?" . $ql . "&limit=" . $limit . $cursor;
 		$access_token = $this->getToken ();
-		$header = ['Authorization: Bearer ' . $access_token];
+		$header = array('Authorization: Bearer ' . $access_token);
 		$result = $this->postCurl ( $url, '', $header, $type = "GET " );
 		
 		return $result;
@@ -378,7 +378,7 @@ class Easemob {
 	/**
 	 * CURL Post
 	 */
-	private function postCurl($url, $option, $header = [], $type = 'POST') {
+	private function postCurl($url, $option, $header = array(), $type = 'POST') {
 		$curl = curl_init (); // 启动一个CURL会话
 		curl_setopt ( $curl, CURLOPT_URL, $url ); // 要访问的地址
 		curl_setopt ( $curl, CURLOPT_SSL_VERIFYPEER, FALSE ); // 对认证证书来源的检查
