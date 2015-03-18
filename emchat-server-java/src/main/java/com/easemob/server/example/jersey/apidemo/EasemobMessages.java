@@ -224,7 +224,7 @@ public class EasemobMessages {
 		try {
 			// 构造消息体
 			dataNode.put("target_type", targetType);
-			dataNode.put("target", target;
+			dataNode.put("target", target);
 			dataNode.put("msg", msg);
 			dataNode.put("from", from);
 			dataNode.put("ext", ext);
