@@ -257,27 +257,32 @@ public class EasemobIMUsers {
 		if (totalNumber == 0 || perNumber == 0) {
 			return objectNode;
 		}
-
 		System.out.println("你即将注册" + totalNumber + "个用户，如果大于" + perNumber + "了,会分批注册,每次注册" + perNumber + "个");
-
 		ArrayNode genericArrayNode = EasemobIMUsers.genericArrayNode(usernamePrefix, totalNumber);
 		if (totalNumber <= perNumber) {
 			objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
 		} else {
 
+			ArrayNode tmpArrayNode = factory.arrayNode();
+			
 			for (int i = 0; i < genericArrayNode.size(); i++) {
-				ArrayNode tmpArrayNode = factory.arrayNode();
 				tmpArrayNode.add(genericArrayNode.get(i));
 				// 300 records on one migration
 				if ((i + 1) % perNumber == 0) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers.createNewIMUserBatch(tmpArrayNode);
+					if(objectNode!=null){
+						LOGGER.info("注册IM用户[批量]: " + objectNode.toString());
+					}
 					tmpArrayNode.removeAll();
 					continue;
 				}
 
 				// the rest records that less than the times of 300
 				if (i > (genericArrayNode.size() / perNumber * perNumber - 1)) {
-					objectNode = EasemobIMUsers.createNewIMUserBatch(genericArrayNode);
+					objectNode = EasemobIMUsers.createNewIMUserBatch(tmpArrayNode);
+					if(objectNode!=null){
+						LOGGER.info("注册IM用户[批量]: " + objectNode.toString());
+					}
 					tmpArrayNode.removeAll();
 				}
 			}
