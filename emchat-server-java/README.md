@@ -1,6 +1,12 @@
 ## 环信服务器端实例代码
 
-本项目使用[Gradle](http://gradle.org)进行构建, 可以直接导入到IDE中, 例如
+本项目支持使用[Maven](http://maven.apache.org)构建, 具体使用方式请参考maven的使用文档和pom.xml
+
+
+
+如果使用[Gradle](http://gradle.org)进行构建, 可以直接导入到IDE中, 例如
+
+
 
 ### 导入到eclipse中:
 
