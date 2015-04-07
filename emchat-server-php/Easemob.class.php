@@ -351,6 +351,7 @@ class Easemob {
 			exit ();
 		}
 		$result = $this->postCurl ( $url, $option, $head = 0 );
+		$result = json_decode($result);
 		$result ['expires_in'] = $result ['expires_in'] + time ();
 		$fp = @fopen ( "easemob.txt", 'w' );
 		@fwrite ( $fp, serialize ( $result ) );
