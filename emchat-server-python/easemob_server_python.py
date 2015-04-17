@@ -101,7 +101,7 @@ class AppClientAuth(EasemobAuth):
         
     def acquire_token(self):
         """
-        使用clieng_id / client_secret来获取token, 具体的REST API为
+        使用client_id / client_secret来获取token, 具体的REST API为
         
         POST /{org}/{app}/token {'grant_type':'client_credentials', 'client_id':'xxxx', 'client_secret':'xxxxx'}
         """
@@ -112,66 +112,6 @@ class AppClientAuth(EasemobAuth):
         else:
             # throws exception
             pass
-
-class AppAdminAccountAuth(EasemobAuth):
-    """使用app的管理员账号和密码来获取token"""
-    def __init__(self, org, app, username, password):
-        super(AppAdminAccountAuth, self).__init__()
-        self.username = username
-        self.password = password
-        self.url = EASEMOB_HOST+("/%s/%s/token" % (org, app))
-        self.token = None
-        
-    def acquire_token(self):
-        """
-        使用 username / password 来获取token, 具体的REST API为
-        
-        POST /{org}/{app}/token {'grant_type':'password', 'username':'xxxx', 'password':'xxxxx'}
-        
-        这里和上面使用client_id不同的是, grant_type的类型是password, 然后还需要提供username和password
-        """
-        payload = {'grant_type':'password', 'username': self.username, 'password': self.password}
-        success, result = post(self.url, payload)
-        if success:
-            return Token(result['access_token'], result['expires_in'])
-        else:
-            # throws exception
-            pass
-                        
-
-class OrgAdminAccountAuth(EasemobAuth):
-    """使用org的管理员账号和密码来获取token, 
-    和上面不同的是, 这里获取的是整个org的管理员账号, 
-    所以并没有appkey的概念
-    
-    并且, 因为没有appkey的概念, 所以, URL也不相同, 
-    这里使用的URL是 https://a1.easemob.com/management/token
-    
-    而app级别的token都是从 https://a1.easemob.com/{org}/{app}/token
-    这个URL去获取的
-    """
-    def __init__(self, username, password):
-        super(OrgAdminAccountAuth, self).__init__()
-        self.username = username
-        self.password = password
-        self.url = EASEMOB_HOST+"/management/token"
-        self.token = None
-        
-    def acquire_token(self):
-        """
-        使用 username / password 来获取token, 具体的REST API为
-        
-        POST /management/token {'grant_type':'password', 'username':'xxxx', 'password':'xxxxx'}
-        """
-        payload = {'grant_type':'password', 'username': self.username, 'password': self.password}
-        success, result = post(self.url, payload)
-        if success:
-            return Token(result['access_token'], result['expires_in'])
-        else:
-            # throws exception
-            pass
-
-
 
 def register_new_user(org, app, auth, username, password):
     """注册新的app用户
@@ -215,13 +155,6 @@ if __name__ == '__main__':
     client_secret = s['app']['credentials']['client_secret']
     app_admin_username = s['app']['admin']['username']
     app_admin_password = s['app']['admin']['password']
-    # org_admin的认证方式
-    org_admin_auth = OrgAdminAccountAuth(org_admin_username, org_admin_password)
-    # 获取org管理员的token
-    print "Get org admin token: " + org_admin_auth.get_token()
-    # 获取app管理员的token
-    app_admin_auth = AppAdminAccountAuth(org, app, app_admin_username, app_admin_password)
-    print "Get app admin token:" + app_admin_auth.get_token()
     # 通过client id和secret来获取app管理员的token
     app_client_auth = AppClientAuth(org, app, client_id, client_secret)
     print "Get app admin token with client id/secret: " + app_client_auth.get_token()
