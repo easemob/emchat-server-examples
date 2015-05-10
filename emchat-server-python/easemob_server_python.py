@@ -165,7 +165,7 @@ if __name__ == '__main__':
         username = id_generator()
 
         password = '123456'
-        success, result = register_new_user(org, app, app_admin_auth, username, password)
+        success, result = register_new_user(org, app, app_client_auth, username, password)
         if success:
             print "registered new user %s in appkey[%s]" % (username, appkey)
             app_users.append(username)
