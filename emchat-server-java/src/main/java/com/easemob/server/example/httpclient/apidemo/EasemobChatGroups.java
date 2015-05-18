@@ -299,7 +299,7 @@ public class EasemobChatGroups {
 	 * 在群组中添加一个人
 	 * 
 	 */
-	public static ObjectNode addUserToGroup(String chatgroupid, String userprimarykey) {
+	public static ObjectNode addUserToGroup(String chatgroupid, String userName) {
 		ObjectNode objectNode = factory.objectNode();
 		// check appKey format
 		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
@@ -310,7 +310,7 @@ public class EasemobChatGroups {
 
 		try {
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
-					+ chatgroupid + "/users/" + userprimarykey);
+					+ chatgroupid + "/users/" + userName);
 			ObjectNode dataobjectNode = factory.objectNode();
 			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credential, dataobjectNode,
 					HTTPMethod.METHOD_POST);
@@ -325,7 +325,7 @@ public class EasemobChatGroups {
 	 * 在群组中减少一个人
 	 * 
 	 */
-	public static ObjectNode deleteUserFromGroup(String chatgroupid, String userprimarykey) {
+	public static ObjectNode deleteUserFromGroup(String chatgroupid, String userName) {
 		ObjectNode objectNode = factory.objectNode();
 		// check appKey format
 		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", APPKEY)) {
@@ -336,7 +336,7 @@ public class EasemobChatGroups {
 
 		try {
 			URL allMemberssByGroupIdUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatgroups/"
-					+ chatgroupid + "/users/" + userprimarykey);
+					+ chatgroupid + "/users/" + userName);
 			objectNode = HTTPClientUtils.sendHTTPRequest(allMemberssByGroupIdUrl, credential, null,
 					HTTPMethod.METHOD_DELETE);
 		} catch (Exception e) {

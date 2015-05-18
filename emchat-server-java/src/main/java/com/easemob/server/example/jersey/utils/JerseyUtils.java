@@ -58,7 +58,7 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credential credentail,
+	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credential credential,
 			String method, List<NameValuePair> headers) throws RuntimeException {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -74,9 +74,8 @@ public class JerseyUtils {
 		try {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
-			if (credentail != null) {
-				//inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
-				 Token.applyAuthentication(inBuilder, credentail);
+			if (credential != null) {
+				 Token.applyAuthentication(inBuilder, credential);
 			}
 
 			if (null != headers && !headers.isEmpty()) {
@@ -124,17 +123,14 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credential credentail,
+	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credential credential,
 			List<NameValuePair> headers, File localPath) throws IOException {
 
 		Invocation.Builder inBuilder = jerseyWebTarget.request();
-		/*
-		 * if (credentail != null) { // add token into headers Token.applyAuthentication(inBuilder, credentail); }
-		 */
+		if (credential != null) {
+            Token.applyAuthentication(inBuilder, credential);
+        }
 
-		if (credentail != null) {
-			inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
-		}
 
 		if (null != headers && !headers.isEmpty()) {
 

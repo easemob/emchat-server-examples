@@ -136,30 +136,30 @@ public class HTTPClientUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(URL url, Credential credentail, List<NameValuePair> headers, File localPath) {
+	public static File downLoadFile(URL url, Credential credential, List<NameValuePair> headers, File localPath) {
 
 		HttpClient httpClient = getClient(true);
 
 		try {
 
-			HttpResponse response = null;
+
 			HttpGet httpGet = new HttpGet(url.toURI());
 
-			if (credentail != null) {
-				Token.applyAuthentication(httpGet, credentail);
+			if (credential != null) {
+				Token.applyAuthentication(httpGet, credential);
 			}
 			for (NameValuePair header : headers) {
 				httpGet.addHeader(header.getName(), header.getValue());
 			}
 
-			response = httpClient.execute(httpGet);
+            HttpResponse response = httpClient.execute(httpGet);
 
 			HttpEntity entity = response.getEntity();
 			InputStream in = entity.getContent();
 			FileOutputStream fos = new FileOutputStream(localPath);
 
 			byte[] buffer = new byte[1024];
-			int len1 = 0;
+			int len1;
 			while ((len1 = in.read(buffer)) != -1) {
 				fos.write(buffer, 0, len1);
 			}
@@ -188,7 +188,7 @@ public class HTTPClientUtils {
 
 		try {
 
-			HttpResponse response = null;
+
 
 			HttpPost httpPost = new HttpPost(url.toURI());
 
@@ -204,7 +204,7 @@ public class HTTPClientUtils {
 			mpEntity.addPart("file", cbFile);
 			httpPost.setEntity(mpEntity);
 
-			response = httpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
 
 			HttpEntity entity = response.getEntity();
 

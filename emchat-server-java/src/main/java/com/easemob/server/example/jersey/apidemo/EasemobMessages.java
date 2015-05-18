@@ -28,9 +28,9 @@ import java.io.File;
  */
 public class EasemobMessages {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
 	private static final String APPKEY = Constants.APPKEY;
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -38,8 +38,8 @@ public class EasemobMessages {
 
     public static void main(String[] args) {
         //  检测用户是否在线
-        String targetuserPrimaryKey = "kenshinnuser000";
-        ObjectNode usernode = getUserStatus(targetuserPrimaryKey);
+        String targetUserName = "kenshinnuser000";
+        ObjectNode usernode = getUserStatus(targetUserName);
         if (null != usernode) {
             LOGGER.info("检测用户是否在线: " + usernode.toString());
         }
@@ -72,53 +72,57 @@ public class EasemobMessages {
         // 给用户发一条图片消息
         File uploadImgFile = new File("/home/lynch/Pictures/24849.jpg");
         ObjectNode imgDataNode = EasemobFiles.mediaUpload(uploadImgFile);
-        String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
-        String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
         if (null != imgDataNode) {
+            String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
+            String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
             LOGGER.info("上传图片文件: " + imgDataNode.toString());
-        }
-        ObjectNode imgmsg = factory.objectNode();
-        imgmsg.put("type","img");
-        imgmsg.put("url",  EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate("app_name",
-                APPKEY.split("#")[1]).getUri().toString() + imgFileUUID);
-        imgmsg.put("filename", "24849.jpg");
-        imgmsg.put("length", 10);
-        imgmsg.put("secret", shareSecret);
-        ObjectNode sendimgMessageusernode = sendMessages(targetTypeus, targetusers, imgmsg, from, ext);
-        if (null != sendimgMessageusernode) {
-            LOGGER.info("给一个群组发文本消息: " + sendimgMessageusernode.toString());
+
+            ObjectNode imgmsg = factory.objectNode();
+            imgmsg.put("type","img");
+            imgmsg.put("url",  EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate("app_name",
+                    APPKEY.split("#")[1]).getUri().toString() + imgFileUUID);
+            imgmsg.put("filename", "24849.jpg");
+            imgmsg.put("length", 10);
+            imgmsg.put("secret", shareSecret);
+            ObjectNode sendimgMessageusernode = sendMessages(targetTypeus, targetusers, imgmsg, from, ext);
+            if (null != sendimgMessageusernode) {
+                LOGGER.info("给一个群组发文本消息: " + sendimgMessageusernode.toString());
+            }
+
+            // 给一个群组发图片消息
+            ObjectNode sendimgMessagegroupnode = sendMessages(targetTypegr, targetgroup, imgmsg, from, ext);
+            if (null != sendimgMessagegroupnode) {
+                LOGGER.info("给一个群组发文本消息: " + sendimgMessagegroupnode.toString());
+            }
         }
 
-        // 给一个群组发图片消息
-        ObjectNode sendimgMessagegroupnode = sendMessages(targetTypegr, targetgroup, imgmsg, from, ext);
-        if (null != sendimgMessagegroupnode) {
-            LOGGER.info("给一个群组发文本消息: " + sendimgMessagegroupnode.toString());
-        }
 
         // 给用户发一条语音消息
         File uploadAudioFile = new File("/home/lynch/Music/music.MP3");
         ObjectNode audioDataNode = EasemobFiles.mediaUpload(uploadAudioFile);
-        String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
-        String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
         if (null != audioDataNode) {
-            LOGGER.info("上传语音文件: " + audioDataNode.toString());
-        }
-        ObjectNode audiomsg = factory.objectNode();
-        audiomsg.put("type","audio");
-        audiomsg.put("url", EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate("app_name",
-                APPKEY.split("#")[1]).getUri().toString() + audioFileUUID);
-        audiomsg.put("filename", "music.MP3");
-        audiomsg.put("length", 10);
-        audiomsg.put("secret", audioFileShareSecret);
-        ObjectNode sendaudioMessageusernode = sendMessages(targetTypeus, targetusers, audiomsg, from, ext);
-        if (null != sendaudioMessageusernode) {
-            LOGGER.info("给用户发一条语音消息: " + sendaudioMessageusernode.toString());
-        }
+            String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
+            String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
 
-        // 给一个群组发语音消息
-        ObjectNode sendaudioMessagegroupnode = sendMessages(targetTypegr, targetgroup, audiomsg, from, ext);
-        if (null != sendaudioMessagegroupnode) {
-            LOGGER.info("给一个群组发语音消息: " + sendaudioMessagegroupnode.toString());
+            LOGGER.info("上传语音文件: " + audioDataNode.toString());
+
+            ObjectNode audiomsg = factory.objectNode();
+            audiomsg.put("type","audio");
+            audiomsg.put("url", EndPoints.CHATFILES_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0]).resolveTemplate("app_name",
+                    APPKEY.split("#")[1]).getUri().toString() + audioFileUUID);
+            audiomsg.put("filename", "music.MP3");
+            audiomsg.put("length", 10);
+            audiomsg.put("secret", audioFileShareSecret);
+            ObjectNode sendaudioMessageusernode = sendMessages(targetTypeus, targetusers, audiomsg, from, ext);
+            if (null != sendaudioMessageusernode) {
+                LOGGER.info("给用户发一条语音消息: " + sendaudioMessageusernode.toString());
+            }
+
+            // 给一个群组发语音消息
+            ObjectNode sendaudioMessagegroupnode = sendMessages(targetTypegr, targetgroup, audiomsg, from, ext);
+            if (null != sendaudioMessagegroupnode) {
+                LOGGER.info("给一个群组发语音消息: " + sendaudioMessagegroupnode.toString());
+            }
         }
 
         // 给用户发一条透传消息
@@ -134,10 +138,10 @@ public class EasemobMessages {
     /**
 	 * 检测用户是否在线
 	 * 
-	 * @param targetUserPrimaryKey
+	 * @param targetUserName
 	 * @return
 	 */
-	public static ObjectNode getUserStatus(String targetUserPrimaryKey) {
+	public static ObjectNode getUserStatus(String targetUserName) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -151,10 +155,10 @@ public class EasemobMessages {
 		}
 
 		// check properties that must be provided
-		if (StringUtils.isEmpty(targetUserPrimaryKey)) {
-			LOGGER.error("You must provided a targetUserPrimaryKey .");
+		if (StringUtils.isEmpty(targetUserName)) {
+			LOGGER.error("You must provided a targetUserName .");
 
-			objectNode.put("message", "You must provided a targetUserPrimaryKey .");
+			objectNode.put("message", "You must provided a targetUserName .");
 
 			return objectNode;
 		}
@@ -162,15 +166,15 @@ public class EasemobMessages {
 		try {
 
 			JerseyWebTarget webTarget = EndPoints.USERS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
-					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(targetUserPrimaryKey).path("status");
+					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(targetUserName).path("status");
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
 
-			String userStatus = objectNode.get("data").path(targetUserPrimaryKey).asText();
+			String userStatus = objectNode.get("data").path(targetUserName).asText();
 			if ("online".equals(userStatus)) {
-				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserPrimaryKey, userStatus));
+				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserName, userStatus));
 			} else if ("offline".equals(userStatus)) {
-				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserPrimaryKey, userStatus));
+				LOGGER.error(String.format("The status of user[%s] is : [%s] .", targetUserName, userStatus));
 			}
 
 		} catch (Exception e) {

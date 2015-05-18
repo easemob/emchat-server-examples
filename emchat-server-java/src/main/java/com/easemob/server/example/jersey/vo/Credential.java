@@ -5,7 +5,7 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
- * Credentail
+ * Credential
  * 
  * @author Lynch 2014-09-15
  *
@@ -43,7 +43,7 @@ public abstract class Credential {
 
 	@Override
 	public String toString() {
-		return "Credentail [grantType=" + grantType + ", tokenKey1=" + tokenKey1 + ", tokenKey2=" + tokenKey2
+		return "Credentials [grantType=" + grantType + ", tokenKey1=" + tokenKey1 + ", tokenKey2=" + tokenKey2
 				+ ", token=" + token + "]";
 	}
 

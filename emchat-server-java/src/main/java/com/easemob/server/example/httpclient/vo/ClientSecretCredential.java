@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * ClientSecretCredentail
+ * ClientSecretCredential
  * 
  * @author Lynch 2014-09-15
  *
@@ -67,11 +67,9 @@ public class ClientSecretCredential extends Credential {
 				HttpPost httpPost = new HttpPost();
 				httpPost.setURI(CLIENTSECRETCREDENTAIL_TOKEN_URL.toURI());
 
-				if (null != headers && !headers.isEmpty()) {
-					for (NameValuePair nameValuePair : headers) {
-						httpPost.addHeader(nameValuePair.getName(), nameValuePair.getValue());
-					}
-				}
+                for (NameValuePair nameValuePair : headers) {
+                    httpPost.addHeader(nameValuePair.getName(), nameValuePair.getValue());
+                }
 				httpPost.setEntity(new StringEntity(objectNode.toString(), "UTF-8"));
 
 				HttpResponse tokenResponse = client.execute(httpPost);
@@ -79,7 +77,7 @@ public class ClientSecretCredential extends Credential {
 
 				String results = EntityUtils.toString(entity, "UTF-8");
 
-				LOGGER.info("-----------------------------返回结果-------------------------------statuscode:"
+				LOGGER.info("-----------------------------返回结果-------------------------------statusCode:"
 						+ tokenResponse.getStatusLine().toString());
 
 				if (tokenResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -96,7 +94,7 @@ public class ClientSecretCredential extends Credential {
 					token = new Token(accessToken, expiredAt);
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
+				throw new RuntimeException("Some errors occurred while fetching a token by username and password .");
 			}
 		}
 

@@ -28,9 +28,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobMessages {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobMessages.class);
     private static final String APPKEY = Constants.APPKEY;
-    private static JsonNodeFactory factory = new JsonNodeFactory(false);
+    private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -38,8 +38,8 @@ public class EasemobMessages {
 
     public static void main(String[] args) {
         //  检测用户是否在线
-        String targetuserPrimaryKey = "kenshinn";
-        ObjectNode usernode = getUserStatus(targetuserPrimaryKey);
+        String targetuserName = "kenshinn";
+        ObjectNode usernode = getUserStatus(targetuserName);
         if (null != usernode) {
             LOGGER.info("检测用户是否在线: " + usernode.toString());
         }
@@ -71,50 +71,54 @@ public class EasemobMessages {
         // 给用户发一条图片消息
         File uploadImgFile = new File("/home/lynch/Pictures/24849.jpg");
         ObjectNode imgDataNode = EasemobFiles.mediaUpload(uploadImgFile);
-        String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
-        String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
         if (null != imgDataNode) {
+            String imgFileUUID = imgDataNode.path("entities").get(0).path("uuid").asText();
+            String shareSecret = imgDataNode.path("entities").get(0).path("share-secret").asText();
+
             LOGGER.info("上传图片文件: " + imgDataNode.toString());
-        }
-        ObjectNode imgmsg = factory.objectNode();
-        imgmsg.put("type","img");
-        imgmsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + imgFileUUID).toString());
-        imgmsg.put("filename", "24849.jpg");
-        imgmsg.put("length", 10);
-        imgmsg.put("secret", shareSecret);
-        ObjectNode sendimgMessageusernode = sendMessages(targetTypeus, targetusers, imgmsg, from, ext);
-        if (null != sendimgMessageusernode) {
-            LOGGER.info("给一个群组发文本消息: " + sendimgMessageusernode.toString());
-        }
-        // 给一个群组发图片消息
-        ObjectNode sendimgMessagegroupnode = sendMessages(targetTypegr, targetgroup, imgmsg, from, ext);
-        if (null != sendimgMessagegroupnode) {
-            LOGGER.info("给一个群组发文本消息: " + sendimgMessagegroupnode.toString());
+
+            ObjectNode imgmsg = factory.objectNode();
+            imgmsg.put("type","img");
+            imgmsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + imgFileUUID).toString());
+            imgmsg.put("filename", "24849.jpg");
+            imgmsg.put("length", 10);
+            imgmsg.put("secret", shareSecret);
+            ObjectNode sendimgMessageusernode = sendMessages(targetTypeus, targetusers, imgmsg, from, ext);
+            if (null != sendimgMessageusernode) {
+                LOGGER.info("给一个群组发文本消息: " + sendimgMessageusernode.toString());
+            }
+            // 给一个群组发图片消息
+            ObjectNode sendimgMessagegroupnode = sendMessages(targetTypegr, targetgroup, imgmsg, from, ext);
+            if (null != sendimgMessagegroupnode) {
+                LOGGER.info("给一个群组发文本消息: " + sendimgMessagegroupnode.toString());
+            }
         }
 
         // 给用户发一条语音消息
         File uploadAudioFile = new File("/home/lynch/Music/music.MP3");
         ObjectNode audioDataNode = EasemobFiles.mediaUpload(uploadAudioFile);
-        String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
-        String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
         if (null != audioDataNode) {
-            LOGGER.info("上传语音文件: " + audioDataNode.toString());
-        }
-        ObjectNode audiomsg = factory.objectNode();
-        audiomsg.put("type","audio");
-        audiomsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + audioFileUUID).toString());
-        audiomsg.put("filename", "music.MP3");
-        audiomsg.put("length", 10);
-        audiomsg.put("secret", audioFileShareSecret);
-        ObjectNode sendaudioMessageusernode = sendMessages(targetTypeus, targetusers, audiomsg, from, ext);
-        if (null != sendaudioMessageusernode) {
-            LOGGER.info("给用户发一条语音消息: " + sendaudioMessageusernode.toString());
-        }
+            String audioFileUUID = audioDataNode.path("entities").get(0).path("uuid").asText();
+            String audioFileShareSecret = audioDataNode.path("entities").get(0).path("share-secret").asText();
 
-        // 给一个群组发语音消息
-        ObjectNode sendaudioMessagegroupnode = sendMessages(targetTypegr, targetgroup, audiomsg, from, ext);
-        if (null != sendaudioMessagegroupnode) {
-            LOGGER.info("给一个群组发语音消息: " + sendaudioMessagegroupnode.toString());
+            LOGGER.info("上传语音文件: " + audioDataNode.toString());
+
+            ObjectNode audiomsg = factory.objectNode();
+            audiomsg.put("type","audio");
+            audiomsg.put("url", HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/chatfiles/" + audioFileUUID).toString());
+            audiomsg.put("filename", "music.MP3");
+            audiomsg.put("length", 10);
+            audiomsg.put("secret", audioFileShareSecret);
+            ObjectNode sendaudioMessageusernode = sendMessages(targetTypeus, targetusers, audiomsg, from, ext);
+            if (null != sendaudioMessageusernode) {
+                LOGGER.info("给用户发一条语音消息: " + sendaudioMessageusernode.toString());
+            }
+
+            // 给一个群组发语音消息
+            ObjectNode sendaudioMessagegroupnode = sendMessages(targetTypegr, targetgroup, audiomsg, from, ext);
+            if (null != sendaudioMessagegroupnode) {
+                LOGGER.info("给一个群组发语音消息: " + sendaudioMessagegroupnode.toString());
+            }
         }
 
         // 给用户发一条透传消息
@@ -146,8 +150,8 @@ public class EasemobMessages {
 
 		// check properties that must be provided
 		if (StringUtils.isEmpty(username)) {
-			LOGGER.error("You must provided a targetUserPrimaryKey .");
-			objectNode.put("message", "You must provided a targetUserPrimaryKey .");
+			LOGGER.error("You must provided a targetUserName .");
+			objectNode.put("message", "You must provided a targetUserName .");
 			return objectNode;
 		}
 

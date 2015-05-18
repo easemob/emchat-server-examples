@@ -29,11 +29,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 class EasemobFiles {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobFiles.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobFiles.class);
 
 	private static final String APPKEY = Constants.APPKEY;
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -198,11 +198,11 @@ class EasemobFiles {
 				headers.add(new BasicNameValuePair("thumbnail", String.valueOf(isThumbnail)));
 			}
 			downLoadedFile = JerseyUtils.downLoadFile(webTarget, credential, headers, localPath);
+            LOGGER.info("File download successfully，file path : " + downLoadedFile.getAbsolutePath() + ".");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		LOGGER.error("File download successfully，file path : " + downLoadedFile.getAbsolutePath() + ".");
 		objectNode.put("message", "File download successfully .");
 		return objectNode;
 	}

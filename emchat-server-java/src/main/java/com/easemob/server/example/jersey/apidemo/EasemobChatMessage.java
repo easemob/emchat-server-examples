@@ -25,8 +25,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobChatMessage {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobChatMessage.class);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 	private static final String APPKEY = Constants.APPKEY;
 
     // 通过app的client_id和client_secret来获取app管理员token

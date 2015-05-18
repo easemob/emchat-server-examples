@@ -20,10 +20,6 @@ public interface EndPoints {
 			.target(Constants.API_HTTP_SCHEMA + "://"
 					+ Constants.API_SERVER_HOST + "/");
 
-	public JerseyWebTarget MANAGEMENT_TARGET = ROOT_TARGET.path("management");
-
-	public JerseyWebTarget TOKEN_ORG_TARGET = MANAGEMENT_TARGET.path("token");
-
 	public JerseyWebTarget APPLICATION_TEMPLATE = ROOT_TARGET
 			.path("{org_name}").path("{app_name}");
 
@@ -33,8 +29,8 @@ public interface EndPoints {
 	public JerseyWebTarget USERS_TARGET = APPLICATION_TEMPLATE.path("users");
 
 	public JerseyWebTarget USERS_ADDFRIENDS_TARGET = APPLICATION_TEMPLATE
-			.path("users").path("{ownerUserPrimaryKey}").path("contacts")
-			.path("users").path("{friendUserPrimaryKey}");
+			.path("users").path("{ownerUserName}").path("contacts")
+			.path("users").path("{friendUserName}");
 
 	public JerseyWebTarget MESSAGES_TARGET = APPLICATION_TEMPLATE
 			.path("messages");
