@@ -49,16 +49,16 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 @SuppressWarnings("all")
 public class JerseyUtils {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(JerseyUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JerseyUtils.class);
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	/**
 	 * Send HTTPS request with Jersey
 	 * 
 	 * @return
 	 */
-	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credential credentail,
+	public static ObjectNode sendRequest(JerseyWebTarget jerseyWebTarget, Object body, Credential credential,
 			String method, List<NameValuePair> headers) throws RuntimeException {
 
 		ObjectNode objectNode = factory.objectNode();
@@ -74,9 +74,8 @@ public class JerseyUtils {
 		try {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
-			if (credentail != null) {
-				//inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
-				 Token.applyAuthentication(inBuilder, credentail);
+			if (credential != null) {
+				 Token.applyAuthentication(inBuilder, credential);
 			}
 
 			if (null != headers && !headers.isEmpty()) {
@@ -124,16 +123,13 @@ public class JerseyUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credential credentail,
+	public static File downLoadFile(JerseyWebTarget jerseyWebTarget, Credential credential,
 			List<NameValuePair> headers, File localPath) throws IOException {
 
 		Invocation.Builder inBuilder = jerseyWebTarget.request();
-		/*
-		 * if (credentail != null) { // add token into headers Token.applyAuthentication(inBuilder, credentail); }
-		 */
 
-		if (credentail != null) {
-			inBuilder.header("Authorization", "Bearer YWMtXTzzLkX_EeSRRA0PhthlrwAAAUnqX7TBUDddVXrfAPHQyGJzZRyRKzGtw8E");
+		if (credential != null) {
+            Token.applyAuthentication(inBuilder, credential);
 		}
 
 		if (null != headers && !headers.isEmpty()) {
@@ -159,15 +155,15 @@ public class JerseyUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, Credential credentail,
+	public static ObjectNode uploadFile(JerseyWebTarget jerseyWebTarget, File file, Credential credential,
 			List<NameValuePair> headers) throws RuntimeException {
 		ObjectNode objectNode = factory.objectNode();
 
 		try {
 
 			Invocation.Builder inBuilder = jerseyWebTarget.request();
-			if (credentail != null) {
-				Token.applyAuthentication(inBuilder, credentail);
+			if (credential != null) {
+				Token.applyAuthentication(inBuilder, credential);
 			}
 
 			if (null != headers && !headers.isEmpty()) {

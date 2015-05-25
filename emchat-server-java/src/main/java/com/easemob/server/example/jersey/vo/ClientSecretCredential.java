@@ -14,7 +14,7 @@ import com.easemob.server.example.jersey.utils.JerseyUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * ClientSecretCredentail
+ * ClientSecretCredential
  * 
  * @author Lynch 2014-09-15
  *
@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class ClientSecretCredential extends Credential {
 
 	private static JerseyWebTarget CLIENT_TOKEN_TARGET = null;
+    private static final String  GRANT_TYPE = "client_credentials";
 
 	public ClientSecretCredential(String clientID, String clientSecret, String role) {
 		super(clientID, clientSecret);
@@ -49,7 +50,7 @@ public class ClientSecretCredential extends Credential {
 		if (null == token || token.isExpired()) {
 			try {
 				ObjectNode objectNode = factory.objectNode();
-				objectNode.put("grant_type", "client_credentials");
+				objectNode.put("grant_type", GRANT_TYPE);
 				objectNode.put("client_id", tokenKey1);
 				objectNode.put("client_secret", tokenKey2);
 				List<NameValuePair> headers = new ArrayList<NameValuePair>();
@@ -59,7 +60,9 @@ public class ClientSecretCredential extends Credential {
 						HTTPMethod.METHOD_POST, headers);
 
 				if (null != tokenRequest.get("error")) {
-					return token;
+                    throw new RuntimeException("Some errors occurred while fetching a token by " +
+                            "grant_type[" + GRANT_TYPE + "] client_id[" + tokenKey1 + "]" +
+                            " and client_secret[" + tokenKey2 + "] .");
 				}
 
 				String accessToken = tokenRequest.get("access_token").asText();
@@ -68,8 +71,10 @@ public class ClientSecretCredential extends Credential {
 
 				token = new Token(accessToken, expiredAt);
 			} catch (Exception e) {
-				throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
-			}
+                throw new RuntimeException("Some errors occurred while fetching a token by " +
+                        "grant_type[" + GRANT_TYPE + "] client_id[" + tokenKey1 + "]" +
+                        " and client_secret[" + tokenKey2 + "] .");
+            }
 		}
 
 		return token;

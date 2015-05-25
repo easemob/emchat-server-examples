@@ -26,7 +26,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobChatGroups {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobChatGroups.class);
+    private static final JsonNodeFactory factory = new JsonNodeFactory(false);
+    private static final String APPKEY = Constants.APPKEY;
+
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -129,11 +132,7 @@ public class EasemobChatGroups {
 		ObjectNode addUserToGroupBatchNode = addUsersToGroupBatch(toAddBacthChatgroupid, usernamesNode);
 		System.out.println(addUserToGroupBatchNode.toString());
 	}
-	
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
-
-	private static final String APPKEY = Constants.APPKEY;
 
 	/**
 	 * 获取APP中所有的群组ID
@@ -156,8 +155,7 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
@@ -188,8 +186,7 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupIDs.toString());
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
@@ -264,8 +261,7 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]);
 
 			objectNode = JerseyUtils.sendRequest(webTarget, dataObjectNode, credential, HTTPMethod.METHOD_POST, null);
@@ -295,8 +291,7 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid);
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_DELETE, null);
@@ -327,8 +322,7 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users");
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_GET, null);
@@ -344,7 +338,7 @@ public class EasemobChatGroups {
 	 * 在群组中添加一个人
 	 * 
 	 */
-	public static ObjectNode addUserToGroup(String chatgroupid, String userprimarykey) {
+	public static ObjectNode addUserToGroup(String chatgroupid, String userName) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -359,10 +353,9 @@ public class EasemobChatGroups {
 
 		try {
 
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
-					.path(userprimarykey);
+					.path(userName);
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_POST, null);
 
@@ -377,7 +370,7 @@ public class EasemobChatGroups {
 	 * 在群组中减少一个人
 	 * 
 	 */
-	public static ObjectNode deleteUserFromGroup(String chatgroupid, String userprimarykey) {
+	public static ObjectNode deleteUserFromGroup(String chatgroupid, String userName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check appKey format
@@ -390,10 +383,9 @@ public class EasemobChatGroups {
 		}
 
 		try {
-			JerseyWebTarget webTarget = null;
-			webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
+			JerseyWebTarget webTarget = EndPoints.CHATGROUPS_TARGET.resolveTemplate("org_name", APPKEY.split("#")[0])
 					.resolveTemplate("app_name", APPKEY.split("#")[1]).path(chatgroupid).path("users")
-					.path(userprimarykey);
+					.path(userName);
 
 			objectNode = JerseyUtils.sendRequest(webTarget, null, credential, HTTPMethod.METHOD_DELETE, null);
 

@@ -27,13 +27,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Lynch 2014-09-09
  * 
  */
-class EasemobFiles {
+public class EasemobFiles {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobFiles.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobFiles.class);
 
 	private static final String APPKEY = Constants.APPKEY;
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -46,7 +46,7 @@ class EasemobFiles {
          * curl --verbose --header "Authorization: Bearer {token}" --header "restrict-access:true" --form file=@/Users/stliu/a.jpg
          * https://a1.easemob.com/easemob-playground/test1/chatfiles
          */
-        File uploadImgFile = new File("/home/lynch/Pictures/24849.jpg");
+        File uploadImgFile = new File("/tmp/24849.jpg");
         ObjectNode imgDataNode = mediaUpload(uploadImgFile);
         if (null != imgDataNode) {
             LOGGER.info("上传图片文件: " + imgDataNode.toString());
@@ -96,7 +96,7 @@ class EasemobFiles {
          * curl --verbose --header "Authorization: Bearer {token}" --header "restrict-access:true" --form file=@/Users/stliu/music.MP3
          * https://a1.easemob.com/easemob-playground/test1/chatfiles
          */
-        File uploadAudioFile = new File("/home/lynch/Music/music.MP3");
+        File uploadAudioFile = new File("/tmp/music.MP3");
         ObjectNode audioDataNode = mediaUpload(uploadAudioFile);
         if (null != audioDataNode) {
             LOGGER.info("上传语音文件: " + audioDataNode.toString());
@@ -198,11 +198,11 @@ class EasemobFiles {
 				headers.add(new BasicNameValuePair("thumbnail", String.valueOf(isThumbnail)));
 			}
 			downLoadedFile = JerseyUtils.downLoadFile(webTarget, credential, headers, localPath);
+            LOGGER.error("File download successfully，file path : " + downLoadedFile.getAbsolutePath() + ".");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		LOGGER.error("File download successfully，file path : " + downLoadedFile.getAbsolutePath() + ".");
 		objectNode.put("message", "File download successfully .");
 		return objectNode;
 	}

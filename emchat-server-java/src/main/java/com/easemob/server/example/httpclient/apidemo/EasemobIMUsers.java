@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EasemobIMUsers {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EasemobIMUsers.class);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
     // 通过app的client_id和client_secret来获取app管理员token
     private static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
@@ -69,10 +69,10 @@ public class EasemobIMUsers {
         /**
          * 获取IM用户[主键查询]
          */
-        String userPrimaryKey = "kenshinnuser100";
-        ObjectNode getIMUsersByPrimaryKeyNode = getIMUsersByPrimaryKey(userPrimaryKey);
-        if (null != getIMUsersByPrimaryKeyNode) {
-            LOGGER.info("获取IM用户[主键查询]: " + getIMUsersByPrimaryKeyNode.toString());
+        String userName = "kenshinnuser100";
+        ObjectNode getIMUsersByUserNameNode = getIMUsersByUserName(userName);
+        if (null != getIMUsersByUserNameNode) {
+            LOGGER.info("获取IM用户[主键查询]: " + getIMUsersByUserNameNode.toString());
         }
 
         /**
@@ -93,9 +93,9 @@ public class EasemobIMUsers {
         /**
          * 添加好友[单个]
          */
-        String ownerUserPrimaryKey = username;
-        String friendUserPrimaryKey = "kenshinnuser099";
-        ObjectNode addFriendSingleNode = addFriendSingle(ownerUserPrimaryKey, friendUserPrimaryKey);
+        String ownerUserName = username;
+        String friendUserName = "kenshinnuser099";
+        ObjectNode addFriendSingleNode = addFriendSingle(ownerUserName, friendUserName);
         if (null != addFriendSingleNode) {
             LOGGER.info("添加好友[单个]: " + addFriendSingleNode.toString());
         }
@@ -103,7 +103,7 @@ public class EasemobIMUsers {
         /**
          * 查看好友
          */
-        ObjectNode getFriendsNode = getFriends(ownerUserPrimaryKey);
+        ObjectNode getFriendsNode = getFriends(ownerUserName);
         if (null != getFriendsNode) {
             LOGGER.info("查看好友: " + getFriendsNode.toString());
         }
@@ -111,7 +111,7 @@ public class EasemobIMUsers {
         /**
          * 解除好友关系
          **/
-        ObjectNode deleteFriendSingleNode = deleteFriendSingle(ownerUserPrimaryKey, friendUserPrimaryKey);
+        ObjectNode deleteFriendSingleNode = deleteFriendSingle(ownerUserName, friendUserName);
         if (null != deleteFriendSingleNode) {
             LOGGER.info("解除好友关系: " + deleteFriendSingleNode.toString());
         }
@@ -119,9 +119,9 @@ public class EasemobIMUsers {
         /**
          * 删除IM用户[单个]
          */
-        ObjectNode deleteIMUserByUserPrimaryKeyNode = deleteIMUserByUserPrimaryKey(userPrimaryKey);
-        if (null != deleteIMUserByUserPrimaryKeyNode) {
-            LOGGER.info("删除IM用户[单个]: " + deleteIMUserByUserPrimaryKeyNode.toString());
+        ObjectNode deleteIMUserByuserNameNode = deleteIMUserByuserName(userName);
+        if (null != deleteIMUserByuserNameNode) {
+            LOGGER.info("删除IM用户[单个]: " + deleteIMUserByuserNameNode.toString());
         }
 
         /**
@@ -294,11 +294,11 @@ public class EasemobIMUsers {
 	/**
 	 * 获取IM用户
 	 * 
-	 * @param userPrimaryKey
+	 * @param userName
 	 *            用户主键：username或者uuid
 	 * @return
 	 */
-	public static ObjectNode getIMUsersByPrimaryKey(String userPrimaryKey) {
+	public static ObjectNode getIMUsersByUserName(String userName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -311,10 +311,10 @@ public class EasemobIMUsers {
 		}
 
 		// check properties that must be provided
-		if (StringUtils.isEmpty(userPrimaryKey)) {
-			LOGGER.error("The primaryKey that will be useed to query must be provided .");
+		if (StringUtils.isEmpty(userName)) {
+			LOGGER.error("The userName that will be used to query must be provided .");
 
-			objectNode.put("message", "The primaryKey that will be useed to query must be provided .");
+			objectNode.put("message", "The userName that will be used to query must be provided .");
 
 			return objectNode;
 		}
@@ -322,7 +322,7 @@ public class EasemobIMUsers {
 		try {
 
 			URL userPrimaryUrl = HTTPClientUtils
-					.getURL(Constants.APPKEY.replace("#", "/") + "/users/" + userPrimaryKey);
+					.getURL(Constants.APPKEY.replace("#", "/") + "/users/" + userName);
 			objectNode = HTTPClientUtils.sendHTTPRequest(userPrimaryUrl, credential, null, HTTPMethod.METHOD_GET);
 
 		} catch (Exception e) {
@@ -338,10 +338,10 @@ public class EasemobIMUsers {
 	 * 删除指定Constants.APPKEY下IM单个用户
 	 *
 	 * 
-	 * @param userPrimaryKey
+	 * @param userName
 	 * @return
 	 */
-	public static ObjectNode deleteIMUserByUserPrimaryKey(String userPrimaryKey) {
+	public static ObjectNode deleteIMUserByuserName(String userName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -356,7 +356,7 @@ public class EasemobIMUsers {
 		try {
 
 			URL deleteUserPrimaryUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ userPrimaryKey);
+					+ userName);
 			objectNode = HTTPClientUtils.sendHTTPRequest(deleteUserPrimaryUrl, credential, null,
 					HTTPMethod.METHOD_DELETE);
 
@@ -413,11 +413,11 @@ public class EasemobIMUsers {
 	/**
 	 * 重置IM用户密码 提供管理员token
 	 * 
-	 * @param userPrimaryKey
+	 * @param userName
 	 * @param dataObjectNode
 	 * @return
 	 */
-	public static ObjectNode modifyIMUserPasswordWithAdminToken(String userPrimaryKey, ObjectNode dataObjectNode) {
+	public static ObjectNode modifyIMUserPasswordWithAdminToken(String userName, ObjectNode dataObjectNode) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -429,11 +429,11 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(userPrimaryKey)) {
-			LOGGER.error("Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(userName)) {
+			LOGGER.error("Property that named userName must be provided，the value is username of imuser.");
 
 			objectNode.put("message",
-					"Property that named userPrimaryKey must be provided，the value is username or uuid of imuser.");
+					"Property that named userName must be provided，the value is username or imuser.");
 
 			return objectNode;
 		}
@@ -448,7 +448,7 @@ public class EasemobIMUsers {
 
 		try {
 			URL modifyIMUserPasswordWithAdminTokenUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/")
-					+ "/users/" + userPrimaryKey + "/password");
+					+ "/users/" + userName + "/password");
 			objectNode = HTTPClientUtils.sendHTTPRequest(modifyIMUserPasswordWithAdminTokenUrl, credential,
 					dataObjectNode, HTTPMethod.METHOD_PUT);
 
@@ -462,12 +462,12 @@ public class EasemobIMUsers {
 	/**
 	 * 添加好友[单个]
 	 * 
-	 * @param ownerUserPrimaryKey
-	 * @param friendUserPrimaryKey
+	 * @param ownerUserName
+	 * @param friendUserName
 	 * 
 	 * @return
 	 */
-	public static ObjectNode addFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+	public static ObjectNode addFriendSingle(String ownerUserName, String friendUserName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -479,19 +479,19 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
-			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(ownerUserName)) {
+			LOGGER.error("Your userName must be provided，the value is username of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode.put("message", "Your userName must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
-			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(friendUserName)) {
+			LOGGER.error("The userName of friend must be provided，the value is username of imuser.");
 
 			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+					"The userName of friend must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
@@ -499,7 +499,7 @@ public class EasemobIMUsers {
 		try {
 
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
+					+ ownerUserName + "/contacts/users/" + friendUserName);
 
 			ObjectNode body = factory.objectNode();
 			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credential, body, HTTPMethod.METHOD_POST);
@@ -514,12 +514,12 @@ public class EasemobIMUsers {
 	/**
 	 * 删除好友
 	 * 
-	 * @param ownerUserPrimaryKey
-	 * @param friendUserPrimaryKey
+	 * @param ownerUserName
+	 * @param friendUserName
 	 * 
 	 * @return
 	 */
-	public static ObjectNode deleteFriendSingle(String ownerUserPrimaryKey, String friendUserPrimaryKey) {
+	public static ObjectNode deleteFriendSingle(String ownerUserName, String friendUserName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -531,26 +531,26 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
-			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(ownerUserName)) {
+			LOGGER.error("Your userName must be provided，the value is username of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode.put("message", "Your userName must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(friendUserPrimaryKey)) {
-			LOGGER.error("The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(friendUserName)) {
+			LOGGER.error("The userName of friend must be provided，the value is username of imuser.");
 
 			objectNode.put("message",
-					"The userPrimaryKey of friend must be provided，the value is username or uuid of imuser.");
+					"The userName of friend must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
 
 		try {
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ ownerUserPrimaryKey + "/contacts/users/" + friendUserPrimaryKey);
+					+ ownerUserName + "/contacts/users/" + friendUserName);
 
 			ObjectNode body = factory.objectNode();
 			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credential, body, HTTPMethod.METHOD_DELETE);
@@ -565,11 +565,11 @@ public class EasemobIMUsers {
 	/**
 	 * 获取用户所有好友
 	 * 
-	 * @param ownerUserPrimaryKey
+	 * @param ownerUserName
 	 * 
 	 * @return
 	 */
-	public static ObjectNode getFriends(String ownerUserPrimaryKey) {
+	public static ObjectNode getFriends(String ownerUserName) {
 		ObjectNode objectNode = factory.objectNode();
 
 		// check Constants.APPKEY format
@@ -581,10 +581,10 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 
-		if (StringUtils.isEmpty(ownerUserPrimaryKey)) {
-			LOGGER.error("Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+		if (StringUtils.isEmpty(ownerUserName)) {
+			LOGGER.error("Your userName must be provided，the value is username of imuser.");
 
-			objectNode.put("message", "Your userPrimaryKey must be provided，the value is username or uuid of imuser.");
+			objectNode.put("message", "Your userName must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
@@ -592,7 +592,7 @@ public class EasemobIMUsers {
 		try {
 			
 			URL addFriendSingleUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users/"
-					+ ownerUserPrimaryKey + "/contacts/users");
+					+ ownerUserName + "/contacts/users");
 
 			ObjectNode body = factory.objectNode();
 			objectNode = HTTPClientUtils.sendHTTPRequest(addFriendSingleUrl, credential, body, HTTPMethod.METHOD_GET);
@@ -624,16 +624,16 @@ public class EasemobIMUsers {
 			return objectNode;
 		}
 		if (StringUtils.isEmpty(username)) {
-			LOGGER.error("Your username must be provided，the value is username or uuid of imuser.");
+			LOGGER.error("Your username must be provided，the value is username of imuser.");
 
-			objectNode.put("message", "Your username must be provided，the value is username or uuid of imuser.");
+			objectNode.put("message", "Your username must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
 		if (StringUtils.isEmpty(password)) {
-			LOGGER.error("Your password must be provided，the value is username or uuid of imuser.");
+			LOGGER.error("Your password must be provided，the value is username of imuser.");
 
-			objectNode.put("message", "Your password must be provided，the value is username or uuid of imuser.");
+			objectNode.put("message", "Your password must be provided，the value is username of imuser.");
 
 			return objectNode;
 		}
@@ -648,7 +648,7 @@ public class EasemobIMUsers {
 					HTTPMethod.METHOD_POST);
 
 		} catch (Exception e) {
-			throw new RuntimeException("Some errors ocuured while fetching a token by usename and passowrd .");
+			throw new RuntimeException("Some errors occurred while fetching a token by username and password .");
 		}
 
 		return objectNode;

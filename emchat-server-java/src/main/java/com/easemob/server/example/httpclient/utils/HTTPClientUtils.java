@@ -54,14 +54,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class HTTPClientUtils {
 
-	private static JsonNodeFactory factory = new JsonNodeFactory(false);
+	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
 	/**
 	 * Send SSL Request
 	 * 
 	 * @return
 	 */
-	public static ObjectNode sendHTTPRequest(URL url, Credential credentail, Object dataBody, String method) {
+	public static ObjectNode sendHTTPRequest(URL url, Credential credential, Object dataBody, String method) {
 
 		HttpClient httpClient = getClient(true);
 
@@ -74,16 +74,16 @@ public class HTTPClientUtils {
 			if (method.equals(HTTPMethod.METHOD_POST)) {
 				HttpPost httpPost = new HttpPost(url.toURI());
 
-				if (credentail != null) {
-					Token.applyAuthentication(httpPost, credentail);
+				if (credential != null) {
+					Token.applyAuthentication(httpPost, credential);
 				}
 				httpPost.setEntity(new StringEntity(dataBody.toString(), "UTF-8"));
 
 				response = httpClient.execute(httpPost);
 			} else if (method.equals(HTTPMethod.METHOD_PUT)) {
 				HttpPut httpPut = new HttpPut(url.toURI());
-				if (credentail != null) {
-					Token.applyAuthentication(httpPut, credentail);
+				if (credential != null) {
+					Token.applyAuthentication(httpPut, credential);
 				}
 				httpPut.setEntity(new StringEntity(dataBody.toString(), "UTF-8"));
 
@@ -91,8 +91,8 @@ public class HTTPClientUtils {
 			} else if (method.equals(HTTPMethod.METHOD_GET)) {
 
 				HttpGet httpGet = new HttpGet(url.toURI());
-				if (credentail != null) {
-					Token.applyAuthentication(httpGet, credentail);
+				if (credential != null) {
+					Token.applyAuthentication(httpGet, credential);
 				}
 
 				response = httpClient.execute(httpGet);
@@ -100,8 +100,8 @@ public class HTTPClientUtils {
 			} else if (method.equals(HTTPMethod.METHOD_DELETE)) {
 				HttpDelete httpDelete = new HttpDelete(url.toURI());
 
-				if (credentail != null) {
-					Token.applyAuthentication(httpDelete, credentail);
+				if (credential != null) {
+					Token.applyAuthentication(httpDelete, credential);
 				}
 
 				response = httpClient.execute(httpDelete);
@@ -136,23 +136,22 @@ public class HTTPClientUtils {
 	 * @throws KeyManagementException
 	 * @throws IOException
 	 */
-	public static File downLoadFile(URL url, Credential credentail, List<NameValuePair> headers, File localPath) {
+	public static File downLoadFile(URL url, Credential credential, List<NameValuePair> headers, File localPath) {
 
 		HttpClient httpClient = getClient(true);
 
 		try {
 
-			HttpResponse response = null;
 			HttpGet httpGet = new HttpGet(url.toURI());
 
-			if (credentail != null) {
-				Token.applyAuthentication(httpGet, credentail);
+			if (credential != null) {
+				Token.applyAuthentication(httpGet, credential);
 			}
 			for (NameValuePair header : headers) {
 				httpGet.addHeader(header.getName(), header.getValue());
 			}
 
-			response = httpClient.execute(httpGet);
+            HttpResponse response = httpClient.execute(httpGet);
 
 			HttpEntity entity = response.getEntity();
 			InputStream in = entity.getContent();
@@ -180,20 +179,17 @@ public class HTTPClientUtils {
 	 * 
 	 * @return
 	 */
-	public static ObjectNode uploadFile(URL url, File file, Credential credentail, List<NameValuePair> headers)
+	public static ObjectNode uploadFile(URL url, File file, Credential credential, List<NameValuePair> headers)
 			throws RuntimeException {
 		HttpClient httpClient = getClient(true);
 
 		ObjectNode resObjectNode = factory.objectNode();
 
 		try {
-
-			HttpResponse response = null;
-
 			HttpPost httpPost = new HttpPost(url.toURI());
 
-			if (credentail != null) {
-				Token.applyAuthentication(httpPost, credentail);
+			if (credential != null) {
+				Token.applyAuthentication(httpPost, credential);
 			}
 			for (NameValuePair header : headers) {
 				httpPost.addHeader(header.getName(), header.getValue());
@@ -204,7 +200,7 @@ public class HTTPClientUtils {
 			mpEntity.addPart("file", cbFile);
 			httpPost.setEntity(mpEntity);
 
-			response = httpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
 
 			HttpEntity entity = response.getEntity();
 
