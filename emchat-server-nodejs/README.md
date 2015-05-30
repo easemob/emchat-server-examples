@@ -1,1 +1,1 @@
-请将代码中对应的 org_name app_name client_id client_secret 换成自己的
+请将代码中对应的 YOUR_ORG_NAME YOUR_APP_NAME YOUR_CLIENT_ID YOUR_CLIENT_SECRET 换成自己的
