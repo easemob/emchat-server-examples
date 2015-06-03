@@ -128,7 +128,7 @@ public class EasemobIMUsers {
          * 删除IM用户[批量]
          */
         Long limit = 2l;
-        ObjectNode deleteIMUserByUsernameBatchNode = deleteIMUserByUsernameBatch(limit, null);
+        ObjectNode deleteIMUserByUsernameBatchNode = deleteIMUserByUsernameBatch(limit);
         if (null != deleteIMUserByUsernameBatchNode) {
             LOGGER.info("删除IM用户[批量]: " + deleteIMUserByUsernameBatchNode.toString());
         }
@@ -376,7 +376,7 @@ public class EasemobIMUsers {
 	 * @param queryStr
 	 * @return
 	 */
-	public static ObjectNode deleteIMUserByUsernameBatch(Long limit, String queryStr) {
+	public static ObjectNode deleteIMUserByUsernameBatch(Long limit) {
 
 		ObjectNode objectNode = factory.objectNode();
 
@@ -388,18 +388,11 @@ public class EasemobIMUsers {
 
 			return objectNode;
 		}
-		if (StringUtils.isEmpty(queryStr)) {
-			LOGGER.error("queryStr must be provided .");
-
-			objectNode.put("message", "queryStr must be provided .");
-
-			return objectNode;
-		}
 
 		try {
 
 			URL deleteIMUserByUsernameBatchUrl = HTTPClientUtils.getURL(Constants.APPKEY.replace("#", "/") + "/users"
-					+ "?ql=" + queryStr + "&limit=" + limit);
+					+ "?limit=" + limit);
 			objectNode = HTTPClientUtils.sendHTTPRequest(deleteIMUserByUsernameBatchUrl, credential, null,
 					HTTPMethod.METHOD_DELETE);
 
