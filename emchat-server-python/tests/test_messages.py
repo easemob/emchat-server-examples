@@ -10,19 +10,17 @@ from emchat.utils.types import service_users, service_messages
 from emchat.utils.loggers import Logger
 
 
-class TestEaseMobUserGridMessagesServices(unittest.TestCase):
+class TestEaseMobMessagesServices(unittest.TestCase):
 
-    logger = Logger.get_logger('TestEaseMobUserGridMessagesServices.class')
+    logger = Logger.get_logger('TestEaseMobMessagesServices.class')
 
     message_services = rest_client.get_instance(service_users)
     users_services = rest_client.get_instance(service_messages)
 
     def setUp(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def tearDown(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def test_b_send_messages_to_user(self):

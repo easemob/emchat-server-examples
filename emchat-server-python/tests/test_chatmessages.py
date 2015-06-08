@@ -10,14 +10,16 @@ from emchat.utils.types import *
 from emchat.utils.loggers import Logger
 
 
-class TestEaseMobUserGridChatMessagesServices(unittest.TestCase):
-    logger = Logger.get_logger('TestEaseMobUserGridChatMessagesServices.class')
+class TestEaseMobChatMessagesServices(unittest.TestCase):
+    logger = Logger.get_logger('TestEaseMobChatMessagesServices.class')
     users_service = rest_client.get_instance(service_users)
 
     def test_a_query_joined_messages(self):
         """查询默认消息记录
         """
-        self.logger.info('------------api:query messages default(no ql)--------------------------------')
+
+        self.logger.info('------------api:query messages--------------------------------')
+
         resp = []
         try:
             resp = self.users_service.query_messages_default()

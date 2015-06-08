@@ -16,10 +16,7 @@ class Token(object):
         self.expires_at = int(time.time()) + expires_in
 
     def is_expired(self):
-        if self.expires_at < time.time():
-            return False
-        else:
-            return True
+        return self.expires_at > time.time()
 
 
 class BaseTokenAuth(AuthBase):

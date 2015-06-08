@@ -16,15 +16,8 @@ class EMIMUsersService(object):
         self.app = app
         self.auth = auth
 
-    def create_new_user_single(self, payload):
-        """注册用户[单个]
-        """
-
-        url = ('/%s/%s/users' % (self.org, self.app))
-        return http_post(url, payload, self.auth)
-
-    def create_new_user_batch(self, payload):
-        """注册IM用户[批量]
+    def create_new_user(self, payload):
+        """注册IM用户
         """
 
         url = ('/%s/%s/users' % (self.org, self.app))
@@ -44,7 +37,7 @@ class EMIMUsersService(object):
         url = ('/%s/%s/users/%s' % (self.org, self.app, username))
         return http_get(url, self.auth)
 
-    def query_users_batch(self, username):
+    def query_users(self, username):
         """获取IM用户[批量]
         """
 
@@ -79,24 +72,24 @@ class EMIMUsersService(object):
         """修改用户昵称
         """
 
-        url = 'http://a1.easemob.com' + ('/%s/%s/users/%s' % (self.org, self.app, username))
+        url = ('/%s/%s/users/%s' % (self.org, self.app, username))
         return http_put(url, payload, self.auth)
 
-    def add_friend_single(self, username, friend):
+    def add_friend(self, username, friend):
         """建立好友关系
         """
 
         url = ('/%s/%s/users/%s/contacts/users/%s' % (self.org, self.app, username, friend))
         return http_post(url, self.auth)
 
-    def query_friends_by_primary_key(self, username):
+    def query_friends(self, username):
         """查询好友列表
         """
 
         url = ('/%s/%s/users/%s/contacts/users' % (self.org, self.app, username))
         return http_get(url, self.auth)
 
-    def delete_friend_single(self, username, friend):
+    def delete_friend(self, username, friend):
         """解除好友关系
         """
 
@@ -218,10 +211,9 @@ class EMChatGroupsService(object):
         """群组加人[批量]
         """
 
-        paylod = {}
-
+        payload = {}
         url = ('/%s/%s/chatgroups/%s/users' % (self.org, self.app, group_id))
-        return http_post(url, paylod, self.auth)
+        return http_post(url, payload, self.auth)
 
     def remove_user_from_group(self, group_id, username):
         """群组减人
@@ -271,7 +263,7 @@ class EMChatMessagesService(object):
         self.app = app
         self.auth = auth
 
-    def query_messages_by_ql(self, limit, cursor):
+    def query_messages(self, ql=None, limit=None, cursor = None):
         ql = ''
 
         if isinstance(limit, int) and (limit > 0):
@@ -282,6 +274,3 @@ class EMChatMessagesService(object):
         url = ('/%s/%s/chatmessages%s' % (self.org, self.app, ql))
         return http_get(url, self.auth)
 
-    def query_messages_default(self):
-        url = ('/%s/%s/chatmessages' % (self.org, self.app))
-        return http_get(url, self.auth)

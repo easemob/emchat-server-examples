@@ -10,22 +10,21 @@ from emchat.utils.types import *
 from emchat.utils.loggers import Logger
 
 
-class TestEaseMobUserGridUsersServices(unittest.TestCase):
-    logger = Logger.get_logger('TestEaseMobUserGridUsersServices.class')
+class TestEaseMobUsersServices(unittest.TestCase):
+    logger = Logger.get_logger('TestEaseMobUsersServices.class')
 
     users_services = rest_client.get_instance(service_users)
 
     def setUp(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def tearDown(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def test_a_create_new_users_single(self):
         """创建单个用户
         """
+
         self.logger.info('-------API:create new user--------------------------------------')
 
         resp = []
@@ -46,6 +45,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_b_create_new_users_batch(self):
         """批量创建用户
         """
+
         self.logger.info('-------API:create new users batch------------------------------')
         resp = []
         try:
@@ -75,6 +75,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_c_im_user_login(self):
         """IM用户登录
         """
+
         self.logger.info('-------API:im user login by username/password------------------')
 
         resp = []
@@ -104,6 +105,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_d_query_users_by_username(self):
         """通过用户名查找用户
         """
+
         self.logger.info('-------API:query user by username----------------------------')
 
         resp = []
@@ -128,6 +130,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_e_query_users_ql(self):
         """批量查找用户
         """
+
         self.logger.info('-------API:query users, paging display------------------------------')
 
         resp = []
@@ -171,6 +174,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_f_modify_user_password_with_admin_token(self):
         """修改用户密码[带管理员token]
         """
+
         self.logger.info('-------API:modify user password with admin token----------')
 
         resp = []
@@ -205,6 +209,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_g_add_friend_single(self):
         """添加用户好友[单个]
         """
+
         self.logger.info('-------API:add friend-----------------------------------')
 
         resp = []
@@ -237,6 +242,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_h_query_friends_by_username(self):
         """查找用户好友
         """
+
         self.logger.info('------API:query all friends of user-------------------')
 
         resp = []
@@ -274,8 +280,9 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
                             'cause by: ' + str(resp[1]['error_description']))
 
     def test_i_delete_friend_single(self):
-        """接触好友关系
+        """解除好友关系
         """
+
         self.logger.info('-------API:delete friend------------------------------')
 
         resp = []
@@ -311,6 +318,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_j_add_user_into_blacklist_by_username(self):
         """用户黑名单加人
         """
+
         self.logger.info('-------API:add user into blacklist--------------------')
 
         resp = []
@@ -344,6 +352,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_k_query_blacklist_by_username(self):
         """查看用户黑名单
         """
+
         self.logger.info('-------API:query blacklist--------------------------')
 
         resp = []
@@ -379,6 +388,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_l_remove_user_from_blacklist_by_username(self):
         """用户黑名单减人
         """
+
         self.logger.info('-------API:remove user from blacklist---------------')
 
         resp = []
@@ -414,6 +424,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_m_query_user_offline_msg_status(self):
         """查看用户的离线消息状态
         """
+
         self.logger.info('-------API:check the status of offline message for user-')
 
         resp = []
@@ -439,6 +450,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_m_delete_user_by_primary_key(self):
         """删除用户
         """
+
         self.logger.info('-------API:delete user by username---------------------')
         resp = []
         try:
@@ -462,6 +474,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_n_delete_user_batch(self):
         """批量删除用户[100个]
         """
+
         self.logger.info('-------API:delete users batch--------------------------')
         resp = []
         try:
@@ -490,6 +503,7 @@ class TestEaseMobUserGridUsersServices(unittest.TestCase):
     def test_a_check_status_of_user(self):
         """查询用户在线状态
         """
+
         self.logger.info('-----------API:check the status of user-----------------------------------')
         resp = []
         try:

@@ -10,23 +10,22 @@ from emchat.utils.types import *
 from emchat.utils.loggers import Logger
 
 
-class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
-    logger = Logger.get_logger('TestEaseMobUserGridChatGroupsServices.class')
+class TestEaseMobChatGroupsServices(unittest.TestCase):
+    logger = Logger.get_logger('TestEaseMobChatGroupsServices.class')
 
     groups_services = rest_client.get_instance(service_chatgroups)
     users_services = rest_client.get_instance(service_users)
 
     def setUp(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def tearDown(self):
-        pass
         self.users_services.delete_user_batch(100)
 
     def test_a_create_group(self):
         """创建群组
         """
+
         self.logger.info('-------API:create group------------------------')
         resp = []
         try:
@@ -84,6 +83,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_b_query_all_groups(self):
         """查询群组列表[不分页]
         """
+
         self.logger.info('-------API:query all groups-----------------------')
 
         resp = []
@@ -143,6 +143,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_c_query_all_groups_page(self):
         """查询群组列表[分页]
         """
+
         self.logger.info('-------API:query all groups, paging display----------')
 
         resp = []
@@ -271,6 +272,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_d_query_groupinfo_by_groupids(self):
         """查询群组详情
         """
+
         self.logger.info('------API:query groupinfo by groupids---------------------')
 
         resp = []
@@ -329,6 +331,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_e_update_groups_by_id(self):
         """修改群组信息
         """
+
         self.logger.info('-------API:update groups by group-id--------------------')
 
         resp = []
@@ -391,6 +394,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_f_query_all_members_by_groupid(self):
         """查询群组成员
         """
+
         self.logger.info('--------API:query all member by group-id-------------------')
 
         resp = []
@@ -448,6 +452,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_g_add_user_to_group_single(self):
         """群组增加成员[单个]
         """
+
         self.logger.info('--------API:add user to group----------------------')
 
         resp = []
@@ -507,6 +512,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_h_add_user_to_group_batch(self):
         """群组增加成员[批量]
         """
+
         self.logger.info('--------API:add user to group batch-------------------')
 
         resp = []
@@ -571,6 +577,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_i_remove_user_from_group(self):
         """群组移除成员
         """
+
         self.logger.info('--------API:remove user from group-----------------------')
 
         resp = []
@@ -625,6 +632,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_j_query_joined_groups_for_user(self):
         """查询用户所在的群
         """
+
         self.logger.info('---------API:query joined-groups for user----------------------')
 
         resp = []
@@ -673,6 +681,7 @@ class TestEaseMobUserGridChatGroupsServices(unittest.TestCase):
     def test_k_delete_groups_by_id(self):
         """删除群组
         """
+
         self.logger.info('--------API:delete group by group-id-------------------------')
 
         resp = []
