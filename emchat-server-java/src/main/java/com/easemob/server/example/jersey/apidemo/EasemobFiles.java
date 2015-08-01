@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * REST API Demo : 图片语音文件上传、下载 Jersey2.9实现
  * 
- * Doc URL: http://www.easemob.com/docs/rest/files/
+ * Doc URL: https://docs.easemob.com/doku.php?id=start:100serverintegration:40fileoperation
  * 
  * @author Lynch 2014-09-09
  * 

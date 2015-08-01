@@ -21,7 +21,7 @@ import java.io.File;
 /**
  * REST API Demo: 发送消息 REST API Jersey2.9实现
  * 
- * Doc URL: http://www.easemob.com/docs/rest/sendmessage/
+ * Doc URL: https://docs.easemob.com/doku.php?id=start:100serverintegration:50messages
  * 
  * @author Lynch 2014-07-12
  * 
