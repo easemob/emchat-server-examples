@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * REST API Demo :用户体系集成 REST API HttpClient4.3实现
  * 
- * Doc URL: http://www.easemob.com/docs/rest/userapi
+ * Doc URL: https://docs.easemob.com/doku.php?id=start:100serverintegration:20users
  * 
  * @author Lynch 2014-09-15
  * 

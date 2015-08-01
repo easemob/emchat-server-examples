@@ -4,7 +4,7 @@ import javax.ws.rs.client.Invocation;
 
 /**
  * Access Token
- * 
+ *
  * @author Lynch 2014-09-15
  * 
  */

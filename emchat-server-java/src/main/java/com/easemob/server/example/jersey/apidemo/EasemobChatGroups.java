@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * REST API Demo : 群组管理 Jersey2.9实现
  * 
- * Doc URL: http://www.easemob.com/docs/rest/groups/
+ * Doc URL: https://docs.easemob.com/doku.php?id=start:100serverintegration:60groupmgmt
  * 
  * @author Lynch 2014-09-12
  * 
