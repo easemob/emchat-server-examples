@@ -329,6 +329,9 @@ class Easemob {
 	}
 	/**
 	 * 获取Token
+	 * 使用注意，根目录建立easemob.txt,权限为读写。原来此方法有bug。
+	 * 导致可能无法写入easemob.txt数据文件。
+	 * 建议此token，可存储到memcache，或者redis内存数据库中。
 	 */
 	public function getToken() {
 		$option ['grant_type'] = "client_credentials";
@@ -338,18 +341,30 @@ class Easemob {
 		$fp = @fopen ( "easemob.txt", 'r' );
 		if ($fp) {
 			$arr = unserialize ( fgets ( $fp ) );
-			if ($arr ['expires_in'] < time ()) {
+		//	if ($arr ['expires_in'] < time ()) {
+			//update by  yyzz 添加判断数据为空。2015-10-13
+			if (empty($arr['expires_in']) || $arr ['expires_in'] < time ()) {
 				$result = $this->postCurl ( $url, $option, $head = 0 );
+				//转换成json add by yyzz 
+				$result = json_decode($result,true);
+				//end
 				$result ['expires_in'] = $result ['expires_in'] + time ();
+				//add by yyzz 写入文件前 需先打开文件。  2015-10-13
+				$fp = @fopen ( "easemob.txt", 'w' );
+				//end
 				@fwrite ( $fp, serialize ( $result ) );
-				return $result ['access_token'];
+				
 				fclose ( $fp );
+				return $result ['access_token'];
+			
 				exit ();
 			}
-			return $arr ['access_token'];
+		//	return $arr ['access_token'];
 			fclose ( $fp );
+			return $arr ['access_token'];
 			exit ();
 		}
+		/* update by yyzz  感觉代码多余 2015-10-13。
 		$result = $this->postCurl ( $url, $option, $head = 0 );
 		$result = json_decode($result);
 		$result ['expires_in'] = $result ['expires_in'] + time ();
@@ -357,6 +372,7 @@ class Easemob {
 		@fwrite ( $fp, serialize ( $result ) );
 		return $result ['access_token'];
 		fclose ( $fp );
+		*/
 	}
 	
 	/**
