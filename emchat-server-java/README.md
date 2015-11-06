@@ -41,5 +41,5 @@
     gradlew.bat clean compile
     
     
-
+### 提醒: Jersey 2.15需要java7或更高版本支持 , Httpclient 4.3.X需要Java1.5或更高版本支持.
     
