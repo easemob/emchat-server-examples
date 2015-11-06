@@ -14,7 +14,3 @@ appkey: easemob-playground#test1
 client_id: YXA6wDs-MARqEeSO0VcBzaqg5A
 
 client_secret: YXA6JOMWlLap_YbI_ucz77j-4-mI0JA
-
-app管理员账号: testuser1
-
-app管理员密码: testuser1
