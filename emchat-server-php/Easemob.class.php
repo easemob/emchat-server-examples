@@ -843,7 +843,7 @@ class Easemob{
 		//将curl_exec()获取的信息以文件流的形式返回，而不是直接输出。
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		//2)设备请求体
-		if (!empty($body)) {
+		if (count($body)>0) {
 			//$b=json_encode($body,true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $body);//全部数据使用HTTP协议中的"POST"操作来发送。
 		}

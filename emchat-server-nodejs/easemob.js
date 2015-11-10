@@ -10,9 +10,9 @@
 
 var https = require('https');
 
-var token='用户的token';
-var client_id = '用户的client_id';
-var client_secret = '用户的client_secret';
+var token='YOUR_TOKEN';
+var client_id = 'YOUR_CLIENT_ID';
+var client_secret = 'YOUR_CLIENT_SECRET';
 
 //通用http请求函数
 /*
