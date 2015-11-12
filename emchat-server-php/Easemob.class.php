@@ -1,27 +1,21 @@
 <?php
-// +----------------------------------------------------------------------
-// | Easemob for PHP [ WE CAN DO IT JUST THINK IT ]
-// | 该版本由校内秘密，后台成员小李飞刀同学，经过半天的整理，方便大家使用。校内秘密，是一款校园内的匿名交友APP
-// +----------------------------------------------------------------------
-// | Copyright (c) 2014 校内秘密  www.xiaoneimimi.com
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: limx <limx@xiaoneimimi.com>
-// +----------------------------------------------------------------------
-
 /**
- * 环信-服务器端REST API
- * @author    limx <limx@xiaoneimimi.com>
- */
-class Easemob {
-	private $client_id;
-	private $client_secret;
-	private $org_name;
-	private $app_name;
-	private $url;
-	
-	/**
+	--------------------------------------------------
+	环信PHP REST示例代码
+	--------------------------------------------------
+	Copyright(c) 2015 环信即时通信云 www.easemob.com
+	--------------------------------------------------
+	Author: 神之爱 <fengpei@easemob.com>
+	--------------------------------------------------
+*/
+class Easemob{
+	private $client_id='YXA6pkUGANa6EeSUKBtg-ak7UQ';
+	private $client_secret='YXA6ZzJ5AzFGPAgYVuYFTtJs_bZnmNI';
+	private $org_name='easemob-demo';
+	private $app_name='chatdemoui';
+	private $url='https://a1.easemob.com/easemob-demo/chatdemoui/';
+//------------------------------------------------------用户体系	
+		/**
 	 * 初始化参数
 	 *
 	 * @param array $options   
@@ -30,7 +24,7 @@ class Easemob {
 	 * @param $options['org_name']    	
 	 * @param $options['app_name']   		
 	 */
-	public function __construct($options) {
+	public function construct($options) {
 		$this->client_id = isset ( $options ['client_id'] ) ? $options ['client_id'] : '';
 		$this->client_secret = isset ( $options ['client_secret'] ) ? $options ['client_secret'] : '';
 		$this->org_name = isset ( $options ['org_name'] ) ? $options ['org_name'] : '';
@@ -38,349 +32,868 @@ class Easemob {
 		if (! empty ( $this->org_name ) && ! empty ( $this->app_name )) {
 			$this->url = 'https://a1.easemob.com/' . $this->org_name . '/' . $this->app_name . '/';
 		}
+	}	
+	/**
+	*获取token 
+	*/
+	function getToken()
+	{
+		$options=array(
+		"grant_type"=>"client_credentials",
+		"client_id"=>$this->client_id,
+		"client_secret"=>$this->client_secret
+		);
+		//json_encode()函数，可将PHP数组或对象转成json字符串，使用json_decode()函数，可以将json字符串转换为PHP数组或对象
+		$body=json_encode($options);
+		//使用 $GLOBALS 替代 global
+		$url=$this->url.'token';
+		//$url=$base_url.'token';
+		$tokenResult = $this->postCurl($url,$body,$header=array());
+		//var_dump($tokenResult['expires_in']);
+		//return $tokenResult;
+		return "Authorization:Bearer ".$tokenResult['access_token'];
+		//return "Authorization:Bearer YWMtG_u2OH1tEeWK7IWc3Nx2ygAAAVHjWllhTpavYYyhaI_WzIcHIQ9uitTvsmw";
 	}
 	/**
-	 * 开放注册模式
-	 *
-	 * @param $options['username'] 用户名        	
-	 * @param $options['password'] 密码        	
-	 */
-	public function openRegister($options) {
-		$url = $this->url . "users";
-		$result = $this->postCurl ( $url, $options, $head = 0 );
+	  授权注册
+	*/
+	function createUser($username,$password){
+		$url=$this->url.'users';
+		$options=array(
+			"username"=>$username,
+			"password"=>$password
+		);
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		批量注册用户
+	*/
+	function createUsers($options){
+		$url=$this->url.'users';
+	
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		重置用户密码
+	*/
+	function resetPassword($username,$newpassword){
+		$url=$this->url.'users/'.$username.'/password';
+		$options=array(
+			"newpassword"=>$newpassword
+		);
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,"PUT");
 		return $result;
 	}
 	
-	/**
-	 * 授权注册模式 || 批量注册
-	 *
-	 * @param $options['username'] 用户名        	
-	 * @param $options['password'] 密码
-	 *        	批量注册传二维数组
-	 */
-	public function accreditRegister($options) {
-		$url = $this->url . "users";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $options, $header );
+	/*
+		获取单个用户
+	*/
+	function getUser($username){
+		$url=$this->url.'users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
 		return $result;
 	}
-	
-	/**
-	 * 获取指定用户详情
-	 *
-	 * @param $username 用户名        	
-	 */
-	public function userDetails($username) {
-		$url = $this->url . "users/" . $username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = 'GET' );
-		return $result;
-	}
-	
-	/**
-	 * 重置用户密码
-	 *
-	 * @param $options['username'] 用户名        	
-	 * @param $options['password'] 密码        	
-	 * @param $options['newpassword'] 新密码        	
-	 */
-	public function editPassword($options) {
-		$url = $this->url . "users/" . $options ['username'] . "/password";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $options, $header, $type = 'PUT');
-		return $result;
-	}
-	/**
-	 * 删除用户
-	 *
-	 * @param $username 用户名        	
-	 */
-	public function deleteUser($username) {
-		$url = $this->url . "users/" . $username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
-	}
-	
-	/**
-	 * 批量删除用户
-	 * 描述：删除某个app下指定数量的环信账号。上述url可一次删除300个用户,数值可以修改 建议这个数值在100-500之间，不要过大
-	 *
-	 * @param $limit="300" 默认为300条        	
-	 * @param $ql 删除条件
-	 *        	如ql=order+by+created+desc 按照创建时间来排序(降序)
-	 */
-	public function batchDeleteUser($limit = "300", $ql = '') {
-		$url = $this->url . "users?limit=" . $limit;
-		if (! empty ( $ql )) {
-			$url = $this->url . "users?ql=" . $ql . "&limit=" . $limit;
+	/*
+		获取批量用户----不分页
+	*/
+	function getUsers($limit=0){
+		if(!empty($limit)){
+			$url=$this->url.'users?limit='.$limit;
+		}else{
+			$url=$this->url.'users';
 		}
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		return $result;
+	}
+	/*
+		获取批量用户---分页
+	*/
+	function getUsersForPage($limit=0,$cursor=''){
+		$url=$this->url.'users?limit='.$limit.'&cursor='.$cursor;
+		
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		if(!empty($result["cursor"])){
+			$cursor=$result["cursor"];
+			$this->writeCursor("userfile.txt",$cursor);
+		}
+		//var_dump($GLOBALS['cursor'].'00000000000000');
+		return $result;
+	}
+	
+	//创建文件夹
+	function mkdirs($dir, $mode = 0777)
+	 {
+		 if (is_dir($dir) || @mkdir($dir, $mode)) return TRUE;
+		 if (!mkdirs(dirname($dir), $mode)) return FALSE;
+		 return @mkdir($dir, $mode);
+	 } 
+	 //写入cursor
+	function writeCursor($filename,$content){
+		//判断文件夹是否存在，不存在的话创建
+		if(!file_exists("resource/txtfile")){
+			mkdirs("resource/txtfile");
+		}
+		$myfile=@fopen("resource/txtfile/".$filename,"w+") or die("Unable to open file!");
+		@fwrite($myfile,$content);
+		fclose($myfile);	
+	}
+	 //读取cursor
+	function readCursor($filename){
+		//判断文件夹是否存在，不存在的话创建
+		if(!file_exists("resource/txtfile")){
+			mkdirs("resource/txtfile");
+		}
+		$file="resource/txtfile/".$filename;
+		$fp=fopen($file,"a+");//这里这设置成a+
+		if($fp){
+			while(!feof($fp)){
+				//第二个参数为读取的长度
+				$data=fread($fp,1000);	
+			}	
+			fclose($fp);
+		}	 
+		return $data;	
+	}
+	/*
+		删除单个用户
+	*/
+	function deleteUser($username){
+		$url=$this->url.'users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		删除批量用户
+		limit:建议在100-500之间，、
+		注：具体删除哪些并没有指定, 可以在返回值中查看。
+	*/
+	function deleteUsers($limit){
+		$url=$this->url.'users?limit='.$limit;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+		
+	}
+	/*
+		修改用户昵称
+	*/
+	function editNickname($username,$nickname){
+		$url=$this->url.'users/'.$username;
+		$options=array(
+			"nickname"=>$nickname
+		);
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'PUT');
+		return $result;
+	}
+	/*
+		添加好友---400
+	*/
+	function addFriend($username,$friend_name){
+		$url=$this->url.'users/'.$username.'/contacts/users/'.$friend_name;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'POST');
+		return $result;	
+		
+			
+	}
+	
+	
+	/*
+		删除好友
+	*/
+	function deleteFriend($username,$friend_name){
+		$url=$this->url.'users/'.$username.'/contacts/users/'.$friend_name;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;	
+		
+	}
+	/*
+		查看好友
+	*/
+	function showFriends($username){
+		$url=$this->url.'users/'.$username.'/contacts/users';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;	
+		
+	}
+	/*
+		查看用户黑名单
+	*/
+	function getBlacklist($username){
+		$url=$this->url.'users/'.$username.'/blocks/users';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+		
+	}
+	/*
+		往黑名单中加人
+	*/
+	function addUserForBlacklist($username,$usernames){
+		$url=$this->url.'users/'.$username.'/blocks/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'POST');
+		return $result;	
+		
+	}
+	/*
+		从黑名单中减人
+	*/
+	function deleteUserFromBlacklist($username,$blocked_name){
+		$url=$this->url.'users/'.$username.'/blocks/users/'.$blocked_name;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;	
+		
+	}
+	 /*
+		查看用户是否在线
+	 */
+	function isOnline($username){
+		$url=$this->url.'users/'.$username.'/status';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;	
+		
+	}
+	/*
+		查看用户离线消息数
+	*/
+	function getOfflineMessages($username){
+		$url=$this->url.'users/'.$username.'/offline_msg_count';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;	
+			
+	}
+	/*
+		查看某条消息的离线状态
+		----deliverd 表示此用户的该条离线消息已经收到
+	*/
+	function getOfflineMessageStatus($username,$msg_id){
+		$url=$this->url.'users/'.$username.'/offline_msg_status/'.$msg_id;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;	
+		
+	}
+	/*
+		禁用用户账号
+	*/ 
+	function deactiveUser($username){
+		$url=$this->url.'users/'.$username.'/deactivate';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header);
+		return $result;
+	}
+	/*
+		解禁用户账号
+	*/ 
+	function activeUser($username){
+		$url=$this->url.'users/'.$username.'/activate';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header);
+		return $result;
+	} 
+	
+	/*
+		强制用户下线
+	*/ 
+	function disconnectUser($username){
+		$url=$this->url.'users/'.$username.'/disconnect';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	//--------------------------------------------------------上传下载
+	/*
+		上传图片或文件
+	*/
+	function uploadFile($filePath){
+		$url=$this->url.'chatfiles';
+		$file=file_get_contents($filePath);
+		$body['file']=$file;
+		$header=array('enctype:multipart/form-data',$this->getToken(),"restrict-access:true");
+		$result=$this->postCurl($url,$body,$header,'XXX');
+		return $result;
+			
+	}
+	/*
+		下载文件或图片
+	*/
+	function downloadFile($uuid,$shareSecret){
+		$url=$this->url.'chatfiles/'.$uuid;
+		$header = array("share-secret:".$shareSecret,"Accept:application/octet-stream",$this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		$filename = md5(time().mt_rand(10, 99)).".png"; //新图片名称
+		if(!file_exists("resource/down")){
+			//mkdir("../image/down");
+			mkdirs("resource/down/");
+		}
+		
+		$file = @fopen("resource/down/".$filename,"w+");//打开文件准备写入
+		@fwrite($file,$result);//写入
+		fclose($file);//关闭
+		return $filename;
+		
+	}
+	/*
+		下载图片缩略图
+	*/
+	function downloadThumbnail($uuid,$shareSecret){
+		$url=$this->url.'chatfiles/'.$uuid;
+		$header = array("share-secret:".$shareSecret,"Accept:application/octet-stream",$this->getToken(),"thumbnail:true");
+		$result=$this->postCurl($url,'',$header,'GET');
+		$filename = md5(time().mt_rand(10, 99))."th.png"; //新图片名称
+		if(!file_exists("resource/down")){
+			//mkdir("../image/down");
+			mkdirs("resource/down/");
+		}
+		
+		$file = @fopen("resource/down/".$filename,"w+");//打开文件准备写入
+		@fwrite($file,$result);//写入
+		fclose($file);//关闭
+		return $filename;
+	}
+	 
+	
+	
+	//--------------------------------------------------------发送消息
+	/*
+		发送文本消息
+	*/
+	function sendText($from="admin",$target_type,$target,$content,$ext){
+		$url=$this->url.'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="txt";
+		$options['msg']=$content;
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$b,$header);
+		return $result;
+	}
+	/*
+		发送透传消息
+	*/
+	function sendCmd($from="admin",$target_type,$target,$action,$ext){
+		$url=$this->url.'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="cmd";
+		$options['action']=$action;
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array($this->getToken());	
+		//$b=json_encode($body,true);
+		$result=$this->postCurl($url,$b,$header);
+		return $result;
+	}
+	/*
+		发图片消息
+	*/ 
+	function sendImage($filePath,$from="admin",$target_type,$target,$filename,$ext){
+		$result=$this->uploadFile($filePath);
+		$uri=$result['uri'];
+		$uuid=$result['entities'][0]['uuid'];
+		$shareSecret=$result['entities'][0]['share-secret'];
+		$url=$this->url.'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="img";
+		$options['url']=$uri.'/'.$uuid;
+		$options['filename']=$filename;
+		$options['secret']=$shareSecret;
+		$options['size']=array(
+			"width"=>480,
+			"height"=>720
+		);
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array($this->getToken());	
+		//$b=json_encode($body,true);
+		$result=$this->postCurl($url,$b,$header);
+		return $result;
+	}
+	/*
+		发语音消息
+	*/
+	function sendAudio($filePath,$from="admin",$target_type,$target,$filename,$length,$ext){
+		$result=$this->uploadFile($filePath);
+		$uri=$result['uri'];
+		$uuid=$result['entities'][0]['uuid'];
+		$shareSecret=$result['entities'][0]['share-secret'];
+		$url=$this->url.'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="audio";
+		$options['url']=$uri.'/'.$uuid;
+		$options['filename']=$filename;
+		$options['length']=$length;
+		$options['secret']=$shareSecret;
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array($this->getToken());	
+		//$b=json_encode($body,true);
+		$result=$this->postCurl($url,$b,$header);
+		return $result;}
+	/*
+		发视频消息
+	*/
+	function sendVedio($filePath,$from="admin",$target_type,$target,$filename,$length,$thumb,$thumb_secret,$ext){
+	$result=$this->uploadFile($filePath);
+		$uri=$result['uri'];
+		$uuid=$result['entities'][0]['uuid'];
+		$shareSecret=$result['entities'][0]['share-secret'];
+		$url=$this->url.'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="video";
+		$options['url']=$uri.'/'.$uuid;
+		$options['filename']=$filename;
+		$options['thumb']=$thumb;
+		$options['length']=$length;
+		$options['secret']=$shareSecret;
+		$options['thumb_secret']=$thumb_secret;
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array($this->getToken());	
+		//$b=json_encode($body,true);
+		$result=$this->postCurl($url,$b,$header);
+		return $result;
+	}
+	/*
+	发文件消息
+	*/
+	function sendFile($filePath,$from="admin",$target_type,$target,$filename,$length,$ext){
+		$result=$this->uploadFile($filePath);
+		$uri=$result['uri'];
+		$uuid=$result['entities'][0]['uuid'];
+		$shareSecret=$result['entities'][0]['share-secret'];
+		$url=$GLOBALS['base_url'].'messages';
+		$body['target_type']=$target_type;
+		$body['target']=$target;
+		$options['type']="file";
+		$options['url']=$uri.'/'.$uuid;
+		$options['filename']=$filename;
+		$options['length']=$length;
+		$options['secret']=$shareSecret;
+		$body['msg']=$options;
+		$body['from']=$from;
+		$body['ext']=$ext;
+		$b=json_encode($body);
+		$header=array(getToken());	
+		//$b=json_encode($body,true);
+		$result=postCurl($url,$b,$header);
+		return $result;
+	}
+	//-------------------------------------------------------------群组操作
+	
+	/*
+		获取app中的所有群组----不分页
+	*/
+	function getGroups($limit=0){
+		if(!empty($limit)){
+			$url=$this->url.'chatgroups?limit='.$limit;
+		}else{
+			$url=$this->url.'chatgroups';
+		}
+		
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		return $result;
+	}
+	/*
+		获取app中的所有群组---分页
+	*/
+	function getGroupsForPage($limit=0,$cursor=''){
+		$url=$this->url.'chatgroups?limit='.$limit.'&cursor='.$cursor;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		
+		if(!empty($result["cursor"])){
+			$cursor=$result["cursor"];
+			$this->writeCursor("groupfile.txt",$cursor);
+		}
+		//var_dump($GLOBALS['cursor'].'00000000000000');
+		return $result;
+	}
+	/*
+		获取一个或多个群组的详情
+	*/
+	function getGroupDetail($group_ids){
+		$g_ids=implode(',',$group_ids);
+		$url=$this->url.'chatgroups/'.$g_ids;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		创建一个群组
+	*/
+	function createGroup($options){
+		$url=$this->url.'chatgroups';
+		$header=array($this->getToken());
+		$body=json_encode($options);
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		修改群组信息
+	*/
+	function modifyGroupInfo($group_id,$options){
+		$url=$this->url.'chatgroups/'.$group_id;
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'PUT');
+		return $result;	
+	}
+	/*
+		删除群组
+	*/
+	function deleteGroup($group_id){
+		$url=$this->url.'chatgroups/'.$group_id;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		获取群组中的成员
+	*/
+	function getGroupUsers($group_id){
+		$url=$this->url.'chatgroups/'.$group_id.'/users';	
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		群组单个加人
+	*/
+	function addGroupMember($group_id,$username){
+		$url=$this->url.'chatgroups/'.$group_id.'/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header);
+		return $result;
+	}
+	/*
+		群组批量加人
+	*/
+	function addGroupMembers($group_id,$usernames){
+		$url=$this->url.'chatgroups/'.$group_id.'/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		群组单个减人
+	*/
+	function deleteGroupMember($group_id,$username){
+		$url=$this->url.'chatgroups/'.$group_id.'/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		群组批量减人
+	*/
+	function deleteGroupMembers($group_id,$usernames){
+		$url=$this->url.'chatgroups/'.$group_id.'/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'DELETE');
+		return $result;
+	}
+	/*
+		获取一个用户参与的所有群组
+	*/
+	function getGroupsForUser($username){
+		$url=$this->url.'users/'.$username.'/joined_chatgroups';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		群组转让
+	*/
+	function changeGroupOwner($group_id,$options){
+		$url=$this->url.'chatgroups/'.$group_id;
+		$body=json_encode($options);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'PUT');
+		return $result;
+	}
+	/*
+		查询一个群组黑名单用户名列表
+	*/
+	function getGroupBlackList($group_id){
+		$url=$this->url.'chatgroups/'.$group_id.'/blocks/users';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		群组黑名单单个加人
+	*/
+	function addGroupBlackMember($group_id,$username){
+		$url=$this->url.'chatgroups/'.$group_id.'/blocks/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header);
+		return $result;
+	}
+	/*
+		群组黑名单批量加人
+	*/
+	function addGroupBlackMembers($group_id,$usernames){
+		$url=$this->url.'chatgroups/'.$group_id.'/blocks/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		群组黑名单单个减人
+	*/
+	function deleteGroupBlackMember($group_id,$username){
+		$url=$this->url.'chatgroups/'.$group_id.'/blocks/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		群组黑名单批量减人
+	*/
+	function deleteGroupBlackMembers($group_id,$usernames){
+		$url=$this->url.'chatgroups/'.$group_id.'/blocks/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'DELETE');
+		return $result;
+	}
+	//-------------------------------------------------------------聊天室操作
+	/*
+		创建聊天室
+	*/
+	function createChatRoom($options){
+		$url=$this->url.'chatrooms';
+		$header=array($this->getToken());
+		$body=json_encode($options);
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		修改聊天室信息
+	*/
+	function modifyChatRoom($chatroom_id,$options){
+		$url=$this->url.'chatrooms/'.$chatroom_id;
+		$body=json_encode($options);
+		$result=$this->postCurl($url,$body,$header,'PUT');
+		return $result;	
+	}
+	/*
+		删除聊天室
+	*/
+	function deleteChatRoom($chatroom_id){
+		$url=$this->url.'chatrooms/'.$chatroom_id;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		获取app中所有的聊天室
+	*/
+	function getChatRooms(){
+		$url=$this->url.'chatrooms';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		return $result;
+	}
+	
+	/*
+		获取一个聊天室的详情
+	*/
+	function getChatRoomDetail($chatroom_id){
+		$url=$this->url.'chatrooms/'.$chatroom_id;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		获取一个用户加入的所有聊天室
+	*/
+	function getChatRoomJoined($username){
+		$url=$this->url.'users/'.$username.'/joined_chatrooms';
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'GET');
+		return $result;
+	}
+	/*
+		聊天室单个成员添加
+	*/
+	function addChatRoomMember($chatroom_id,$username){
+		$url=$this->url.'chatrooms/'.$chatroom_id.'/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header);
+		return $result;
+	}
+	/*
+		聊天室批量成员添加
+	*/
+	function addChatRoomMembers($chatroom_id,$usernames){
+		$url=$this->url.'chatrooms/'.$chatroom_id.'/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header);
+		return $result;
+	}
+	/*
+		聊天室单个成员删除
+	*/
+	function deleteChatRoomMember($chatroom_id,$username){
+		$url=$this->url.'chatrooms/'.$chatroom_id.'/users/'.$username;
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,'DELETE');
+		return $result;
+	}
+	/*
+		聊天室批量成员删除
+	*/
+	function deleteChatRoomMembers($chatroom_id,$usernames){
+		$url=$this->url.'chatrooms/'.$chatroom_id.'/users';
+		$body=json_encode($usernames);
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,$body,$header,'DELETE');
+		return $result;
+	}
+	//-------------------------------------------------------------聊天记录
+	
+	/*
+		导出聊天记录----不分页
+	*/
+	function getChatRecord($ql){
+		if(!empty($ql)){
+			$url=$this->url.'chatmessages?ql='.$ql;
+		}else{
+			$url=$this->url.'chatmessages';
+		}
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		return $result;
+	}
+	/*
+		导出聊天记录---分页
+	*/
+	function getChatRecordForPage($ql,$limit=0,$cursor){
+		if(!empty($ql)){
+			$url=$this->url.'chatmessages?ql='.$ql.'&limit='.$limit.'&cursor='.$cursor;
+		}
+		$header=array($this->getToken());
+		$result=$this->postCurl($url,'',$header,"GET");
+		$cursor=$result["cursor"];
+		$this->writeCursor("chatfile.txt",$cursor);
+		//var_dump($GLOBALS['cursor'].'00000000000000');
+		return $result;
 	}
 	
 	/**
-	 * 给一个用户添加一个好友
-	 *
-	 * @param
-	 *        	$owner_username
-	 * @param
-	 *        	$friend_username
+	 *$this->postCurl方法
 	 */
-	public function addFriend($owner_username, $friend_username) {
-		$url = $this->url . "users/" . $owner_username . "/contacts/users/" . $friend_username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header );
-	}
-	/**
-	 * 删除好友
-	 *
-	 * @param
-	 *        	$owner_username
-	 * @param
-	 *        	$friend_username
-	 */
-	public function deleteFriend($owner_username, $friend_username) {
-		$url = $this->url . "users/" . $owner_username . "/contacts/users/" . $friend_username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
-	}
-	/**
-	 * 查看用户的好友
-	 *
-	 * @param
-	 *        	$owner_username
-	 */
-	public function showFriend($owner_username) {
-		$url = $this->url . "users/" . $owner_username . "/contacts/users/";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
-	}
-	// +----------------------------------------------------------------------
-	// | 聊天相关的方法
-	// +----------------------------------------------------------------------
-	/**
-	 * 查看用户是否在线
-	 *
-	 * @param
-	 *        	$username
-	 */
-	public function isOnline($username) {
-		$url = $this->url . "users/" . $username . "/status";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
-		return $result;
-	}
-	/**
-	 * 发送消息
-	 *
-	 * @param string $from_user
-	 *        	发送方用户名
-	 * @param array $username
-	 *        	array('1','2')
-	 * @param string $target_type
-	 *        	默认为：users 描述：给一个或者多个用户(users)或者群组发送消息(chatgroups)
-	 * @param string $content        	
-	 * @param array $ext
-	 *        	自定义参数
-	 */
-	function yy_hxSend($from_user = "admin", $username, $content, $target_type = "users", $ext) {
-		$option ['target_type'] = $target_type;
-		$option ['target'] = $username;
-		$params ['type'] = "txt";
-		$params ['msg'] = $content;
-		$option ['msg'] = $params;
-		$option ['from'] = $from_user;
-		$option ['ext'] = $ext;
-		$url = $this->url . "messages";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $option, $header );
-		return $result;
-	}
-	/**
-	 * 获取app中所有的群组
-	 */
-	public function chatGroups() {
-		$url = $this->url . "chatgroups";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
-		return $result;
-	}
-	/**
-	 * 创建群组
-	 *
-	 * @param $option['groupname'] //群组名称,
-	 *        	此属性为必须的
-	 * @param $option['desc'] //群组描述,
-	 *        	此属性为必须的
-	 * @param $option['public'] //是否是公开群,
-	 *        	此属性为必须的 true or false
-	 * @param $option['approval'] //加入公开群是否需要批准,
-	 *        	没有这个属性的话默认是true, 此属性为可选的
-	 * @param $option['owner'] //群组的管理员,
-	 *        	此属性为必须的
-	 * @param $option['members'] //群组成员,此属性为可选的        	
-	 */
-	public function createGroups($option) {
-		$url = $this->url . "chatgroups";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, $option, $header );
-		return $result;
-	}
-	/**
-	 * 获取群组详情
-	 *
-	 * @param
-	 *        	$group_id
-	 */
-	public function chatGroupsDetails($group_id) {
-		$url = $this->url . "chatgroups/" . $group_id;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
-		return $result;
-	}
-	/**
-	 * 删除群组
-	 *
-	 * @param
-	 *        	$group_id
-	 */
-	public function deleteGroups($group_id) {
-		$url = $this->url . "chatgroups/" . $group_id;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
-		return $result;
-	}
-	/**
-	 * 获取群组成员
-	 *
-	 * @param
-	 *        	$group_id
-	 */
-	public function groupsUser($group_id) {
-		$url = $this->url . "chatgroups/" . $group_id . "/users";
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET" );
-		return $result;
-	}
-	/**
-	 * 群组添加成员
-	 *
-	 * @param
-	 *        	$group_id
-	 * @param
-	 *        	$username
-	 */
-	public function addGroupsUser($group_id, $username) {
-		$url = $this->url . "chatgroups/" . $group_id . "/users/" . $username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "POST" );
-		return $result;
-	}
-	/**
-	 * 群组删除成员
-	 *
-	 * @param
-	 *        	$group_id
-	 * @param
-	 *        	$username
-	 */
-	public function delGroupsUser($group_id, $username) {
-		$url = $this->url . "chatgroups/" . $group_id . "/users/" . $username;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "DELETE" );
-		return $result;
-	}
-	/**
-	 * 聊天消息记录
-	 *
-	 * @param $ql 查询条件如：$ql
-	 *        	= "select+*+where+from='" . $uid . "'+or+to='". $uid ."'+order+by+timestamp+desc&limit=" . $limit . $cursor;
-	 *        	默认为order by timestamp desc
-	 * @param $cursor 分页参数
-	 *        	默认为空
-	 * @param $limit 条数
-	 *        	默认20
-	 */
-	public function chatRecord($ql = '', $cursor = '', $limit = 20) {
-		$ql = ! empty ( $ql ) ? "ql=" . $ql : "order+by+timestamp+desc";
-		$cursor = ! empty ( $cursor ) ? "&cursor=" . $cursor : '';
-		$url = $this->url . "chatmessages?" . $ql . "&limit=" . $limit . $cursor;
-		$access_token = $this->getToken ();
-		$header [] = 'Authorization: Bearer ' . $access_token;
-		$result = $this->postCurl ( $url, '', $header, $type = "GET " );
-		return $result;
-	}
-	/**
-	 * 获取Token
-	 */
-	public function getToken() {
-		$option ['grant_type'] = "client_credentials";
-		$option ['client_id'] = $this->client_id;
-		$option ['client_secret'] = $this->client_secret;
-		$url = $this->url . "token";
-		$fp = @fopen ( "easemob.txt", 'r' );
-		if ($fp) {
-			$arr = unserialize ( fgets ( $fp ) );
-			if ($arr ['expires_in'] < time ()) {
-				$result = $this->postCurl ( $url, $option, $head = 0 );
-				$result ['expires_in'] = $result ['expires_in'] + time ();
-				@fwrite ( $fp, serialize ( $result ) );
-				return $result ['access_token'];
-				fclose ( $fp );
-				exit ();
-			}
-			return $arr ['access_token'];
-			fclose ( $fp );
-			exit ();
+	function postCurl($url,$body,$header,$type="POST"){
+		//1.创建一个curl资源
+		$ch = curl_init();
+		//2.设置URL和相应的选项
+		curl_setopt($ch,CURLOPT_URL,$url);//设置url
+		//1)设置请求头
+		//array_push($header, 'Accept:application/json');
+		//array_push($header,'Content-Type:application/json');
+		//array_push($header, 'http:multipart/form-data');
+		//设置为false,只会获得响应的正文(true的话会连响应头一并获取到)
+		curl_setopt($ch,CURLOPT_HEADER,0);
+		curl_setopt ( $ch, CURLOPT_TIMEOUT,5); // 设置超时限制防止死循环
+		//设置发起连接前的等待时间，如果设置为0，则无限等待。
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
+		//将curl_exec()获取的信息以文件流的形式返回，而不是直接输出。
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//2)设备请求体
+		if (count($body)>0) {
+			//$b=json_encode($body,true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $body);//全部数据使用HTTP协议中的"POST"操作来发送。
 		}
-		$result = $this->postCurl ( $url, $option, $head = 0 );
-		$result = json_decode($result);
-		$result ['expires_in'] = $result ['expires_in'] + time ();
-		$fp = @fopen ( "easemob.txt", 'w' );
-		@fwrite ( $fp, serialize ( $result ) );
-		return $result ['access_token'];
-		fclose ( $fp );
-	}
+		//设置请求头
+		if(count($header)>0){
+			curl_setopt($ch,CURLOPT_HTTPHEADER,$header);
+		}
+		//上传文件相关设置
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// 对认证证书来源的检查
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);// 从证书中检查SSL加密算
+		
+		//3)设置提交方式
+		switch($type){
+			case "GET":
+				curl_setopt($ch,CURLOPT_HTTPGET,true);
+				break;
+			case "POST":
+				curl_setopt($ch,CURLOPT_POST,true);
+				break;
+			case "PUT"://使用一个自定义的请求信息来代替"GET"或"HEAD"作为HTTP请									                     求。这对于执行"DELETE" 或者其他更隐蔽的HTT
+				curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"PUT");
+				break;
+			case "DELETE":
+				curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"DELETE");
+				break;
+		}
+		
+		
+		//4)在HTTP请求中包含一个"User-Agent: "头的字符串。-----必设
 	
-	/**
-	 * CURL Post
-	 */
-	private function postCurl($url, $option, $header = 0, $type = 'POST') {
-		$curl = curl_init (); // 启动一个CURL会话
-		curl_setopt ( $curl, CURLOPT_URL, $url ); // 要访问的地址
-		curl_setopt ( $curl, CURLOPT_SSL_VERIFYPEER, FALSE ); // 对认证证书来源的检查
-		curl_setopt ( $curl, CURLOPT_SSL_VERIFYHOST, FALSE ); // 从证书中检查SSL加密算法是否存在
-		curl_setopt ( $curl, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)' ); // 模拟用户使用的浏览器
-		if (! empty ( $option )) {
-			$options = json_encode ( $option );
-			curl_setopt ( $curl, CURLOPT_POSTFIELDS, $options ); // Post提交的数据包
-		}
-		curl_setopt ( $curl, CURLOPT_TIMEOUT, 30 ); // 设置超时限制防止死循环
-		curl_setopt ( $curl, CURLOPT_HTTPHEADER, $header ); // 设置HTTP头
-		curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 ); // 获取的信息以文件流的形式返回
-		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, $type );
-		$result = curl_exec ( $curl ); // 执行操作
-		//$res = object_array ( json_decode ( $result ) );
-		//$res ['status'] = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
-		//pre ( $res );
-		curl_close ( $curl ); // 关闭CURL会话
-		return $result;
+		curl_setopt($ch, CURLOPT_USERAGENT, 'SSTS Browser/1.0');
+		curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+	
+		curl_setopt ( $ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)' ); // 模拟用户使用的浏览器
+		//5)
+		
+		
+		//3.抓取URL并把它传递给浏览器
+		$res=curl_exec($ch);
+	
+		$result=json_decode($res,true);
+		//4.关闭curl资源，并且释放系统资源
+		curl_close($ch);
+		if(empty($result))
+			return $res;
+		else
+			return $result;
+	
 	}
 }
+?>
