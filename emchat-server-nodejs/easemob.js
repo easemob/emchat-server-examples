@@ -52,7 +52,7 @@ var http_request = function (json) {
         res.on('end', function () {
 			//响应完成，获取完整响应数据
             //var data = JSON.parse(Buffer.concat(chunks, size).toString());
-            if (json.callback)
+            if (typeof json.callback=='function')
                 json.callback(chunks);
         });
     });
@@ -82,7 +82,7 @@ function getToken(callback) {
 			var token = d.access_token;
 			//console.log(data);
 			//传进来的函数用来接数据
-			if (callback)
+			if(typeof callback == 'function')
 				callback(token);
 			
 		}	
@@ -101,7 +101,7 @@ function createUser(username, password, callback) {
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);
 		}	
 	});
@@ -117,7 +117,7 @@ function createUsers(users,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		} 
 	});
 }
@@ -130,7 +130,7 @@ function resetPassword(username,oldpwd,newpwd,callback){
 		method:'PUT',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -143,7 +143,7 @@ function getUser(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -156,7 +156,7 @@ function getUsers(limit,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -169,7 +169,7 @@ function deleteUser(username,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -182,7 +182,7 @@ function deleteUsers(limit,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -197,7 +197,7 @@ function editNickname(username,nickname,callback){
 		method:'PUT',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -209,7 +209,7 @@ function addFriend(username,friendname,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			if(callback)
+			if(typeof callback == 'function')
 				callback(data);	
 		}	
 	});
@@ -222,7 +222,7 @@ function deleteFriend(username,friendname,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -233,7 +233,7 @@ function showFriends(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);
+			typeof callback == 'function' && callback(data);
 		}
 		
 	});
@@ -245,7 +245,7 @@ function getBlacklist(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -258,7 +258,7 @@ function addUserForBlacklist(username,users,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -270,7 +270,7 @@ function deleteUserFromBlacklist(username,blackuser,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -281,7 +281,7 @@ function isOnline(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);
+			typeof callback == 'function' && callback(data);
 		}	
 	});
 }
@@ -292,7 +292,7 @@ function getOfflineMessages(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -304,7 +304,7 @@ function getOfflineMessageStatus(username,msgid,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}
 	});
 }
@@ -315,7 +315,7 @@ function deactiveUser(username,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 		
@@ -327,7 +327,7 @@ function activeUser(username,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 		
@@ -339,7 +339,7 @@ function disconnectUser(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 		
@@ -372,7 +372,7 @@ function sendText(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -404,7 +404,7 @@ function sendImage(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -437,7 +437,7 @@ function sendAudio(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -473,7 +473,7 @@ function sendVedio(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -503,7 +503,7 @@ function sendCmd(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -511,13 +511,15 @@ function sendCmd(json){
 //---------------------------------------------------------------群组操作
 
 //获取所有群组
-function getGroups(callback){
+function getGroups(json){
+	var json=json||{};
+	json.limit=json.limit || 0;
 	http_request({
-		path:'/chatgroups',
+		path:'/chatgroups?limit='+json.limit,
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}	
 	});
 }
@@ -528,7 +530,7 @@ function getGroupDetail(group_ids,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -560,7 +562,7 @@ function createGroup(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}
 	});
 }
@@ -585,7 +587,7 @@ function modifyGroupInfo(json){
 		method:'PUT',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}	
 	});
 }
@@ -596,7 +598,7 @@ function deleteGroup(group_id,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -607,7 +609,7 @@ function getGroupUsers(group_id,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -618,7 +620,7 @@ function addGroupMember(groupid,username,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -632,7 +634,7 @@ function addGroupMembers(groupid,users,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -643,7 +645,7 @@ function deleteGroupMember(groupid,username,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}
 	});
 }
@@ -654,7 +656,7 @@ function deleteGroupMembers(groupid,users,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}
 	});
 }
@@ -665,7 +667,7 @@ function getGroupsForUser(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -687,7 +689,7 @@ function changeGroupOwner(json){
 		method:'PUT',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}	
 	});
 }
@@ -698,7 +700,7 @@ function getGroupBlackList(groupid,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -710,7 +712,7 @@ function addGroupBlackMember(groupid,username,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -722,7 +724,7 @@ function deleteGroupBlackMember(groupid,username,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -748,7 +750,7 @@ function uploadFile(json){
 		headers:json.header,
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -767,7 +769,7 @@ function downloadFile(json){
 		headers:json.header,
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -786,7 +788,7 @@ function downloadThumbnail(json){
 		headers:json.header,
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);
+			typeof json.callback == 'function' && json.callback(data);
 		}	
 	});
 }
@@ -806,7 +808,7 @@ function getChatRecord(json){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}	
 	});
 }
@@ -838,7 +840,7 @@ function createChatRoom(json){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}
 	});
 }
@@ -865,7 +867,7 @@ function modifyChatRoom(json){
 		method:'PUT',
 		callback:function(data){
 			console.log(data);
-			json.callback && json.callback(data);	
+			typeof json.callback == 'function' && json.callback(data);	
 		}
 	});
 }
@@ -877,7 +879,7 @@ function deleteChatRoom(chatroom_id,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -888,7 +890,7 @@ function getChatRooms(callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -900,7 +902,7 @@ function getChatRoomDetail(chatroom_id,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -911,7 +913,7 @@ function getChatRoomJoined(username,callback){
 		method:'GET',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -922,7 +924,7 @@ function addChatRoomMember(chatroomid,username,callback){
 		method:'POST',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }
@@ -934,7 +936,7 @@ function deleteChatRoomMember(chatroomid,username,callback){
 		method:'DELETE',
 		callback:function(data){
 			console.log(data);
-			callback && callback(data);	
+			typeof callback == 'function' && callback(data);	
 		}	
 	});
 }

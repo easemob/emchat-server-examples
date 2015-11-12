@@ -147,7 +147,7 @@ switch(i){
 		});
 		break;
 	case 35://获取所有群组
-		easemob.getGroups();
+		easemob.getGroups({limit:5});
 		break;
 	case 36://获取一个或多个群组的详情
 		easemob.getGroupDetail(['1445866257312']);
