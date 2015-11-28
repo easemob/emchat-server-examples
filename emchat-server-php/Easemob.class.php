@@ -340,6 +340,7 @@ class Easemob {
 			$arr = unserialize ( fgets ( $fp ) );
 			if ($arr ['expires_in'] < time ()) {
 				$result = $this->postCurl ( $url, $option, $head = 0 );
+				$result = json_decode($result);
 				$result ['expires_in'] = $result ['expires_in'] + time ();
 				@fwrite ( $fp, serialize ( $result ) );
 				return $result ['access_token'];
