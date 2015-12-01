@@ -11,7 +11,7 @@ import random
 
 JSON_HEADER = {'content-type': 'application/json'}
 # EASEMOB_HOST = "http://localhost:8080"#
-EASEMOB_HOST = "http://a1.easemob.com"
+EASEMOB_HOST = "https://a1.easemob.com"
 
 DEBUG = False
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     
     # 通过client id和secret来获取app管理员的token
     app_client_auth = AppClientAuth(org, app, client_id, client_secret)
-    print "Get app admin token with client id/secret: " + app_client_auth.get_token()
+    print "Get app token with client id/secret: " + app_client_auth.get_token()
     
     print "now let's register some users...."
     app_users = []
