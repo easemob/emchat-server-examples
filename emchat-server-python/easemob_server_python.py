@@ -149,15 +149,12 @@ if __name__ == '__main__':
     s = json.load(f)
     appkey = s['appkey']
     org, app = parse_appkey(appkey)
-    org_admin_username = s['admin']['username']
-    org_admin_password = s['admin']['password']
     client_id = s['app']['credentials']['client_id']
     client_secret = s['app']['credentials']['client_secret']
-    app_admin_username = s['app']['admin']['username']
-    app_admin_password = s['app']['admin']['password']
+    
     # 通过client id和secret来获取app管理员的token
     app_client_auth = AppClientAuth(org, app, client_id, client_secret)
-    print "Get app admin token with client id/secret: " + app_client_auth.get_token()
+    print "Get app token with client id/secret: " + app_client_auth.get_token()
     
     print "now let's register some users...."
     app_users = []
@@ -165,7 +162,7 @@ if __name__ == '__main__':
         username = id_generator()
 
         password = '123456'
-        success, result = register_new_user(org, app, app_admin_auth, username, password)
+        success, result = register_new_user(org, app, app_client_auth, username, password)
         if success:
             print "registered new user %s in appkey[%s]" % (username, appkey)
             app_users.append(username)
