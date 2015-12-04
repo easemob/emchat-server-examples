@@ -45,6 +45,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HTTPClient 工具类
@@ -53,6 +55,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class HTTPClientUtils {
+
+    private static final Logger logger  = LoggerFactory.getLogger(HTTPClientUtils.class);
 
 	private static final JsonNodeFactory factory = new JsonNodeFactory(false);
 
@@ -112,11 +116,15 @@ public class HTTPClientUtils {
 				String responseContent = EntityUtils.toString(entity, "UTF-8");
 				EntityUtils.consume(entity);
 
-				ObjectMapper mapper = new ObjectMapper();
-				JsonFactory factory = mapper.getJsonFactory();
-				JsonParser jp = factory.createJsonParser(responseContent);
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonFactory factory = mapper.getJsonFactory();
+                    JsonParser jp = factory.createJsonParser(responseContent);
+                    resObjectNode = mapper.readTree(jp);
+                } catch (Exception e) {
+                    logger.error("json parse into error. responseContent:{}", responseContent, e);
+                }
 
-				resObjectNode = mapper.readTree(jp);
 				resObjectNode.put("statusCode", response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
