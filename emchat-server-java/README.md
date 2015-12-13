@@ -41,5 +41,7 @@
     gradlew.bat clean compile
     
     
-### 提醒: Jersey 2.15需要java7或更高版本支持 , Httpclient 4.3.X需要Java1.5或更高版本支持.
-    
+### Notes：
+ - 1. package com.easemob.server.example.jersey下采用Jersey2.15实现, 需要java7或更高版本支持;
+ - 2. package com.easemob.server.example.httpclient下采用Httpclient4.3.3实现，需要Java1.5或更高版本支持.
+ - 3. Master分支是开发分支，请慎重直接下载使用。如有需要请下载已经Release的版本。
