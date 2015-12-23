@@ -19,9 +19,9 @@
 	--------------------------------------------------
 */
 //设置
-$client_id='YXA6pkUGANa6EeSUKBtg-ak7UQ';
-$client_secret='YXA6ZzJ5AzFGPAgYVuYFTtJs_bZnmNI';
-$base_url="https://a1.easemob.com/easemob-demo/chatdemoui/";
+$client_id='YOUR_CLIENT_ID';
+$client_secret='YOUR_CLIENT_SECRET';
+$base_url="https://a1.easemob.com/YOUR_ORG_NAME/YOUR_APP_NAME/";
 
 $i=10;
 switch($i){
@@ -512,7 +512,7 @@ function editNickname($username,$nickname){
 */
 function addFriend($username,$friend_name){
 	$url=$GLOBALS['base_url'].'users/'.$username.'/contacts/users/'.$friend_name;
-	$header=array(getToken());
+	$header=array(getToken(),'Content-Type:application/json');
 	$result=postCurl($url,'',$header,'POST');
 	return $result;	
 	
@@ -908,7 +908,7 @@ function getGroupUsers($group_id){
 */
 function addGroupMember($group_id,$username){
 	$url=$GLOBALS['base_url'].'chatgroups/'.$group_id.'/users/'.$username;
-	$header=array(getToken());
+	$header=array(getToken(),'Content-Type:application/json');
 	$result=postCurl($url,'',$header);
 	return $result;
 }

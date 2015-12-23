@@ -9,11 +9,11 @@
 	--------------------------------------------------
 */
 class Easemob{
-	private $client_id='YXA6pkUGANa6EeSUKBtg-ak7UQ';
-	private $client_secret='YXA6ZzJ5AzFGPAgYVuYFTtJs_bZnmNI';
-	private $org_name='easemob-demo';
-	private $app_name='chatdemoui';
-	private $url='https://a1.easemob.com/easemob-demo/chatdemoui/';
+	private $client_id;
+	private $client_secret;
+	private $org_name;
+	private $app_name;
+	private $url;
 //------------------------------------------------------用户体系	
 		/**
 	 * 初始化参数
@@ -24,7 +24,7 @@ class Easemob{
 	 * @param $options['org_name']    	
 	 * @param $options['app_name']   		
 	 */
-	public function construct($options) {
+	public function __construct($options) {
 		$this->client_id = isset ( $options ['client_id'] ) ? $options ['client_id'] : '';
 		$this->client_secret = isset ( $options ['client_secret'] ) ? $options ['client_secret'] : '';
 		$this->org_name = isset ( $options ['org_name'] ) ? $options ['org_name'] : '';
@@ -52,7 +52,7 @@ class Easemob{
 		//var_dump($tokenResult['expires_in']);
 		//return $tokenResult;
 		return "Authorization:Bearer ".$tokenResult['access_token'];
-		//return "Authorization:Bearer YWMtG_u2OH1tEeWK7IWc3Nx2ygAAAVHjWllhTpavYYyhaI_WzIcHIQ9uitTvsmw";
+
 	}
 	/**
 	  授权注册
@@ -200,11 +200,11 @@ class Easemob{
 		return $result;
 	}
 	/*
-		添加好友---400
+		添加好友-
 	*/
 	function addFriend($username,$friend_name){
 		$url=$this->url.'users/'.$username.'/contacts/users/'.$friend_name;
-		$header=array($this->getToken());
+		$header=array($this->getToken(),'Content-Type:application/json');
 		$result=$this->postCurl($url,'',$header,'POST');
 		return $result;	
 		
@@ -599,7 +599,7 @@ class Easemob{
 	*/
 	function addGroupMember($group_id,$username){
 		$url=$this->url.'chatgroups/'.$group_id.'/users/'.$username;
-		$header=array($this->getToken());
+		$header=array($this->getToken(),'Content-Type:application/json');
 		$result=$this->postCurl($url,'',$header);
 		return $result;
 	}
@@ -609,7 +609,7 @@ class Easemob{
 	function addGroupMembers($group_id,$usernames){
 		$url=$this->url.'chatgroups/'.$group_id.'/users';
 		$body=json_encode($usernames);
-		$header=array($this->getToken());
+		$header=array($this->getToken(),'Content-Type:application/json');
 		$result=$this->postCurl($url,$body,$header);
 		return $result;
 	}
