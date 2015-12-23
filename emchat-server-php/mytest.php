@@ -11,7 +11,12 @@
 <?php
 include "Easemob.class.php";
 
-$h=new Easemob();
+$options['client_id']='YOUR_CLIENT_ID';
+$options['client_secret']='YOUR_CLIENT_SECRET';
+$options['org_name']='YOUR_ORG_NAME';
+$options['app_name']='YOUR_APP_NAME';
+
+$h=new Easemob($options);
 
 $i=70;
 switch($i){
