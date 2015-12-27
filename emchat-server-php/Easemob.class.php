@@ -14,21 +14,26 @@
  * 环信-服务器端REST API
  * @author    limx <limx@xiaoneimimi.com>
  */
+
+/**
+ * bug fix for array & object err in php 5.5.30;
+ * @author Aobo <https://github.com/aobozhang>
+ */
 class Easemob {
 	private $client_id;
 	private $client_secret;
 	private $org_name;
 	private $app_name;
 	private $url;
-	
+
 	/**
 	 * 初始化参数
 	 *
-	 * @param array $options   
-	 * @param $options['client_id']    	
-	 * @param $options['client_secret'] 
-	 * @param $options['org_name']    	
-	 * @param $options['app_name']   		
+	 * @param array $options
+	 * @param $options['client_id']
+	 * @param $options['client_secret']
+	 * @param $options['org_name']
+	 * @param $options['app_name']
 	 */
 	public function __construct($options) {
 		$this->client_id = isset ( $options ['client_id'] ) ? $options ['client_id'] : '';
@@ -42,19 +47,19 @@ class Easemob {
 	/**
 	 * 开放注册模式
 	 *
-	 * @param $options['username'] 用户名        	
-	 * @param $options['password'] 密码        	
+	 * @param $options['username'] 用户名
+	 * @param $options['password'] 密码
 	 */
 	public function openRegister($options) {
 		$url = $this->url . "users";
-		$result = $this->postCurl ( $url, $options, $head = 0 );
+		$result = $this->postCurl ( $url, $options, $head = [] );
 		return $result;
 	}
-	
+
 	/**
 	 * 授权注册模式 || 批量注册
 	 *
-	 * @param $options['username'] 用户名        	
+	 * @param $options['username'] 用户名
 	 * @param $options['password'] 密码
 	 *        	批量注册传二维数组
 	 */
@@ -65,11 +70,11 @@ class Easemob {
 		$result = $this->postCurl ( $url, $options, $header );
 		return $result;
 	}
-	
+
 	/**
 	 * 获取指定用户详情
 	 *
-	 * @param $username 用户名        	
+	 * @param $username 用户名
 	 */
 	public function userDetails($username) {
 		$url = $this->url . "users/" . $username;
@@ -78,13 +83,13 @@ class Easemob {
 		$result = $this->postCurl ( $url, '', $header, $type = 'GET' );
 		return $result;
 	}
-	
+
 	/**
 	 * 重置用户密码
 	 *
-	 * @param $options['username'] 用户名        	
-	 * @param $options['password'] 密码        	
-	 * @param $options['newpassword'] 新密码        	
+	 * @param $options['username'] 用户名
+	 * @param $options['password'] 密码
+	 * @param $options['newpassword'] 新密码
 	 */
 	public function editPassword($options) {
 		$url = $this->url . "users/" . $options ['username'] . "/password";
@@ -96,7 +101,7 @@ class Easemob {
 	/**
 	 * 删除用户
 	 *
-	 * @param $username 用户名        	
+	 * @param $username 用户名
 	 */
 	public function deleteUser($username) {
 		$url = $this->url . "users/" . $username;
@@ -104,12 +109,12 @@ class Easemob {
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
 	}
-	
+
 	/**
 	 * 批量删除用户
 	 * 描述：删除某个app下指定数量的环信账号。上述url可一次删除300个用户,数值可以修改 建议这个数值在100-500之间，不要过大
 	 *
-	 * @param $limit="300" 默认为300条        	
+	 * @param $limit="300" 默认为300条
 	 * @param $ql 删除条件
 	 *        	如ql=order+by+created+desc 按照创建时间来排序(降序)
 	 */
@@ -122,7 +127,7 @@ class Easemob {
 		$header [] = 'Authorization: Bearer ' . $access_token;
 		$result = $this->postCurl ( $url, '', $header, $type = 'DELETE' );
 	}
-	
+
 	/**
 	 * 给一个用户添加一个好友
 	 *
@@ -188,7 +193,7 @@ class Easemob {
 	 *        	array('1','2')
 	 * @param string $target_type
 	 *        	默认为：users 描述：给一个或者多个用户(users)或者群组发送消息(chatgroups)
-	 * @param string $content        	
+	 * @param string $content
 	 * @param array $ext
 	 *        	自定义参数
 	 */
@@ -229,7 +234,7 @@ class Easemob {
 	 *        	没有这个属性的话默认是true, 此属性为可选的
 	 * @param $option['owner'] //群组的管理员,
 	 *        	此属性为必须的
-	 * @param $option['members'] //群组成员,此属性为可选的        	
+	 * @param $option['members'] //群组成员,此属性为可选的
 	 */
 	public function createGroups($option) {
 		$url = $this->url . "chatgroups";
@@ -339,8 +344,8 @@ class Easemob {
 		if ($fp) {
 			$arr = unserialize ( fgets ( $fp ) );
 			if ($arr ['expires_in'] < time ()) {
-				$result = $this->postCurl ( $url, $option, $head = 0 );
-				$result = json_decode($result);
+				$result = $this->postCurl ( $url, $option, $head = [] );
+				$result = json_decode($result, TRUE);
 				$result ['expires_in'] = $result ['expires_in'] + time ();
 				@fwrite ( $fp, serialize ( $result ) );
 				return $result ['access_token'];
@@ -351,15 +356,15 @@ class Easemob {
 			fclose ( $fp );
 			exit ();
 		}
-		$result = $this->postCurl ( $url, $option, $head = 0 );
-		$result = json_decode($result);
+		$result = $this->postCurl ( $url, $option, $head = [] );
+		$result = json_decode($result, TRUE);
 		$result ['expires_in'] = $result ['expires_in'] + time ();
 		$fp = @fopen ( "easemob.txt", 'w' );
 		@fwrite ( $fp, serialize ( $result ) );
 		return $result ['access_token'];
 		fclose ( $fp );
 	}
-	
+
 	/**
 	 * CURL Post
 	 */
