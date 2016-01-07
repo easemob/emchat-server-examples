@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.jersey.vo.Credential;
 import com.easemob.server.example.jersey.vo.Token;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -259,5 +260,15 @@ public class JerseyUtils {
 
         return (JerseyClient) clientBuilder.build().register(JacksonJsonProvider.class);
     }
+    
+    public static ArrayNode buildTarget(String[] targets) {
+		ArrayNode arr = factory.arrayNode();
+		
+		for( String target : targets ) {
+			arr.add(target);
+		}
+		
+		return arr;
+	}
 
 }
