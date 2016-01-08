@@ -626,10 +626,10 @@ class Easemob{
 		群组批量减人
 	*/
 	function deleteGroupMembers($group_id,$usernames){
-		$url=$this->url.'chatgroups/'.$group_id.'/users';
-		$body=json_encode($usernames);
+		$url=$this->url.'chatgroups/'.$group_id.'/users/'.$usernames;
+		//$body=json_encode($usernames);
 		$header=array($this->getToken());
-		$result=$this->postCurl($url,$body,$header,'DELETE');
+		$result=$this->postCurl($url,'',$header,'DELETE');
 		return $result;
 	}
 	/*
@@ -760,7 +760,8 @@ class Easemob{
 	*/
 	function addChatRoomMember($chatroom_id,$username){
 		$url=$this->url.'chatrooms/'.$chatroom_id.'/users/'.$username;
-		$header=array($this->getToken());
+		//$header=array($this->getToken());
+		$header=array($this->getToken(),'Content-Type:application/json');
 		$result=$this->postCurl($url,'',$header);
 		return $result;
 	}
@@ -787,10 +788,10 @@ class Easemob{
 		聊天室批量成员删除
 	*/
 	function deleteChatRoomMembers($chatroom_id,$usernames){
-		$url=$this->url.'chatrooms/'.$chatroom_id.'/users';
-		$body=json_encode($usernames);
+		$url=$this->url.'chatrooms/'.$chatroom_id.'/users/'.$usernames;
+		//$body=json_encode($usernames);
 		$header=array($this->getToken());
-		$result=$this->postCurl($url,$body,$header,'DELETE');
+		$result=$this->postCurl($url,'',$header,'DELETE');
 		return $result;
 	}
 	//-------------------------------------------------------------聊天记录
