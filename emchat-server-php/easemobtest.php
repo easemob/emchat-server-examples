@@ -234,7 +234,8 @@ switch($i){
 		break;
 	case 51://群组批量减人-------
 		$group_id="122633509780062768";
-		$usernames['usernames']=array("lisi","wangwu");
+		//$usernames['usernames']=array("lisi","wangwu");
+		$usernames='lisi,wangwu';
 		var_dump(deleteGroupMembers($group_id,$usernames));	
 		break;
 	case 52://获取一个用户参与的所有群组
@@ -282,7 +283,7 @@ switch($i){
 		$options['name']="chatroom002";
 		$options['description']="修改聊天室描述";
 		$options['maxusers']=300;
-		var_dump(modifyGroupInfo($chatroom_id,$options));
+		var_dump(modifyChatRoom($chatroom_id,$options));
 		break;
 	case 61://删除聊天室
 		$chatroom_id="124121390293975664";
@@ -315,7 +316,8 @@ switch($i){
 		break;
 	case 68://聊天室批量成员删除---
 		$chatroom_id="124121939693277716";
-		$usernames['usernames']=array('zhangsan','lisi');
+		//$usernames['usernames']=array('zhangsan','lisi');
+		$usernames='zhangsan,lisi';
 		var_dump(deleteChatRoomMembers($chatroom_id,$usernames));
 		break;
 	case 69://导出聊天记录-------不分页
@@ -935,10 +937,10 @@ function deleteGroupMember($group_id,$username){
 	群组批量减人
 */
 function deleteGroupMembers($group_id,$usernames){
-	$url=$GLOBALS['base_url'].'chatgroups/'.$group_id.'/users';
-	$body=json_encode($usernames);
+	$url=$GLOBALS['base_url'].'chatgroups/'.$group_id.'/users/'.$usernames;
+	//$body=json_encode($usernames);
 	$header=array(getToken());
-	$result=postCurl($url,$body,$header,'DELETE');
+	$result=postCurl($url,'',$header,'DELETE');
 	return $result;
 }
 /*
@@ -1069,7 +1071,7 @@ function getChatRoomJoined($username){
 */
 function addChatRoomMember($chatroom_id,$username){
 	$url=$GLOBALS['base_url'].'chatrooms/'.$chatroom_id.'/users/'.$username;
-	$header=array(getToken());
+	$header=array(getToken(),'Content-Type:application/json');
 	$result=postCurl($url,'',$header);
 	return $result;
 }
@@ -1096,10 +1098,10 @@ function deleteChatRoomMember($chatroom_id,$username){
 	聊天室批量成员删除
 */
 function deleteChatRoomMembers($chatroom_id,$usernames){
-	$url=$GLOBALS['base_url'].'chatrooms/'.$chatroom_id.'/users';
-	$body=json_encode($usernames);
+	$url=$GLOBALS['base_url'].'chatrooms/'.$chatroom_id.'/users/'.$usernames;
+	//$body=json_encode($usernames);
 	$header=array(getToken());
-	$result=postCurl($url,$body,$header,'DELETE');
+	$result=postCurl($url,'',$header,'DELETE');
 	return $result;
 }
 //-------------------------------------------------------------聊天记录

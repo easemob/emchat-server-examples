@@ -221,7 +221,8 @@ switch($i){
 		break;
 	case 51://群组批量减人-----
 		$group_id="122633509780062768";
-		$usernames['usernames']=array("wangwu","lisi");
+		//$usernames['usernames']=array("wangwu","lisi");
+		$usernames='wangwu,lisi';
 		var_dump($h->deleteGroupMembers($group_id,$usernames));	
 		break;
 	case 52://获取一个用户参与的所有群组
@@ -269,7 +270,7 @@ switch($i){
 		$options['name']="chatroom002";
 		$options['description']="修改聊天室描述";
 		$options['maxusers']=300;
-		var_dump($h->modifyGroupInfo($chatroom_id,$options));
+		var_dump($h->modifyChatRoom($chatroom_id,$options));
 		break;
 	case 61://删除聊天室
 		$chatroom_id="124121390293975664";
@@ -302,7 +303,8 @@ switch($i){
 		break;
 	case 68://聊天室批量成员删除
 		$chatroom_id="124121939693277716";
-		$usernames['usernames']=array('zhangsan','lisi');
+		//$usernames['usernames']=array('zhangsan','lisi');
+		$usernames='zhangsan,lisi';
 		var_dump($h->deleteChatRoomMembers($chatroom_id,$usernames));
 		break;
 	case 69://导出聊天记录-------不分页
