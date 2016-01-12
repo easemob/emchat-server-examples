@@ -8,10 +8,11 @@ public class ResponseWrapper {
 	private static final String ERROR = "[ERROR]: ";
 
 	private List<String> messages = new ArrayList<String>();
+	private Integer responseStatus;
 	private Object responseBody;
-	private Boolean hasError;
+	private Boolean hasError = Boolean.FALSE;
 
-	public static ResponseWrapper getInstance() {
+	public static ResponseWrapper newInstance() {
 		return new ResponseWrapper();
 	}
 
@@ -40,4 +41,23 @@ public class ResponseWrapper {
 		this.responseBody = responseBody;
 	}
 
+	public Integer getResponseStatus() {
+		return responseStatus;
+	}
+
+	public void setResponseStatus(Integer responseStatus) {
+		this.responseStatus = responseStatus;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for( String message : messages ) {
+			sb.append(message).append("\n");
+		}
+		sb.append("Status: ").append(responseStatus).append("\n");
+		sb.append("Response Body: ").append(responseBody.toString());
+		
+		return sb.toString();
+	}
 }

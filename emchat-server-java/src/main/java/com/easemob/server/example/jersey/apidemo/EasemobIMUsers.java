@@ -5,6 +5,7 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.IMUserAPI;
 import com.easemob.server.example.comm.Constants;
 import com.easemob.server.example.comm.HTTPMethod;
