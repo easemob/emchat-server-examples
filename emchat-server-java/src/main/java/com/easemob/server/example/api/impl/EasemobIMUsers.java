@@ -9,6 +9,7 @@ import com.easemob.server.example.comm.BodyWrapper;
 import com.easemob.server.example.comm.HTTPMethod;
 import com.easemob.server.example.comm.HeaderHelper;
 import com.easemob.server.example.comm.HeaderWrapper;
+import com.easemob.server.example.comm.QueryWrapper;
 
 public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
 
@@ -22,25 +23,33 @@ public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
 		BodyWrapper body = (BodyWrapper) payload;
 		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
 		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body);
+		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
 	}
 
 	@Override
 	public Object createNewIMUserBatch(Object payload) {
-		// TODO Auto-generated method stub
-		return null;
+		String url = getContext().getSeriveURL() + getResourceRootURI();
+		BodyWrapper body = (BodyWrapper) payload;
+		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
+		
+		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
 	}
 
 	@Override
 	public Object getIMUsersByUserName(String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName;
+		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
+		
+		return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
 	}
 
 	@Override
 	public Object getIMUsersBatch(Long limit, String cursor) {
-		// TODO Auto-generated method stub
-		return null;
+		String url = getContext().getSeriveURL() + getResourceRootURI();
+		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
+		QueryWrapper query = QueryWrapper.newInstance().addLimit(limit).addCursor(cursor);
+		
+		return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, query);
 	}
 
 	@Override

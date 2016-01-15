@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -21,17 +22,21 @@ public class HeaderWrapper {
 	}
 	
 	public HeaderWrapper addHeader(String key, String value) {
+		if( StringUtils.isBlank(key) || StringUtils.isBlank(value) ){
+			return this;
+		}
+		
 		headers.add(new BasicNameValuePair(key, value));
 		return this;
 	}
 	
 	public HeaderWrapper addJsonContentHeader() {
-		headers.add(new BasicNameValuePair(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON));
+		addHeader(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON);
 		return this;
 	}
 	
 	public HeaderWrapper addAuthorization(String token) {
-		headers.add(new BasicNameValuePair(HEADER_AUTH, "Bearer " + token));
+		addHeader(HEADER_AUTH, "Bearer " + token);
 		return this;
 	}
 

@@ -35,7 +35,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 	private static final Logger log = LoggerFactory.getLogger(HttpClientRestAPIInvoker.class);
 
 	@Override
-	public ResponseWrapper sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body) {
+	public ResponseWrapper sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body, QueryWrapper query) {
 		
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
@@ -70,7 +70,8 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 		log.debug("Method: " + method);
 		log.debug("URL: " + url);
 		log.debug("Header: " + header);
-		log.debug("Body: " + body.getBody());
+		log.debug("Body: " + ((null == body) ? "" : body.getBody()));
+		log.debug("Query: " + query);
 		log.debug("===========Request End===========");
 		
 		HttpClient client = HTTPClientUtils.getClient( StringUtils.startsWithIgnoreCase(url, "HTTPS") );
@@ -111,6 +112,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         	((HttpEntityEnclosingRequestBase) request).setEntity(new StringEntity(body.getBody().toString(), "UTF-8"));
         }
 		buildHeader(request, header);
+		// TODO query
 		
         try {
 			response = client.execute(request);

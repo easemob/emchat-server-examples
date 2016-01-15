@@ -30,6 +30,6 @@ public class EasemobAuthToken extends EasemobRestAPI implements AuthTokenAPI{
 		BodyWrapper body = new AuthTokenBody(clientId, clientSecret);
 		HeaderWrapper header = HeaderHelper.getDefaultHeader();
 		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body);
+		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
 	}
 }

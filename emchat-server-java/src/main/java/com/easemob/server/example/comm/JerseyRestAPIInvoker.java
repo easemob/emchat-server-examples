@@ -27,7 +27,7 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
 	private static final Logger log = LoggerFactory.getLogger(JerseyRestAPIInvoker.class);
 
 	@Override
-	public ResponseWrapper sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body) {
+	public ResponseWrapper sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body, QueryWrapper query) {
 		
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
@@ -62,11 +62,14 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
 		log.debug("Method: " + method);
 		log.debug("URL: " + url);
 		log.debug("Header: " + header);
-		log.debug("Body: " + body.getBody());
+		log.debug("Body: " + ((null == body) ? "" : body.getBody()));
+		log.debug("Query: " + query);
 		log.debug("===========Request End===========");
 		
 		JerseyClient client = JerseyUtils.getJerseyClient( StringUtils.startsWithIgnoreCase(url, "HTTPS") );
 		JerseyWebTarget target = client.target(url);
+		
+		buildQuery(target, query);
 		
 		Invocation.Builder inBuilder = target.request();
 		
@@ -111,6 +114,14 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
 		if ( null != header && !header.getHeaders().isEmpty() ) {
             for (NameValuePair nameValuePair : header.getHeaders()) {
                 inBuilder.header(nameValuePair.getName(), nameValuePair.getValue());
+            }
+        }
+	}
+	
+	private void buildQuery(JerseyWebTarget target, QueryWrapper query) {
+		if ( null != query && !query.getQueries().isEmpty() ) {
+            for (NameValuePair nameValuePair : query.getQueries()) {
+            	target.queryParam(nameValuePair.getName(), nameValuePair.getValue());
             }
         }
 	}
