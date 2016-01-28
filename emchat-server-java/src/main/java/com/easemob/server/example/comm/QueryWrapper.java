@@ -12,6 +12,8 @@ public class QueryWrapper {
 	private static final String LIMIT = "limit";
 	
 	private static final String CURSOR = "cursor";
+
+	private static final String QUERY = "ql";
 	
 	private List<NameValuePair> queries = new ArrayList<NameValuePair>();
 	
@@ -30,14 +32,16 @@ public class QueryWrapper {
 	
 	public QueryWrapper addLimit(Long limit) {
 		limit = null == limit ? 10L : limit;
-		
-		addQuery(LIMIT, limit.toString());
-		return this;
+
+		return addQuery(LIMIT, limit.toString());
 	}
 	
 	public QueryWrapper addCursor(String cursor) {
-		addQuery(CURSOR, cursor);
-		return this;
+		return addQuery(CURSOR, cursor);
+	}
+
+	public QueryWrapper addQueryLang(String ql) {
+		return addQuery(QUERY, ql);
 	}
 
 	public List<NameValuePair> getQueries() {

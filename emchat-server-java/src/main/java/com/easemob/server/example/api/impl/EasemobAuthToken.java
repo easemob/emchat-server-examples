@@ -24,7 +24,6 @@ public class EasemobAuthToken extends EasemobRestAPI implements AuthTokenAPI{
 		return ROOT_URI;
 	}
 
-	@Override
 	public Object getAuthToken(String clientId, String clientSecret) {
 		String url = getContext().getSeriveURL() + getResourceRootURI();
 		BodyWrapper body = new AuthTokenBody(clientId, clientSecret);

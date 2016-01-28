@@ -92,11 +92,12 @@ public interface ChatGroupAPI {
 	 * 
 	 * @param groupId
 	 *            群组标识
-	 * @param useIds
+	 * @param payload
 	 *            用户ID或用户名，数组形式
 	 * @return
+	 * @see com.easemob.server.example.comm.body.UserNamesBody
 	 */
-	Object addBatchUsersToChatGroup(String groupId, String[] useIds);
+	Object addBatchUsersToChatGroup(String groupId, Object payload);
 
 	/**
 	 * 群组减人[单个] <br>
@@ -128,11 +129,12 @@ public interface ChatGroupAPI {
 	 * 
 	 * @param groupId
 	 *            群组标识
-	 * @param newOwnerId
+	 * @param payload
 	 *            新群主ID或用户名
 	 * @return
+     * @see com.easemob.server.example.comm.body.GroupOwnerTransferBody
 	 */
-	Object transferChatGroupOwner(String groupId, String newOwnerId);
+	Object transferChatGroupOwner(String groupId, Object payload);
 
 	/**
 	 * 查询群组黑名单 <br>
@@ -162,11 +164,12 @@ public interface ChatGroupAPI {
 	 * 
 	 * @param groupId
 	 *            群组标识
-	 * @param userIds
+	 * @param payload
 	 *            用户ID或用户名，数组形式
 	 * @return
+     * @see com.easemob.server.example.comm.body.UserNamesBody
 	 */
-	Object addBatchBlockUsersToChatGroup(String groupId, String[] userIds);
+	Object addBatchBlockUsersToChatGroup(String groupId, Object payload);
 
 	/**
 	 * 群组黑名单单个删除 <br>

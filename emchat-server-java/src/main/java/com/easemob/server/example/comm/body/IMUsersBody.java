@@ -17,7 +17,6 @@ public class IMUsersBody implements BodyWrapper {
 		this.users = users;
 	}
 	
-	@Override
 	public ContainerNode<?> getBody() {
 		ArrayNode root = JsonNodeFactory.instance.arrayNode();
 		
@@ -28,7 +27,6 @@ public class IMUsersBody implements BodyWrapper {
 		return root;
 	}
 
-	@Override
 	public Boolean validate() {
 		if( null == users || users.isEmpty() ) {
 			return Boolean.FALSE;

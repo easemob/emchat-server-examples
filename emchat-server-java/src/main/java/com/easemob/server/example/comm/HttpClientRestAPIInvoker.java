@@ -34,7 +34,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 	
 	private static final Logger log = LoggerFactory.getLogger(HttpClientRestAPIInvoker.class);
 
-	@Override
 	public ResponseWrapper sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body, QueryWrapper query) {
 		
 		ResponseWrapper responseWrapper = new ResponseWrapper();
@@ -129,7 +128,10 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 			try {
 				responseContent = EntityUtils.toString(entity, "UTF-8");
 				EntityUtils.consume(entity);
-			} catch (ParseException | IOException e) {
+			} catch (ParseException e){
+				responseWrapper.addError(e.getMessage());
+				return responseWrapper;
+			} catch (IOException e) {
 				responseWrapper.addError(e.getMessage());
 				return responseWrapper;
 			}

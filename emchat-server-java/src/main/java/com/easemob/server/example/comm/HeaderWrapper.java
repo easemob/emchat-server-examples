@@ -14,6 +14,14 @@ public class HeaderWrapper {
 	private static final String HEADER_CONTENT_TYPE = "Content-Type";
 	
 	private static final String HEADER_AUTH = "Authorization";
+
+	private static final String RESTRICT_ACCESS = "restrict-access";
+
+	private static final String THUMBNAIL = "thumbnail";
+
+	private static final String SHARE_SECRET = "share-secret";
+
+	private static final String ACCEPT = "Accept";
 	
 	private List<NameValuePair> headers = new ArrayList<NameValuePair>();
 	
@@ -31,13 +39,27 @@ public class HeaderWrapper {
 	}
 	
 	public HeaderWrapper addJsonContentHeader() {
-		addHeader(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON);
-		return this;
+		return addHeader(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON);
 	}
 	
 	public HeaderWrapper addAuthorization(String token) {
-		addHeader(HEADER_AUTH, "Bearer " + token);
-		return this;
+		return addHeader(HEADER_AUTH, "Bearer " + token);
+	}
+
+	public HeaderWrapper addRestrictAccess() {
+		return addHeader(RESTRICT_ACCESS, "true");
+	}
+
+	public HeaderWrapper addThumbnail() {
+		return addHeader(THUMBNAIL, "true");
+	}
+
+	public HeaderWrapper addShareSecret(String secret) {
+		return addHeader(SHARE_SECRET, secret);
+	}
+
+	public HeaderWrapper addMediaAccept() {
+		return addHeader(ACCEPT, "application/octet-stream");
 	}
 
 	public List<NameValuePair> getHeaders() {

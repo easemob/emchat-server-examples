@@ -44,12 +44,10 @@ public class AuthTokenBody implements BodyWrapper {
 		this.clientSecret = clientSecret;
 	}
 
-	@Override
 	public ContainerNode<?> getBody() {
 		return JsonNodeFactory.instance.objectNode().put("grant_type", grantType).put("client_id", clientId).put("client_secret", clientSecret);
 	}
 
-	@Override
 	public Boolean validate() {
 		return StringUtils.isNotBlank(clientId) && StringUtils.isNotBlank(clientSecret);
 	}
