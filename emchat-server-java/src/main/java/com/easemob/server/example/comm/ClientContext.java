@@ -1,15 +1,12 @@
 package com.easemob.server.example.comm;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.client.JerseyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.easemob.server.example.jersey.utils.JerseyUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class ClientContext {
 	
@@ -145,7 +142,7 @@ public class ClientContext {
 		Properties p = new Properties();
 
 		try {
-			InputStream inputStream = PropertiesUtils.class.getClassLoader().getResourceAsStream("config.properties");
+			InputStream inputStream = ClientContext.class.getClassLoader().getResourceAsStream("config.properties");
 			p.load(inputStream);
 		} catch (IOException e) {
 			log.error(MessageTemplate.print(MessageTemplate.FILE_ACCESS_MSG, new String[]{"config.properties"}));

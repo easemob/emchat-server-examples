@@ -2,6 +2,8 @@ package com.easemob.server.example.comm;
 
 import java.lang.reflect.InvocationTargetException;
 
+import com.easemob.server.example.comm.invoker.HttpClientRestAPIInvoker;
+import com.easemob.server.example.comm.invoker.JerseyRestAPIInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,15 +16,15 @@ public class EasemobRestAPIFactory {
 	
 	public static final String USER_CLASS = "EasemobIMUsers";
 	
-	public static final String FILE_CLASS = "EasemobFiles";
+	public static final String FILE_CLASS = "EasemobFile";
 	
 	public static final String MESSAGE_CLASS = "EasemobChatMessage";
 	
-	public static final String SEND_MESSAGE_CLASS = "EasemobMessages";
+	public static final String SEND_MESSAGE_CLASS = "EasemobSendMessage";
 	
-	public static final String CHATGROUP_CLASS = "EasemobChatGroups";
+	public static final String CHATGROUP_CLASS = "EasemobChatGroup";
 	
-	public static final String CHATROOM_CLASS = "EasemobChatRooms";
+	public static final String CHATROOM_CLASS = "EasemobChatRoom";
 	
 	private static final String BASE_PACKAGE = "com.easemob.server.example.api.impl";
 	
@@ -38,7 +40,7 @@ public class EasemobRestAPIFactory {
 	
 	private RestAPIInvoker jersey = new JerseyRestAPIInvoker();
 	
-	private RestAPIInvoker httpclient = new HttpClientRestAPIInvoker(); 
+	private RestAPIInvoker httpclient = new HttpClientRestAPIInvoker();
 
 	private EasemobRestAPIFactory(ClientContext context) {
 		this.context = context;
@@ -83,7 +85,7 @@ public class EasemobRestAPIFactory {
 		try {
 			targetClass = Class.forName(BASE_PACKAGE + "." + className);
 			newObj = targetClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			String msg = MessageTemplate.print(MessageTemplate.ERROR_CLASS_MSG, new String[]{className});
 			log.error(msg, e);
 			throw new RuntimeException(msg);
@@ -92,8 +94,7 @@ public class EasemobRestAPIFactory {
 		// Inject the context and invoker, they are defined in EasemobRestAPI
 		try {
 			targetClass.getMethod(METHOD_SET_CONTEXT, ClientContext.class).invoke(newObj, this.context);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+		} catch (Exception e) {
 			String msg = MessageTemplate.print(MessageTemplate.ERROR_METHOD_MSG, new String[]{METHOD_SET_CONTEXT});
 			log.error(msg, e);
 			throw new RuntimeException(msg);
@@ -108,8 +109,7 @@ public class EasemobRestAPIFactory {
 		}
 		try {
 			targetClass.getMethod(METHOD_SET_INVOKER, RestAPIInvoker.class).invoke(newObj, invoker);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+		} catch (Exception e) {
 			String msg = MessageTemplate.print(MessageTemplate.ERROR_METHOD_MSG, new String[]{METHOD_SET_INVOKER});
 			log.error(msg, e);
 			throw new RuntimeException(msg);

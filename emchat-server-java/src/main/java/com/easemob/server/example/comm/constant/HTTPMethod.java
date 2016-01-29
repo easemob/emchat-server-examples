@@ -1,4 +1,4 @@
-package com.easemob.server.example.comm;
+package com.easemob.server.example.comm.constant;
 
 /**
  * HTTP Methods

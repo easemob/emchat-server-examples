@@ -5,12 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import com.easemob.server.example.api.AuthTokenAPI;
 import com.easemob.server.example.api.EasemobRestAPI;
-import com.easemob.server.example.api.RestAPIInvoker;
-import com.easemob.server.example.comm.BodyWrapper;
-import com.easemob.server.example.comm.HTTPMethod;
-import com.easemob.server.example.comm.HeaderHelper;
-import com.easemob.server.example.comm.HeaderWrapper;
-import com.easemob.server.example.comm.JerseyRestAPIInvoker;
+import com.easemob.server.example.comm.wrapper.BodyWrapper;
+import com.easemob.server.example.comm.constant.HTTPMethod;
+import com.easemob.server.example.comm.helper.HeaderHelper;
+import com.easemob.server.example.comm.wrapper.HeaderWrapper;
 import com.easemob.server.example.comm.body.AuthTokenBody;
 
 public class EasemobAuthToken extends EasemobRestAPI implements AuthTokenAPI{

@@ -3,8 +3,8 @@ package com.easemob.server.example;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.easemob.server.example.api.IMUserAPI;
-import com.easemob.server.example.comm.BodyWrapper;
+import com.easemob.server.example.api.*;
+import com.easemob.server.example.comm.wrapper.BodyWrapper;
 import com.easemob.server.example.comm.ClientContext;
 import com.easemob.server.example.comm.EasemobRestAPIFactory;
 import com.easemob.server.example.comm.body.IMUserBody;
@@ -16,14 +16,12 @@ public class Main {
 		EasemobRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
 		
 		IMUserAPI user = (IMUserAPI)factory.newInstance(EasemobRestAPIFactory.USER_CLASS);
-		/*
 		ChatMessageAPI chat = (ChatMessageAPI)factory.newInstance(EasemobRestAPIFactory.MESSAGE_CLASS);
 		FileAPI file = (FileAPI)factory.newInstance(EasemobRestAPIFactory.FILE_CLASS);
 		SendMessageAPI message = (SendMessageAPI)factory.newInstance(EasemobRestAPIFactory.SEND_MESSAGE_CLASS);
 		ChatGroupAPI chatgroup = (ChatGroupAPI)factory.newInstance(EasemobRestAPIFactory.CHATGROUP_CLASS);
 		ChatRoomAPI chatroom = (ChatRoomAPI)factory.newInstance(EasemobRestAPIFactory.CHATROOM_CLASS);
-		*/
-		
+
 		// Create a IM user
 		BodyWrapper userBody = new IMUserBody("User001", "123456", "HelloWorld");
 		user.createNewIMUserSingle(userBody);

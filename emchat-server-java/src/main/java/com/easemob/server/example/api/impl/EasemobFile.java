@@ -2,8 +2,8 @@ package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.FileAPI;
-import com.easemob.server.example.comm.HeaderHelper;
-import com.easemob.server.example.comm.HeaderWrapper;
+import com.easemob.server.example.comm.helper.HeaderHelper;
+import com.easemob.server.example.comm.wrapper.HeaderWrapper;
 
 import java.io.File;
 

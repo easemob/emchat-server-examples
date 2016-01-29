@@ -1,9 +1,9 @@
 package com.easemob.server.example.api;
 
-import com.easemob.server.example.comm.BodyWrapper;
-import com.easemob.server.example.comm.HeaderWrapper;
-import com.easemob.server.example.comm.QueryWrapper;
-import com.easemob.server.example.comm.ResponseWrapper;
+import com.easemob.server.example.comm.wrapper.BodyWrapper;
+import com.easemob.server.example.comm.wrapper.HeaderWrapper;
+import com.easemob.server.example.comm.wrapper.QueryWrapper;
+import com.easemob.server.example.comm.wrapper.ResponseWrapper;
 
 import java.io.File;
 

@@ -2,7 +2,11 @@ package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.ChatGroupAPI;
 import com.easemob.server.example.api.EasemobRestAPI;
-import com.easemob.server.example.comm.*;
+import com.easemob.server.example.comm.constant.HTTPMethod;
+import com.easemob.server.example.comm.helper.HeaderHelper;
+import com.easemob.server.example.comm.wrapper.BodyWrapper;
+import com.easemob.server.example.comm.wrapper.HeaderWrapper;
+import com.easemob.server.example.comm.wrapper.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 
 public class EasemobChatGroup extends EasemobRestAPI implements ChatGroupAPI {

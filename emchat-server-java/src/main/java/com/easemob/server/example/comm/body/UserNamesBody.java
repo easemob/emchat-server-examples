@@ -1,6 +1,6 @@
 package com.easemob.server.example.comm.body;
 
-import com.easemob.server.example.comm.BodyWrapper;
+import com.easemob.server.example.comm.wrapper.BodyWrapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;

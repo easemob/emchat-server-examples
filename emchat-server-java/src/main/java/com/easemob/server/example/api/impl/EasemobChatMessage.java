@@ -2,10 +2,10 @@ package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.ChatMessageAPI;
 import com.easemob.server.example.api.EasemobRestAPI;
-import com.easemob.server.example.comm.HTTPMethod;
-import com.easemob.server.example.comm.HeaderHelper;
-import com.easemob.server.example.comm.HeaderWrapper;
-import com.easemob.server.example.comm.QueryWrapper;
+import com.easemob.server.example.comm.constant.HTTPMethod;
+import com.easemob.server.example.comm.helper.HeaderHelper;
+import com.easemob.server.example.comm.wrapper.HeaderWrapper;
+import com.easemob.server.example.comm.wrapper.QueryWrapper;
 
 public class EasemobChatMessage extends EasemobRestAPI implements ChatMessageAPI {
 

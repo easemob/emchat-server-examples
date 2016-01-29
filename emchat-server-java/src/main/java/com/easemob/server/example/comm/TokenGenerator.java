@@ -1,5 +1,6 @@
 package com.easemob.server.example.comm;
 
+import com.easemob.server.example.comm.wrapper.ResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

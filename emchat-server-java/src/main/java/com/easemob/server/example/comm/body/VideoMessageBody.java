@@ -3,7 +3,7 @@ package com.easemob.server.example.comm.body;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import org.apache.commons.lang3.StringUtils;
 
-import com.easemob.server.example.comm.MsgType;
+import com.easemob.server.example.comm.constant.MsgType;
 
 import java.util.Map;
 

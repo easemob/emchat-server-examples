@@ -78,11 +78,12 @@ public interface ChatRoomAPI {
 	 * 
 	 * @param roomId
 	 *            聊天室标识
-	 * @param userNames
+	 * @param payload
 	 *            用户ID或用户名，数组形式
 	 * @return
+	 * @see com.easemob.server.example.comm.body.UserNamesBody
 	 */
-	Object addBatchUsersToChatRoom(String roomId, String[] userNames);
+	Object addBatchUsersToChatRoom(String roomId, Object payload);
 
 	/**
 	 * 聊天室成员删除[单个] <br>

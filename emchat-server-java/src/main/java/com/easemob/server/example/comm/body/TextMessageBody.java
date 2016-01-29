@@ -1,6 +1,6 @@
 package com.easemob.server.example.comm.body;
 
-import com.easemob.server.example.comm.MsgType;
+import com.easemob.server.example.comm.constant.MsgType;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import org.apache.commons.lang3.StringUtils;
 
