@@ -1,5 +1,7 @@
 package com.easemob.server.example.comm.wrapper;
 
+import jdk.nashorn.internal.ir.ObjectNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +58,15 @@ public class ResponseWrapper {
 			sb.append(message).append("\n");
 		}
 		sb.append("Status: ").append(responseStatus).append("\n");
-		sb.append("Response Body: ").append(responseBody.toString());
+		if(null != responseBody) {
+            if(responseBody.getClass().getName().endsWith("ObjectNode")){
+                sb.append("Response Body: ").append(responseBody.toString());
+            }
+            else {
+                sb.append("Response Body: ").append(responseBody.getClass().getName());
+            }
+        }
+
 		
 		return sb.toString();
 	}

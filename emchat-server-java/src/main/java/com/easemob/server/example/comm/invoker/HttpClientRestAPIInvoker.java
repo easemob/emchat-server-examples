@@ -1,7 +1,6 @@
 package com.easemob.server.example.comm.invoker;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -18,14 +17,18 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +67,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 			String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
 			responseWrapper.addError(msg);
 		}
-		if( null != body && !body.validate() ) {
+		if( null == body || !body.validate() ) {
 			responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
 		}
 		
@@ -126,35 +129,8 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 			responseWrapper.addError(e.getMessage());
 			return responseWrapper;
 		}
-        
-        HttpEntity entity = response.getEntity();
-        if( null != entity ) {
-        	responseWrapper.setResponseStatus(response.getStatusLine().getStatusCode());
-        	
-        	String responseContent;
-			try {
-				responseContent = EntityUtils.toString(entity, "UTF-8");
-				EntityUtils.consume(entity);
-			} catch (ParseException e){
-				responseWrapper.addError(e.getMessage());
-				return responseWrapper;
-			} catch (IOException e) {
-				responseWrapper.addError(e.getMessage());
-				return responseWrapper;
-			}
-			
-            ObjectMapper mapper = new ObjectMapper();
-            JsonFactory factory = mapper.getFactory();
-            JsonParser jp;
-    		try {
-    			jp = factory.createParser(responseContent);
-    			responseNode = mapper.readTree(jp);
-    			responseWrapper.setResponseBody(responseNode);
-    		} catch (IOException e) {
-    			log.error(MessageTemplate.STR2JSON_ERROR_MSG, e);
-    			responseWrapper.addError(MessageTemplate.STR2JSON_ERROR_MSG);
-    		}
-        }
+
+        responseWrapper = readResponse(responseWrapper, response, false);
 		
         log.debug("=============Response=============");
 		log.debug(responseWrapper.toString());
@@ -163,13 +139,107 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 	}
 
 	public ResponseWrapper uploadFile(String url, HeaderWrapper header, File file) {
-		// TODO
-		return null;
-	}
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
+        responseWrapper.setResponseBody(responseNode);
+		CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient( StringUtils.startsWithIgnoreCase(url, "HTTPS") );
+        CloseableHttpResponse response = null;
 
-	public ResponseWrapper downloadFile(String url, HeaderWrapper header, QueryWrapper query) {
-		// TODO
-		return null;
+        if( StringUtils.isBlank(url) ) {
+            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter url"});
+            responseWrapper.addError(msg);
+        }
+        if( !RestAPIUtils.match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", url) ) {
+            String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
+            responseWrapper.addError(msg);
+        }
+        if( null == header ) {
+            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
+            responseWrapper.addError(msg);
+        }
+        if( null != file && !file.exists() || !file.isFile() || !file.canRead() ) {
+            responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
+        }
+
+        if( responseWrapper.hasError() ) {
+            return responseWrapper;
+        }
+
+        log.debug("=============Request=============");
+        log.debug("URL: " + url);
+        log.debug("Header: " + header);
+        log.debug("Body: " + ((null == file) ? "" : file.getName()));
+        log.debug("===========Request End===========");
+
+		try {
+			HttpPost httppost = new HttpPost(url);
+            buildHeader(httppost, header);
+
+            httppost.setEntity(MultipartEntityBuilder.create().addBinaryBody("file", file, ContentType.APPLICATION_OCTET_STREAM, file.getName()).build());
+
+			response = client.execute(httppost);
+
+		} catch (Exception e) {
+			responseWrapper.addError(e.getMessage());
+            return responseWrapper;
+		} finally {
+			try{
+                response.close();
+				client.close();
+			} catch (IOException e) {}
+        }
+
+        responseWrapper = readResponse(responseWrapper, response, false);
+
+        log.debug("=============Response=============");
+        log.debug(responseWrapper.toString());
+        log.debug("===========Response End===========");
+        return responseWrapper;
+    }
+
+    public ResponseWrapper downloadFile(String url, HeaderWrapper header, QueryWrapper query) {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
+        responseWrapper.setResponseBody(responseNode);
+        CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient( StringUtils.startsWithIgnoreCase(url, "HTTPS") );
+
+        if( StringUtils.isBlank(url) ) {
+            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter url"});
+            responseWrapper.addError(msg);
+        }
+        if( !RestAPIUtils.match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", url) ) {
+            String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
+            responseWrapper.addError(msg);
+        }
+        if( null == header ) {
+            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
+            responseWrapper.addError(msg);
+        }
+
+        if( responseWrapper.hasError() ) {
+            return responseWrapper;
+        }
+
+        log.debug("=============Request=============");
+        log.debug("URL: " + url);
+        log.debug("Header: " + header);
+        log.debug("===========Request End===========");
+
+        HttpGet request = new HttpGet(url);
+        HttpResponse response = null;
+        try {
+            response = client.execute(request);
+        } catch (IOException e) {
+            responseWrapper.addError(e.getMessage());
+            return responseWrapper;
+        }
+
+        responseWrapper = readResponse(responseWrapper, response, true);
+
+        log.debug("=============Response=============");
+        log.debug(responseWrapper.toString());
+        log.debug("===========Response End===========");
+        return responseWrapper;
 	}
 
 	private void buildHeader(HttpUriRequest request, HeaderWrapper header) {
@@ -179,5 +249,46 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             }
         }
 	}
+
+    private ResponseWrapper readResponse(ResponseWrapper responseWrapper, HttpResponse response, boolean isFile) {
+        ObjectNode responseNode;
+        HttpEntity entity = response.getEntity();
+        if( null != entity ) {
+            responseWrapper.setResponseStatus(response.getStatusLine().getStatusCode());
+
+            Object responseContent;
+            try {
+                if(isFile){
+                    responseContent = entity.getContent();
+                } else {
+                    responseContent = EntityUtils.toString(entity, "UTF-8");
+                    EntityUtils.consume(entity);
+                }
+            } catch (ParseException e){
+                responseWrapper.addError(e.getMessage());
+                return responseWrapper;
+            } catch (IOException e) {
+                responseWrapper.addError(e.getMessage());
+                return responseWrapper;
+            }
+
+            if(!isFile) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonFactory factory = mapper.getFactory();
+                JsonParser jp;
+                try {
+                    jp = factory.createParser(responseContent.toString());
+                    responseNode = mapper.readTree(jp);
+                    responseWrapper.setResponseBody(responseNode);
+                } catch (IOException e) {
+                    log.error(MessageTemplate.STR2JSON_ERROR_MSG, e);
+                    responseWrapper.addError(MessageTemplate.STR2JSON_ERROR_MSG);
+                }
+            } else {
+                responseWrapper.setResponseBody(responseContent);
+            }
+        }
+        return responseWrapper;
+    }
 
 }
