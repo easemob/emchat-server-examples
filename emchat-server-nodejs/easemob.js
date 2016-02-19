@@ -9,6 +9,9 @@
  */
 
 var https = require('https');
+var fs= require('fs');
+var FormData = require('form-data');
+var fetch = require('node-fetch');
 
 var token='YOUR_TOKEN';
 var client_id = 'YOUR_CLIENT_ID';
@@ -733,26 +736,22 @@ function deleteGroupBlackMember(groupid,username,callback){
 //上传文件---图片，语音，文件.
 //注意:上传文件大小不能超过10M,超过会上传失败
 /*
-	json.file:
-	
-	json.header:头部，是否限制访问权限
-	json.callback:
+	json.filepath　：文件路径
 */
 function uploadFile(json){
-	var json = json || {};
-	var data={
-		file:json.file
-	};
-	http_request({
-		data:data,
-		path:'/chatfiles',
-		method:'POST',
-		headers:json.header,
-		callback:function(data){
-			console.log(data);
-			typeof json.callback == 'function' && json.callback(data);
-		}	
-	});
+  
+  var form = new FormData();
+  var num = Math.random();
+  form.append('file', fs.createReadStream(json.filepath));
+  var options = form.getHeaders();
+  options['restrict-access']='true';
+  options['Authorization'] = token;
+  fetch('http://a1.easemob.com/org_name/app_name/chatfiles', { method: 'POST', body:form,headers: options})
+    .then(function(res) {
+      return res.json();
+    }).then(function(json) {
+      console.log(json);
+    });
 }
 //下载文件
 /*

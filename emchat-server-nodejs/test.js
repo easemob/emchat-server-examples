@@ -209,8 +209,7 @@ switch(i){
 		break;
 	case 50://上传文件
 		easemob.uploadFile({
-			file:'/image/01.jpg',
-			//header:{'restrict-access':true}	
+			filepath:'image/01.jpg',	
 		});
 		break;
 	case 51://下载文件
