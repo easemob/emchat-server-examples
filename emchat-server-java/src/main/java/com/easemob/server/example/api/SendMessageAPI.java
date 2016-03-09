@@ -1,6 +1,6 @@
 package com.easemob.server.example.api;
 
-import java.util.Map;
+import com.easemob.server.example.comm.body.*;
 
 /**
  * This interface is created for RestAPI of Sending Message, it should be
@@ -15,23 +15,15 @@ public interface SendMessageAPI {
 	 * 发送消息 <br>
 	 * POST
 	 * 
-	 * @param targetType
-	 *            消息发送目标类型, users | chatgroups | chatrooms
-	 * @param targets
-	 *            消息发送目标，数组形式，元素为目标标识
-	 * @param msg
+	 * @param payload
 	 *            消息体
-	 * @param from
-	 *            发送者标识
-	 * @param ext
-	 *            扩展字段，可空
 	 * @return
-	 * @see com.easemob.server.example.jersey.vo.MessageBody
-	 * @see com.easemob.server.example.jersey.vo.TextMessageBody
-	 * @see com.easemob.server.example.jersey.vo.ImgMessageBody
-	 * @see com.easemob.server.example.jersey.vo.AudioMessageBody
-	 * @see com.easemob.server.example.jersey.vo.VideoMessageBody
-	 * @see com.easemob.server.example.jersey.vo.CommandMessageBody
+	 * @see MessageBody
+	 * @see TextMessageBody
+	 * @see ImgMessageBody
+	 * @see AudioMessageBody
+	 * @see VideoMessageBody
+	 * @see CommandMessageBody
 	 */
-	Object sendMessage(String targetType, String[] targets, Object msg, String from, Map<String, String> ext);
+	Object sendMessage(Object payload);
 }
