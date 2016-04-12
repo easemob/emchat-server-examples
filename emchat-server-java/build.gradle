@@ -1,9 +1,31 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'maven'
 
 repositories {
+    mavenLocal()
     mavenCentral()
+}
+
+ext {
+    jerseyVersion = '2.22.2'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'http://xlab-tech.com:45682/nexus/content/repositories/snapshots/') {
+                authentication(userName: 'admin', password: 'admin123')
+            } 
+
+            pom.project {
+                groupId 'com.wonders.xlab.easemob'
+                artifactId 'easemob-java-api'
+                version '1.0-SNAPSHOT'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -13,16 +35,16 @@ dependencies {
     
     compile 'log4j:log4j:1.2.16'
     
-    compile 'org.glassfish.jersey.core:jersey-client:2.9'
+    compile "org.glassfish.jersey.core:jersey-client:$jerseyVersion"
     
-    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.9'
+    compile "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion"
     
-    compile 'org.apache.httpcomponents:httpclient:4.3.3'
+    compile 'org.apache.httpcomponents:httpclient:4.5.2'
     
-    compile 'org.apache.httpcomponents:httpmime:4.2'
+    compile 'org.apache.httpcomponents:httpmime:4.5.2'
     
-    compile 'org.glassfish.jersey.media:jersey-media-multipart:2.9'
+    compile "org.glassfish.jersey.media:jersey-media-multipart:$jerseyVersion"
     
-    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'org.apache.commons:commons-lang3:3.4'
 
 }
