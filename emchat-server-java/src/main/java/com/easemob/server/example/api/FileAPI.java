@@ -22,7 +22,7 @@ public interface FileAPI {
 
 	/**
 	 * 下载文件 <br>
-	 * POST
+	 * GET
 	 * 
 	 * @param fileUUID
 	 *            文件唯一标识，从上传Response-entities-uuid中获取
