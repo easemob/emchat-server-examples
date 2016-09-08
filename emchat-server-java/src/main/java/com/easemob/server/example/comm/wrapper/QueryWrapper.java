@@ -1,5 +1,7 @@
 package com.easemob.server.example.comm.wrapper;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,13 @@ public class QueryWrapper {
 	}
 
 	public QueryWrapper addQueryLang(String ql) {
+		// 对sql进行url编码，客户端不需要再次编码
+		try {
+			ql = URLEncoder.encode(ql, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
 		return addQuery(QUERY, ql);
 	}
 
