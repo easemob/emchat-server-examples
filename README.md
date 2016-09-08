@@ -1,6 +1,6 @@
 emchat-server-examples
 ======================
-**WARNING**: The master branch represents a un-released version. For a stable version, please checkout the release branch by tags.
+**Note**: `The master branch represents a un-released version. For a stable version, please checkout a released branch by tag.`
 
 
 包含了环信服务器端API的示例代码, 各种语言的实现请参考相应的子目录工程
