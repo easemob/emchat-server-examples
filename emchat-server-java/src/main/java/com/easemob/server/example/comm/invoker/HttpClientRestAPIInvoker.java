@@ -1,10 +1,34 @@
 package com.easemob.server.example.comm.invoker;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.easemob.server.example.api.RestAPIInvoker;
 import com.easemob.server.example.comm.MessageTemplate;
 import com.easemob.server.example.comm.constant.HTTPMethod;
 import com.easemob.server.example.comm.utils.RestAPIUtils;
@@ -12,28 +36,6 @@ import com.easemob.server.example.comm.wrapper.BodyWrapper;
 import com.easemob.server.example.comm.wrapper.HeaderWrapper;
 import com.easemob.server.example.comm.wrapper.QueryWrapper;
 import com.easemob.server.example.comm.wrapper.ResponseWrapper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.easemob.server.example.api.RestAPIInvoker;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +69,8 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 			String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
 			responseWrapper.addError(msg);
 		}
-		if( null == body || !body.validate() ) {
+
+		if( null != body && !body.validate() ) {
 			responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
 		}
 		
@@ -84,6 +87,10 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 		log.debug("===========Request End===========");
 		
 		HttpClient client = RestAPIUtils.getHttpClient( StringUtils.startsWithIgnoreCase(url, "HTTPS") );
+
+		if (query != null)
+			url = buildURL(url, query);
+		
 		URL target = null;
 		try {
 			target = new URL(url);
@@ -121,8 +128,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         	((HttpEntityEnclosingRequestBase) request).setEntity(new StringEntity(body.getBody().toString(), "UTF-8"));
         }
 		buildHeader(request, header);
-		// TODO query
-		
+
         try {
 			response = client.execute(request);
 		} catch (IOException e) {
@@ -136,6 +142,27 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 		log.debug(responseWrapper.toString());
 		log.debug("===========Response End===========");
 		return responseWrapper;
+	}
+	
+	/**
+	 * 将Query参数附加到url后面.
+	 * @param url
+	 * @param query
+	 * @return
+	 */
+	private String buildURL(String url, QueryWrapper query) {
+		List<NameValuePair> queryItems = query.getQueries();
+		if (queryItems == null || queryItems.isEmpty())
+			return url;
+		
+		StringBuilder builder = new StringBuilder();
+		for (NameValuePair pair : queryItems)
+			builder.append(pair.getName()).append("=").append(pair.getValue()).append("&");
+		builder.delete(builder.length()-1, builder.length());
+		
+		url = url.indexOf("?") > 0 ? url+"&"+builder.toString() : url+"?"+builder.toString();
+		
+		return url;
 	}
 
 	public ResponseWrapper uploadFile(String url, HeaderWrapper header, File file) {
