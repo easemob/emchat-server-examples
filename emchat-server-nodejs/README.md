@@ -1,1 +1,1 @@
-请将代码中对应的 YOUR_TOKEN,org_name,app_name, YOUR_CLIENT_ID YOUR_CLIENT_SECRET 换成自己的
+请将配置文件config.js中对应的参数换成自己的
