@@ -7,7 +7,6 @@
  Author: 神之爱 <fengpei@easemob.com>
  --------------------------------------------------
  */
-var async = require('async');
 var Token = require('./easemob/token');
 var User = require('./easemob/user');
 var ChatHistory = require('./easemob/chaHistory');
@@ -22,7 +21,7 @@ files = new Files();
 group = new Group();
 chatRoom = new ChatRoom();
 sendMessage = new SendMessage();
-var i = 65;
+var i = 11;
 switch (i) {
     case 10://获取token
         token.accessToken(function (data) {
