@@ -1,6 +1,7 @@
 package com.easemob.server.example.comm.body;
 
 import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 
 import com.easemob.server.example.comm.constant.MsgType;
@@ -45,15 +46,14 @@ public class ImgMessageBody extends MessageBody {
 
     public ContainerNode<?> getBody() {
         if(!this.isInit()) {
-            this.getMsgBody().put("type", MsgType.IMG);
-            this.getMsgBody().put("url", url);
-            this.getMsgBody().put("filename", filename);
-            this.getMsgBody().put("secret", secret);
-
+            ObjectNode msg = this.getMsgBody().putObject("msg");
+            msg.put("type", MsgType.IMG);
+            msg.put("url", url);
+            msg.put("filename", filename);
+            msg.put("secret", secret);
             if (null != width && null != height) {
-                this.getMsgBody().putObject("size").put("width", width).put("height", height);
+                msg.putObject("size").put("width", width).put("height", height);
             }
-
             this.setInit(true);
         }
         return this.getMsgBody();
