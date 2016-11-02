@@ -1,8 +1,12 @@
 package com.easemob.server.example.comm.body;
 
 import com.easemob.server.example.comm.constant.MsgType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.Object;
 
 import java.util.Map;
 
@@ -20,8 +24,9 @@ public class TextMessageBody extends MessageBody {
 
     public ContainerNode<?> getBody() {
         if(!isInit()){
-            this.getMsgBody().put("type", MsgType.TEXT);
-            this.getMsgBody().put("msg", msg);
+			ObjectNode msg = this.getMsgBody().putObject("msg");
+			msg.put("type", MsgType.TEXT);
+			msg.put("msg", this.msg);
             this.setInit(true);
         }
 
