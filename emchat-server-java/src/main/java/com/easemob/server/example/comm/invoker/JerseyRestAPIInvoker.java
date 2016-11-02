@@ -75,9 +75,9 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
         JerseyWebTarget target = client.target(url);
 
-        buildQuery(target, query);
+        JerseyWebTarget queryTarget = buildQuery(target, query);
 
-        Invocation.Builder inBuilder = target.request();
+        Invocation.Builder inBuilder = queryTarget.request();
 
         buildHeader(inBuilder, header);
 
@@ -232,12 +232,13 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         }
     }
 
-    private void buildQuery(JerseyWebTarget target, QueryWrapper query) {
+    private JerseyWebTarget buildQuery(JerseyWebTarget target, QueryWrapper query) {
         if (null != query && !query.getQueries().isEmpty()) {
             for (NameValuePair nameValuePair : query.getQueries()) {
-                target.queryParam(nameValuePair.getName(), nameValuePair.getValue());
+                target = target.queryParam(nameValuePair.getName(), nameValuePair.getValue());
             }
         }
+        return target;
     }
 
 }
