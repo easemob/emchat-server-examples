@@ -2,6 +2,7 @@ package com.easemob.server.example.comm.body;
 
 import com.easemob.server.example.comm.constant.MsgType;
 import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -20,11 +21,11 @@ public class CommandMessageBody extends MessageBody {
 
 	public ContainerNode<?> getBody() {
 		if(!this.isInit()){
-			this.getMsgBody().put("type", MsgType.CMD);
-			this.getMsgBody().put("action", action);
+			ObjectNode msg = this.getMsgBody().putObject("msg");
+			msg.put("type", MsgType.CMD);
+			msg.put("action", action);
 			this.setInit(true);
 		}
-
 		return this.getMsgBody();
 	}
 

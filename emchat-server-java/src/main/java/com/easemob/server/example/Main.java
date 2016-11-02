@@ -1,13 +1,12 @@
 package com.easemob.server.example;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.easemob.server.example.api.*;
+import com.easemob.server.example.comm.body.AudioMessageBody;
+import com.easemob.server.example.comm.body.TextMessageBody;
 import com.easemob.server.example.comm.wrapper.BodyWrapper;
 import com.easemob.server.example.comm.ClientContext;
 import com.easemob.server.example.comm.EasemobRestAPIFactory;
@@ -18,9 +17,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Main {
 
-	public static void main(String[] args) throws Exception {
-		EasemobRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
-		
+    public static void main(String[] args) throws Exception {
+        EasemobRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
+
 		IMUserAPI user = (IMUserAPI)factory.newInstance(EasemobRestAPIFactory.USER_CLASS);
 		ChatMessageAPI chat = (ChatMessageAPI)factory.newInstance(EasemobRestAPIFactory.MESSAGE_CLASS);
 		FileAPI file = (FileAPI)factory.newInstance(EasemobRestAPIFactory.FILE_CLASS);
@@ -40,11 +39,11 @@ public class Main {
         }
         fos.close();
 
-        /*
-		// Create a IM user
-		BodyWrapper userBody = new IMUserBody("User101", "123456", "HelloWorld");
-		user.createNewIMUserSingle(userBody);
 
+		// Create a IM user
+		/*BodyWrapper userBody = new IMUserBody("User101", "123456", "HelloWorld");
+		user.createNewIMUserSingle(userBody);*/
+/*
 		// Create some IM users
 		List<IMUserBody> users = new ArrayList<IMUserBody>();
 		users.add(new IMUserBody("User002", "123456", null));
@@ -61,6 +60,6 @@ public class Main {
 		// Get 12 users
 		user.getIMUsersBatch(null, null);
 		*/
-	}
+    }
 
 }
