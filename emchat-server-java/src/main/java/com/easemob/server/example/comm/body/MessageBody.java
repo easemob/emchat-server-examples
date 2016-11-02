@@ -78,7 +78,7 @@ public abstract class MessageBody implements BodyWrapper{
 	}
 
     public Boolean validate() {
-        return StringUtils.isNotBlank(targetType) && isValidTargetType() && ArrayUtils.isNotEmpty(targets) && StringUtils.isNotBlank(from);
+        return StringUtils.isNotBlank(targetType) && isValidTargetType() && ArrayUtils.isNotEmpty(targets);
     }
 
     private boolean isValidTargetType() {

@@ -1,6 +1,7 @@
 package com.easemob.server.example.comm.body;
 
 import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 
 import com.easemob.server.example.comm.constant.MsgType;
@@ -59,18 +60,17 @@ public class VideoMessageBody extends MessageBody {
 
 	public ContainerNode<?> getBody() {
 		if(!this.isInit()){
-			this.getMsgBody().put("type", MsgType.VIDEO);
-			this.getMsgBody().put("url", url);
-			this.getMsgBody().put("filename", filename);
-			this.getMsgBody().put("secret", secret);
-			this.getMsgBody().put("length", length);
-			this.getMsgBody().put("file_length", fileLength);
-			this.getMsgBody().put("thumb", thumb);
-			this.getMsgBody().put("thumb_secret", thumbSecret);
-
+			ObjectNode msg = this.getMsgBody().putObject("msg");
+			msg.put("type", MsgType.VIDEO);
+			msg.put("url", url);
+			msg.put("filename", filename);
+			msg.put("secret", secret);
+			msg.put("length", length);
+			msg.put("file_length", fileLength);
+			msg.put("thumb", thumb);
+			msg.put("thumb_secret", thumbSecret);
 			this.setInit(true);
 		}
-
 		return this.getMsgBody();
 	}
 
