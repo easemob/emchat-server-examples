@@ -1,5 +1,6 @@
 package com.easemob.server.example.comm.utils;
 
+import com.easemob.server.example.comm.MyX509TrustManager;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -36,35 +37,18 @@ public class RestAPIUtils {
         // Create a secure JerseyClient
         if (isSSL) {
             try {
-                HostnameVerifier verifier = new HostnameVerifier() {
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                };
-
-                TrustManager[] tm = new TrustManager[]{new X509TrustManager() {
-
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] chain, String authType)
-                            throws CertificateException {
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] chain, String authType)
-                            throws CertificateException {
-                    }
-                }};
+                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager() };
 
                 SSLContext sslContext = SSLContext.getInstance("SSL");
 
                 sslContext.init(null, tm, new SecureRandom());
 
-                clientBuilder.sslContext(sslContext).hostnameVerifier(verifier);
+                clientBuilder.sslContext(sslContext).hostnameVerifier(SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -81,9 +65,9 @@ public class RestAPIUtils {
     public static HttpClient getHttpClient(boolean isSSL) {
         CloseableHttpClient client = null;
 
-        if(isSSL) {
+        if (isSSL) {
             try {
-                X509HostnameVerifier verifier = new X509HostnameVerifier() {
+               /* X509HostnameVerifier verifier = new X509HostnameVerifier() {
                     public void verify(String host, SSLSocket ssl) throws IOException {
                     }
 
@@ -96,31 +80,20 @@ public class RestAPIUtils {
                     public boolean verify(String s, SSLSession sslSession) {
                         return true;
                     }
-                };
+                };*/
 
-                TrustManager[] tm = new TrustManager[]{new X509TrustManager() {
-
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] chain, String authType)
-                            throws CertificateException {
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] chain, String authType)
-                            throws CertificateException {
-                    }
-                }};
+                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager()};
 
                 SSLContext sslContext = SSLContext.getInstance("SSL");
 
                 sslContext.init(null, tm, new SecureRandom());
 
-                client = HttpClients.custom().setSslcontext(sslContext).setHostnameVerifier(verifier).build();
+                client = HttpClients.custom().setSslcontext(sslContext).setHostnameVerifier(SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER).build();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -135,7 +108,7 @@ public class RestAPIUtils {
      * Check illegal String
      *
      * @param regex reg expression
-     * @param str string to be validated
+     * @param str   string to be validated
      * @return if matched
      */
     public static boolean match(String regex, String str) {
