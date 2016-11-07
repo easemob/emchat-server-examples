@@ -37,7 +37,7 @@ public interface IMUserAPI {
 	 *            用戶名或用戶ID
 	 * @return
 	 */
-	Object getIMUsersByUserName(String userName);
+	Object getIMUserByUserName(String userName);
 
 	/**
 	 * 获取IM用户[批量]，参数为空时默认返回最早创建的10个用户 <br>
@@ -69,7 +69,7 @@ public interface IMUserAPI {
 	 *            删除数量，建议100-500
 	 * @return
 	 */
-	Object deleteIMUserBatch(Long limit);
+	Object deleteIMUserBatch(Long limit, String cursor);
 
 	/**
 	 * 重置IM用户密码 <br>
@@ -223,7 +223,7 @@ public interface IMUserAPI {
 	 *            用戶名或用戶ID
 	 * @return
 	 */
-	Object disconnectIMUser(String userName);
+	Object LogoutIMUser(String userName);
 
 	/**
 	 * 获取用户参与的群组 <br>

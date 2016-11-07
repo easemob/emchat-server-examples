@@ -33,7 +33,7 @@ public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
 		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
 	}
 
-	public Object getIMUsersByUserName(String userName) {
+	public Object getIMUserByUserName(String userName) {
 		String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName;
 		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
 		
@@ -55,10 +55,10 @@ public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
 		return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, null);
 	}
 
-	public Object deleteIMUserBatch(Long limit) {
+	public Object deleteIMUserBatch(Long limit, String cursor) {
 		String url = getContext().getSeriveURL() + getResourceRootURI();
         HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        QueryWrapper query = QueryWrapper.newInstance().addLimit(limit);
+        QueryWrapper query = QueryWrapper.newInstance().addLimit(limit).addCursor(cursor);
 
         return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, query);
 	}
@@ -157,7 +157,7 @@ public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
         return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, null, null);
 	}
 
-	public Object disconnectIMUser(String userName) {
+	public Object LogoutIMUser(String userName) {
         String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/disconnect";
         HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
 
