@@ -223,7 +223,7 @@ public interface IMUserAPI {
 	 *            用戶名或用戶ID
 	 * @return
 	 */
-	Object LogoutIMUser(String userName);
+	Object disconnectIMUser(String userName);
 
 	/**
 	 * 获取用户参与的群组 <br>
