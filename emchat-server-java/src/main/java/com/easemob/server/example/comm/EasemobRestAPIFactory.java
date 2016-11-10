@@ -1,14 +1,11 @@
 package com.easemob.server.example.comm;
 
-import java.lang.reflect.InvocationTargetException;
-
+import com.easemob.server.example.api.EasemobRestAPI;
+import com.easemob.server.example.api.RestAPIInvoker;
 import com.easemob.server.example.comm.invoker.HttpClientRestAPIInvoker;
 import com.easemob.server.example.comm.invoker.JerseyRestAPIInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.easemob.server.example.api.EasemobRestAPI;
-import com.easemob.server.example.api.RestAPIInvoker;
 
 public class EasemobRestAPIFactory {
 	
@@ -70,7 +67,7 @@ public class EasemobRestAPIFactory {
 		String impLib = context.getImpLib();
 		
 		if( !ClientContext.JERSEY_API.equals(impLib) && !ClientContext.HTTPCLIENT_API.equals(impLib) ) {
-			String msg = MessageTemplate.print(MessageTemplate.UNKNOW_TYPE_MSG, new String[]{impLib, "restapi implementation"});
+			String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{impLib, "restapi implementation"});
 			log.error(msg);
 			throw new RuntimeException(msg);
 		}

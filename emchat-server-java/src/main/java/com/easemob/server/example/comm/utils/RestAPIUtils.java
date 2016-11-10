@@ -4,24 +4,18 @@ import com.easemob.server.example.comm.MyX509TrustManager;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.ws.rs.client.ClientBuilder;
-import java.io.File;
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,13 +25,13 @@ public class RestAPIUtils {
      *
      * @return Jersey Client
      */
-    public static JerseyClient getJerseyClient(boolean isSSL) {
+    public static JerseyClient getJerseyClient(boolean isSSL, String CacertFilePath, String CacertFilePassword) {
         ClientBuilder clientBuilder = JerseyClientBuilder.newBuilder().register(MultiPartFeature.class);
 
         // Create a secure JerseyClient
         if (isSSL) {
             try {
-                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager() };
+                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager(CacertFilePath, CacertFilePassword)};
 
                 SSLContext sslContext = SSLContext.getInstance("SSL");
 
@@ -62,7 +56,7 @@ public class RestAPIUtils {
      * @param isSSL if the request is protected by ssl
      * @return HttpClient instance
      */
-    public static HttpClient getHttpClient(boolean isSSL) {
+    public static HttpClient getHttpClient(boolean isSSL, String CacertFilePath, String CacertFilePassword) {
         CloseableHttpClient client = null;
 
         if (isSSL) {
@@ -82,13 +76,14 @@ public class RestAPIUtils {
                     }
                 };*/
 
-                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager()};
+                TrustManager[] tm = new TrustManager[]{new MyX509TrustManager(CacertFilePath, CacertFilePassword)};
 
                 SSLContext sslContext = SSLContext.getInstance("SSL");
 
                 sslContext.init(null, tm, new SecureRandom());
 
                 client = HttpClients.custom().setSslcontext(sslContext).setHostnameVerifier(SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER).build();
+
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (KeyManagementException e) {
@@ -117,4 +112,6 @@ public class RestAPIUtils {
 
         return matcher.lookingAt();
     }
+
+
 }
