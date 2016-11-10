@@ -26,6 +26,6 @@ public class EasemobFile extends EasemobRestAPI implements FileAPI {
         String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + fileUUID;
         HeaderWrapper header = HeaderHelper.getDownloadHeaderWithToken(shareSecret, isThumbnail);
 
-        return getInvoker().downloadFile(url, header, null);
+        return getInvoker().downloadFile(url, header);
     }
 }

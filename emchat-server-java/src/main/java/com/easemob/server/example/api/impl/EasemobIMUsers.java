@@ -157,7 +157,7 @@ public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
         return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, null, null);
 	}
 
-	public Object LogoutIMUser(String userName) {
+	public Object disconnectIMUser(String userName) {
         String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/disconnect";
         HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
 

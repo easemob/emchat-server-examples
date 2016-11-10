@@ -1,6 +1,7 @@
 package com.easemob.server.example.comm.invoker;
 
 import com.easemob.server.example.api.RestAPIInvoker;
+import com.easemob.server.example.comm.ClientContext;
 import com.easemob.server.example.comm.MessageTemplate;
 import com.easemob.server.example.comm.constant.HTTPMethod;
 import com.easemob.server.example.comm.utils.RestAPIUtils;
@@ -41,7 +42,7 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         responseWrapper.setResponseBody(responseNode);
 
         if (!HTTPMethod.METHOD_GET.equalsIgnoreCase(method) && !HTTPMethod.METHOD_POST.equalsIgnoreCase(method) && !HTTPMethod.METHOD_PUT.equalsIgnoreCase(method) && !HTTPMethod.METHOD_DELETE.equalsIgnoreCase(method)) {
-            String msg = MessageTemplate.print(MessageTemplate.UNKNOW_TYPE_MSG, new String[]{method, "HTTP methods"});
+            String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "HTTP methods"});
             responseWrapper.addError(msg);
         }
         if (StringUtils.isBlank(url)) {
@@ -72,7 +73,9 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         log.debug("Query: " + query);
         log.debug("===========Request End===========");
 
-        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
         JerseyWebTarget target = client.target(url);
 
         JerseyWebTarget queryTarget = buildQuery(target, query);
@@ -145,7 +148,9 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         log.debug("File: " + ((null == file) ? "" : file.getName()));
         log.debug("===========Request End===========");
 
-        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
         JerseyWebTarget target = client.target(url);
 
         Invocation.Builder inBuilder = target.request();
@@ -178,7 +183,7 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         return responseWrapper;
     }
 
-    public ResponseWrapper downloadFile(String url, HeaderWrapper header, QueryWrapper query) {
+    public ResponseWrapper downloadFile(String url, HeaderWrapper header) {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
 
@@ -206,10 +211,10 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         log.debug("Header: " + header);
         log.debug("===========Request End===========");
 
-        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        JerseyClient client = RestAPIUtils.getJerseyClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
         JerseyWebTarget target = client.target(url);
-
-        buildQuery(target, query);
 
         Invocation.Builder inBuilder = target.request();
 
