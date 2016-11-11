@@ -1,0 +1,22 @@
+{
+  "name": "emchat-server-nodejs",
+  "version": "1.0.0",
+  "description": "Using nodejs to access API, provide users client example code.",
+  "config":{"ca":"resources/cacert/cacert.pem",
+  "host":"a1.easemob.com"},
+  "main": "test.js",
+  "dependencies": {
+    "form-data": "^2.1.1",
+    "node-fetch": "^1.6.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node request.js"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "tongyao",
+  "license": "ISC"
+}
