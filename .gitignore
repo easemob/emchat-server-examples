@@ -25,3 +25,6 @@ hs_err_pid*
 **/.project
 **/bin
 **/.settings
+
+# nodejs
+**/node_modules
