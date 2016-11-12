@@ -1,7 +1,5 @@
 package com.easemob.server.example.comm.wrapper;
 
-import jdk.nashorn.internal.ir.ObjectNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +7,7 @@ public class ResponseWrapper {
 	private static final String WARNING = "[WARNING]: ";
 	private static final String ERROR = "[ERROR]: ";
 
-	private List<String> messages = new ArrayList<String>();
+	private List<String> messages = new ArrayList<>();
 	private Integer responseStatus;
 	private Object responseBody;
 	private Boolean hasError = Boolean.FALSE;

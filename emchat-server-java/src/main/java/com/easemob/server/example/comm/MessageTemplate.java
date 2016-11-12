@@ -3,7 +3,7 @@ package com.easemob.server.example.comm;
 public class MessageTemplate {
 
 	public static final String BLANK_OBJ_MSG = "{0} should not be null or empty.";
-	public static final String UNKNOW_TYPE_MSG = "{0} is an unknow type of {1}.";
+	public static final String UNKNOWN_TYPE_MSG = "{0} is an unknown type of {1}.";
 	public static final String FILE_ACCESS_MSG = "{0} is not existed or could not be accessed.";
 	public static final String INVAILID_PROPERTIES_MSG = "{0} has one or more invailid | missed properties.";
 	public static final String INVAILID_FORMAT_MSG = "{0} doesn't match the required format.";
@@ -32,6 +32,6 @@ public class MessageTemplate {
 	
 	public static void main(String[] args) {
 		System.out.println(MessageTemplate.print(BLANK_OBJ_MSG, new String[]{"UserName"}));
-		System.out.println(MessageTemplate.print(UNKNOW_TYPE_MSG, new String[]{"type1", "types"}));
+		System.out.println(MessageTemplate.print(UNKNOWN_TYPE_MSG, new String[]{"type1", "types"}));
 	}
 }

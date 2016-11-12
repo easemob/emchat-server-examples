@@ -1,0 +1,18 @@
+{
+  "action": "get",
+  "path": "/users",
+  "uri": "http://a1.easemob.com/1122161011178276/testapp/users/user001",
+  "entities": [
+    {
+      "uuid": "25790d40-a4cd-11e6-aff1-f59dd101f539",
+      "type": "user",
+      "created": 1478511168532,
+      "modified": 1478511168532,
+      "username": "user001",
+      "activated": true
+    }
+  ],
+  "timestamp": 1478855332447,
+  "duration": 13,
+  "count": 1
+}

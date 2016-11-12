@@ -1,10 +1,7 @@
 package com.easemob.server.example.comm.invoker;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
+import com.easemob.server.example.api.RestAPIInvoker;
+import com.easemob.server.example.comm.ClientContext;
 import com.easemob.server.example.comm.MessageTemplate;
 import com.easemob.server.example.comm.constant.HTTPMethod;
 import com.easemob.server.example.comm.utils.RestAPIUtils;
@@ -12,35 +9,31 @@ import com.easemob.server.example.comm.wrapper.BodyWrapper;
 import com.easemob.server.example.comm.wrapper.HeaderWrapper;
 import com.easemob.server.example.comm.wrapper.QueryWrapper;
 import com.easemob.server.example.comm.wrapper.ResponseWrapper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.easemob.server.example.api.RestAPIInvoker;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class HttpClientRestAPIInvoker implements RestAPIInvoker {
 
@@ -54,7 +47,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         responseWrapper.setResponseBody(responseNode);
 
         if (!HTTPMethod.METHOD_GET.equalsIgnoreCase(method) && !HTTPMethod.METHOD_POST.equalsIgnoreCase(method) && !HTTPMethod.METHOD_PUT.equalsIgnoreCase(method) && !HTTPMethod.METHOD_DELETE.equalsIgnoreCase(method)) {
-            String msg = MessageTemplate.print(MessageTemplate.UNKNOW_TYPE_MSG, new String[]{method, "HTTP methods"});
+            String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "HTTP methods"});
             responseWrapper.addError(msg);
         }
         if (StringUtils.isBlank(url)) {
@@ -65,14 +58,9 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-            responseWrapper.addError(msg);
-        }
         if (null != body && !body.validate()) {
             responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
         }
-
         if (responseWrapper.hasError()) {
             return responseWrapper;
         }
@@ -84,8 +72,12 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         log.debug("Body: " + ((null == body) ? "" : body.getBody()));
         log.debug("Query: " + query);
         log.debug("===========Request End===========");
+
         url = buildQuery(url, query);
-        HttpClient client = RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        HttpClient client = RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
+
         URL target;
         try {
             target = new URL(url);
@@ -97,18 +89,23 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         HttpUriRequest request;
         HttpResponse response;
         try {
-            if (method.equals(HTTPMethod.METHOD_POST)) {
-                request = new HttpPost(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_PUT)) {
-                request = new HttpPut(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_GET)) {
-                request = new HttpGet(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_DELETE)) {
-                request = new HttpDelete(target.toURI());
-            } else {
-                String msg = MessageTemplate.print(MessageTemplate.UNKNOW_TYPE_MSG, new String[]{method, "Http Method"});
-                log.error(msg);
-                throw new RuntimeException(msg);
+            switch (method) {
+                case HTTPMethod.METHOD_POST:
+                    request = new HttpPost(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_PUT:
+                    request = new HttpPut(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_GET:
+                    request = new HttpGet(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_DELETE:
+                    request = new HttpDelete(target.toURI());
+                    break;
+                default:
+                    String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "Http Method"});
+                    log.error(msg);
+                    throw new RuntimeException(msg);
             }
         } catch (URISyntaxException e) {
             responseWrapper.addError(e.getMessage());
@@ -119,7 +116,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             ((HttpEntityEnclosingRequestBase) request).setEntity(new StringEntity(body.getBody().toString(), "UTF-8"));
         }
         buildHeader(request, header);
-        // TODO query
 
         try {
             response = client.execute(request);
@@ -140,7 +136,9 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
         responseWrapper.setResponseBody(responseNode);
-        CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
         CloseableHttpResponse response = null;
 
         if (StringUtils.isBlank(url)) {
@@ -151,11 +149,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-            responseWrapper.addError(msg);
-        }
-        if (null != file && !file.exists() || !file.isFile() || !file.canRead()) {
+        if (null == file || !file.exists() || !file.isFile() || !file.canRead()) {
             responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
         }
 
@@ -184,7 +178,8 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             try {
                 response.close();
                 client.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
+                log.error(e.getMessage());
             }
         }
 
@@ -196,11 +191,13 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         return responseWrapper;
     }
 
-    public ResponseWrapper downloadFile(String url, HeaderWrapper header, QueryWrapper query) {
+    public ResponseWrapper downloadFile(String url, HeaderWrapper header) {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         ObjectNode responseNode = JsonNodeFactory.instance.objectNode();
         responseWrapper.setResponseBody(responseNode);
-        CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"));
+        String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
+        String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
+        CloseableHttpClient client = (CloseableHttpClient) RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
 
         if (StringUtils.isBlank(url)) {
             String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter url"});
@@ -210,11 +207,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-            responseWrapper.addError(msg);
-        }
-
         if (responseWrapper.hasError()) {
             return responseWrapper;
         }
@@ -225,7 +217,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         log.debug("===========Request End===========");
 
         HttpGet request = new HttpGet(url);
-        HttpResponse response = null;
+        HttpResponse response;
         try {
             response = client.execute(request);
         } catch (IOException e) {
@@ -250,13 +242,13 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
     }
 
     private String buildQuery(String url, QueryWrapper query) {
-        if (null != query && !query.getQueries().isEmpty()) {
+        if (null != url && null != query && !query.getQueries().isEmpty()) {
             url += "?";
             for (NameValuePair nameValuePair : query.getQueries()) {
                 url += nameValuePair.getName() + "=" + nameValuePair.getValue();
                 url += "&";
             }
-            url = url.substring(0, url.length()-1);
+            url = url.substring(0, url.length() - 1);
         }
         return url;
     }
