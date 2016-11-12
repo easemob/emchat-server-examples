@@ -7,10 +7,10 @@ function Token() {
     var expiredAt;
     this.getToken = function () {
         return token;
-    }
+    };
     this.accessToken = function(callback) {
         var data = {grant_type: 'client_credentials', client_id: client_id, client_secret: client_secret};
-        request.http_request({
+        request.httpRequest({
             data: data,
             path: 'token',
             method: 'POST',
