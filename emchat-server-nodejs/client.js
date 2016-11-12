@@ -1,49 +1,94 @@
 var Token = require('./easemob/token');
 var request = require('./request');
 
-function Client() {
-    var Initialized = false;
-    var token = new Token();
+/*function Client() {
+ var Initialized = false;
+ var token = new Token();
 
-    this.request_with_token = function (json, callback) {
-        if (!Initialized || token.isExpire()) {
-            token.accessToken(function () {
-                Initialized = true;
+ this.requestWithToken = function (json, callback) {
+ if (!Initialized || token.isExpire()) {
+ token.accessToken(function () {
+ Initialized = true;
+ this.request(json);
+ });
+
+ } else {
+ this.request(json);
+ }
+
+ }
+
+ this.request = function (json) {
+ if (token == null) {
+ console.log('err: failed to access token!')
+ } else {
+ json.headers = json.headers || {};
+ json.headers['Content-Type'] = 'application/json';
+ json.headers['Authorization'] = 'Bearer ' + token.getToken();
+ request.httpRequest(json);
+ }
+ }
+ /!*    this.uploadFile_request = function (json) {
+ if (token == null) {
+ console.log('err: failed to access token!')
+ } else {
+ json.headers = json.headers || {};
+ json.headers['http'] = 'multipart/form-data';
+ json.headers['Authorization'] = 'Bearer ' + token.getToken();
+ request.uploadFile(json);
+ }
+ }*!/
+ }*/
+
+//exports.getClient = new Client();
+
+var Initialized = false;
+var token = new Token();
+
+function client(json, callback) {
+    if (!Initialized || token.isExpire()) {
+        token.accessToken(function () {
+            Initialized = true;
+            if (typeof callback == 'function') {
                 callback(json);
-            });
-        } else {
+            }else {
+                httpRequestWithToken(json);
+            }
+        });
+
+    } else {
+        if (typeof callback == 'function') {
             callback(json);
-        }
-
-    }
-
-    this.request = function (json) {
-        if (token == null) {
-            console.log('err: failed to access token!')
-        } else {
-            json.headers = json.headers || {};
-            json.headers['Content-Type'] = 'application/json';
-            json.headers['Authorization'] = 'Bearer ' + token.getToken();
-            request.http_request(json);
+        }else {
+            httpRequestWithToken(json);
         }
     }
-    this.uploadFile_request = function (json) {
-        if (token == null) {
-            console.log('err: failed to access token!')
-        } else {
-            json.headers = json.headers || {};
-            json.headers['http'] = 'multipart/form-data';
-            json.headers['Authorization'] = 'Bearer ' + token.getToken();
-            request.uploadFile(json);
-        }
+
+}
+function httpRequestWithToken(json) {
+    if (token == null) {
+        console.log('err: failed to access token!')
+    } else {
+        json.headers = json.headers || {};
+        json.headers['Content-Type'] = 'application/json';
+        json.headers['Authorization'] = 'Bearer ' + token.getToken();
+        request.httpRequest(json);
     }
 }
 
-var client;
-function getClient() {
-    if (!client) {
-        client = new Client();
+function uploadFileWithToken(json) {
+    if (token == null) {
+        console.log('err: failed to access token!')
+    } else {
+        json.headers = json.headers || {};
+        json.headers['http'] = 'multipart/form-data';
+        json.headers['Authorization'] = 'Bearer ' + token.getToken();
+        request.uploadFile(json);
     }
-    return client;
 }
-exports.getClient = getClient();
+module.exports = {
+    client: client,
+    httpRequestWithToken: httpRequestWithToken,
+    uploadFileWithToken: uploadFileWithToken
+
+}

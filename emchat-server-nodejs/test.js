@@ -17,7 +17,7 @@ files = new Files();
 group = new Group();
 chatRoom = new ChatRoom();
 sendMessage = new SendMessage();
-var i = 13;
+var i = 52;
 switch (i) {
     case 10:    //Request an Authentication Token
         token.accessToken(function (data) {
@@ -85,7 +85,7 @@ switch (i) {
         user.getOfflineMessageStatus('user101', '${msgid}');
         break;
     case 28:    //Deactivate user account
-        user.deactiveUser('user101');
+        user.deactivateUser('user101');
         break;
     case 29:    //Activation user account
         user.activateUser('user101');
@@ -128,8 +128,8 @@ switch (i) {
             ext: {a: 'a', b: 'b'}
         });
         break;
-    case 35:    //Send vedio message
-        sendMessage.sendVedio({
+    case 35:    //Send video message
+        sendMessage.sendVideo({
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
@@ -214,7 +214,7 @@ switch (i) {
         break;
     case 52:    //Upload file
         files.uploadFile({
-            filePath: './resources/vedio/web.mp4',
+            filePath: './resources/video/web.mp4',
             restrictAccess: 'true'
         });
         break;

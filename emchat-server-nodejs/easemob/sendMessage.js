@@ -11,7 +11,7 @@ function SendMessage() {
             from: json.from
         };
         json.ext && (data.ext = json.ext);
-        client.getClient.request_with_token({
+        client.client({
             data: data,
             path: 'messages',
             method: 'POST',
@@ -19,7 +19,7 @@ function SendMessage() {
                 console.log(data);
                 typeof json.callback == 'function' && json.callback(data);
             }
-        }, client.getClient.request);
+        });
     }
 
     //Send image message
@@ -38,7 +38,7 @@ function SendMessage() {
             from: json.from,
         };
         json.ext && (data.ext = json.ext);
-        client.getClient.request_with_token({
+        client.client({
             data: data,
             path: 'messages',
             method: 'POST',
@@ -46,7 +46,7 @@ function SendMessage() {
                 console.log(data);
                 typeof json.callback == 'function' && json.callback(data);
             }
-        }, client.getClient.request);
+        });
     }
 
     //Send audio message
@@ -59,7 +59,7 @@ function SendMessage() {
             from: json.from,
         };
         json.ext && (data.ext = json.ext);
-        client.getClient.request_with_token({
+        client.client({
             data: data,
             path: 'messages',
             method: 'POST',
@@ -67,11 +67,11 @@ function SendMessage() {
                 console.log(data);
                 typeof json.callback == 'function' && json.callback(data);
             }
-        }, client.getClient.request);
+        });
     }
 
-    //Send vedio message
-    this.sendVedio = function (json) {
+    //Send video message
+    this.sendVideo = function (json) {
         var json = json || {};
         var data = {
             target_type: json.type,
@@ -89,7 +89,7 @@ function SendMessage() {
             from: json.from,
         };
         json.ext && (data.ext = json.ext);
-        client.getClient.request_with_token({
+        client.client({
             data: data,
             path: 'messages',
             method: 'POST',
@@ -97,7 +97,7 @@ function SendMessage() {
                 console.log(data);
                 typeof json.callback == 'function' && json.callback(data);
             }
-        }, client.getClient.request);
+        });
     }
 
     //Send commend message
@@ -110,7 +110,7 @@ function SendMessage() {
             from: json.from,
         };
         json.ext && (data.ext = json.ext);
-        client.getClient.request_with_token({
+        client.client({
             data: data,
             path: 'messages',
             method: 'POST',
@@ -118,7 +118,7 @@ function SendMessage() {
                 console.log(data);
                 typeof json.callback == 'function' && json.callback(data);
             }
-        }, client.getClient.request);
+        });
     }
 }
 module.exports = SendMessage;

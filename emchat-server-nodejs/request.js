@@ -7,8 +7,8 @@ var host = config.host;
 var org_name = config.org_name;
 var app_name = config.app_name;
 
-exports.http_request = function (json) {
-    var json = json || {};
+exports.httpRequest = function (json) {
+    json = json || {};
     json.data = json.data || {};
     json.method = json.method || 'GET';
     json.headers = json.headers || {};
@@ -29,7 +29,6 @@ exports.http_request = function (json) {
     if (json.query != null) {
         options.path += '?';
         for (var key in json.query) {
-            // json.query.forEach(function (o) {
             if (json.query[key] != null) {
                 options.path += key + '=' + json.query[key] + '&';
             }
@@ -67,7 +66,7 @@ exports.http_request = function (json) {
     req.end();
 };
 exports.uploadFile = function (json) {
-    var json = json || {};
+    json = json || {};
     json.data = json.data || {};
     json.method = json.method || 'POST';
     json.headers = json.headers || {};
@@ -90,5 +89,4 @@ exports.uploadFile = function (json) {
     }).catch(function (err) {
         console.log(err);
     });
-
-}
+};
