@@ -1,0 +1,17 @@
+{
+  "action": "post",
+  "application": "22bcffa0-8f86-11e6-9df8-516f6df68c6d",
+  "path": "/chatfiles",
+  "uri": "https://a1.easemob.com/1122161011178276/testapp/chatfiles",
+  "entities": [
+    {
+      "uuid": "d510b290-a7fb-11e6-8cdb-b506d385961b",
+      "type": "chatfile",
+      "share-secret": "1RCymqf7EeaCLVvIowTjvT0P31vqr4QL9tt91rdjaJ3nyw_7"
+    }
+  ],
+  "timestamp": 1478861073465,
+  "duration": 56,
+  "organization": "1122161011178276",
+  "applicationName": "testapp"
+}

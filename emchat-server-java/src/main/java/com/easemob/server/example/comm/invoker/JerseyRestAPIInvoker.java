@@ -53,10 +53,6 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-            responseWrapper.addError(msg);
-        }
         if (null != body && !body.validate()) {
             responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
         }
@@ -84,18 +80,31 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
 
         buildHeader(inBuilder, header);
 
-        Response response = null;
+        Response response;
         Object b = null == body ? null : body.getBody();
-        if (HTTPMethod.METHOD_GET.equals(method)) {
-            response = inBuilder.get(Response.class);
-        } else if (HTTPMethod.METHOD_POST.equals(method)) {
-            response = inBuilder.post(Entity.entity(b, MediaType.APPLICATION_JSON), Response.class);
-        } else if (HTTPMethod.METHOD_PUT.equals(method)) {
-            response = inBuilder.put(Entity.entity(b, MediaType.APPLICATION_JSON), Response.class);
-        } else if (HTTPMethod.METHOD_DELETE.equals(method)) {
-            response = inBuilder.delete(Response.class);
+        switch (method) {
+            case HTTPMethod.METHOD_POST:
+                response = inBuilder.post(Entity.entity(b, MediaType.APPLICATION_JSON), Response.class);
+                break;
+            case HTTPMethod.METHOD_PUT:
+                response = inBuilder.put(Entity.entity(b, MediaType.APPLICATION_JSON), Response.class);
+                break;
+            case HTTPMethod.METHOD_GET:
+                response = inBuilder.get(Response.class);
+                break;
+            case HTTPMethod.METHOD_DELETE:
+                response = inBuilder.delete(Response.class);
+                break;
+            default:
+                String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "Http Method"});
+                log.error(msg);
+                throw new RuntimeException(msg);
         }
-        responseWrapper.setResponseStatus(response.getStatus());
+        try {
+            responseWrapper.setResponseStatus(response.getStatus());
+        } catch (NullPointerException e){
+            log.error(e.getMessage());
+        }
 
         String responseContent = response.readEntity(String.class);
         ObjectMapper mapper = new ObjectMapper();
@@ -128,10 +137,6 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
         }
         if (!RestAPIUtils.match("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", url)) {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
-            responseWrapper.addError(msg);
-        }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
             responseWrapper.addError(msg);
         }
         if (null == file || !file.exists() || !file.isFile() || !file.canRead()) {
@@ -197,11 +202,6 @@ public class JerseyRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-        if (null == header) {
-            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-            responseWrapper.addError(msg);
-        }
-
         if (responseWrapper.hasError()) {
             return responseWrapper;
         }

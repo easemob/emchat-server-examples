@@ -1,20 +1,25 @@
 package com.easemob.server.example.comm.invoker;
 
 import com.easemob.server.example.comm.ClientContext;
-import com.easemob.server.example.comm.body.IMUserBody;
-import com.easemob.server.example.comm.body.IMUsersBody;
-import com.easemob.server.example.comm.wrapper.BodyWrapper;
+import com.easemob.server.example.comm.utils.ResponseUtils;
 import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-import com.easemob.server.example.comm.wrapper.QueryWrapper;
 import com.easemob.server.example.comm.wrapper.ResponseWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -27,8 +32,8 @@ import static org.junit.Assert.assertEquals;
  * @since <pre>2016.11</pre>
  */
 public class JerseyRestAPIInvokerTest {
-    
-    JerseyRestAPIInvoker jerseyClient;
+
+    private JerseyRestAPIInvoker jerseyClient;
 
     @BeforeClass
     public static void beforeClass(){
@@ -44,114 +49,45 @@ public class JerseyRestAPIInvokerTest {
     public void after() throws Exception {
     }
 
-    /**
-     * Method: sendRequest(String method, String url, HeaderWrapper header, BodyWrapper body, QueryWrapper query)
-     */
+
     @Test
     public void testSendRequest_1() throws Exception {
+        IMocksControl mocksControl = EasyMock.createControl();
+        HttpClient clientMock = mocksControl.createMock(HttpClient.class);
+        HttpResponse responseMock = mocksControl.createMock(HttpResponse.class);
+        HttpUriRequest requestMock = mocksControl.createMock(HttpUriRequest.class);
+        HttpEntity entityMock = mocksControl.createMock(HttpEntity.class);
+        StatusLine statusLineMock = mocksControl.createMock(StatusLine.class);
+        EasyMock.expect(responseMock.getStatusLine()).andReturn(statusLineMock);
+        EasyMock.expect(statusLineMock.getStatusCode()).andReturn(200);
+        FileInputStream fileInputStream = new FileInputStream("test/com/easemob/server/example/comm/invoker/mockdata/get user001");
+        fileInputStream.close();
+        EasyMock.expect(entityMock.getContent()).andReturn(fileInputStream);
+        EasyMock.expect(clientMock.execute(requestMock)).andReturn(responseMock);
+        mocksControl.replay();
+
         String method = "GET";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users/user1";
+        String url = "https://a1.easemob.com/1122161011178276/testapp/users/user001";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
-        BodyWrapper body = null;
-        QueryWrapper query = null;
-        ResponseWrapper responseWrapper = jerseyClient.sendRequest(method, url, header, body, query);
+        ResponseWrapper responseWrapper = jerseyClient.sendRequest(method, url, header, null, null);
         assertEquals("200", responseWrapper.getResponseStatus().toString());
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(responseWrapper.getResponseBody());
-        JsonNode jsonNode = mapper.readTree(json);
+        JsonNode jsonNode = ResponseUtils.ResponseBodyToJsonNode(responseWrapper);
         assertEquals("1", jsonNode.get("count").toString());
     }
-
     @Test
     public void testSendRequest_2() throws Exception {
-        String method = "POST";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users";
-        String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
-        HeaderWrapper header = new HeaderWrapper();
-        header.addAuthorization(token);
-        List<IMUserBody> users = new ArrayList<>();
-        users.add(new IMUserBody("@usertest01", "123456", "sunny"));
-        users.add(new IMUserBody("usertest02", "123456", "@"));
-        BodyWrapper body = new IMUsersBody(users);
-        QueryWrapper query = null;
-        ResponseWrapper responseWrapper = jerseyClient.sendRequest(method, url, header, body, query);
-        assertEquals("400", responseWrapper.getResponseStatus().toString());
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(responseWrapper.getResponseBody());
-        JsonNode jsonNode = mapper.readTree(json);
-        assertEquals("\"username [@usertest01] is not legal\"", jsonNode.get("error_description").toString());
+        String method = "";
+        String url = "";
+        ResponseWrapper responseWrapper = jerseyClient.sendRequest(method, url, null, null, null);
+        List<String> messages = new ArrayList<>();
+        messages.add("[ERROR]: " + method + " is an unknown type of HTTP methods.");
+        messages.add("[ERROR]: Parameter url should not be null or empty.");
+        messages.add("[ERROR]: Parameter url doesn't match the required format.");
+        Iterator<String> iterator = responseWrapper.getMessages().iterator();
+        for (String s : messages) {
+            assertEquals(s, iterator.next());
+        }
     }
-
-    @Test
-    public void testSendRequest_3() throws Exception {
-        String method = "DELETE";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/user/usererror";
-        String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
-        HeaderWrapper header = new HeaderWrapper();
-        header.addAuthorization(token);
-        BodyWrapper body = null;
-        QueryWrapper query = null;
-        ResponseWrapper responseWrapper = jerseyClient.sendRequest(method, url, header, body, query);
-        assertEquals("404", responseWrapper.getResponseStatus().toString());
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(responseWrapper.getResponseBody());
-        JsonNode jsonNode = mapper.readTree(json);
-        assertEquals("\"Service resource not found\"", jsonNode.get("error_description").toString());
-    }
-
-    /**
-     * Method: uploadFile(String url, HeaderWrapper header, File file)
-     */
-    @Test
-    public void testUploadFile() throws Exception {
-        //TODO: Test goes here...
-    }
-
-    /**
-     * Method: downloadFile(String url, HeaderWrapper header)
-     */
-    @Test
-    public void testDownloadFile() throws Exception {
-        //TODO: Test goes here...
-    }
-
-
-    /**
-     * Method: buildHeader(Invocation.Builder inBuilder, HeaderWrapper header)
-     */
-    @Test
-    public void testBuildHeader() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = JerseyRestAPIInvoker.getClass().getMethod("buildHeader", Invocation.Builder.class, HeaderWrapper.class); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
-    }
-
-    /**
-     * Method: buildQuery(JerseyWebTarget target, QueryWrapper query)
-     */
-    @Test
-    public void testBuildQuery() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = JerseyRestAPIInvoker.getClass().getMethod("buildQuery", JerseyWebTarget.class, QueryWrapper.class); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
-    }
-
 } 
