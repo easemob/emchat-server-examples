@@ -58,14 +58,9 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-//        if (null != header && header.getHeaders().isEmpty()) {
-//            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-//            responseWrapper.addError(msg);
-//        }
         if (null != body && !body.validate()) {
             responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
         }
-
         if (responseWrapper.hasError()) {
             return responseWrapper;
         }
@@ -81,7 +76,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         url = buildQuery(url, query);
         String cacertFilePath = ClientContext.getInstance().getCacertFilePath();
         String cacertFilePassword = ClientContext.getInstance().getCacertFilePassword();
-        HttpClient client = RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath,  cacertFilePassword);
+        HttpClient client = RestAPIUtils.getHttpClient(StringUtils.startsWithIgnoreCase(url, "HTTPS"), cacertFilePath, cacertFilePassword);
 
         URL target;
         try {
@@ -94,18 +89,23 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         HttpUriRequest request;
         HttpResponse response;
         try {
-            if (method.equals(HTTPMethod.METHOD_POST)) {
-                request = new HttpPost(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_PUT)) {
-                request = new HttpPut(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_GET)) {
-                request = new HttpGet(target.toURI());
-            } else if (method.equals(HTTPMethod.METHOD_DELETE)) {
-                request = new HttpDelete(target.toURI());
-            } else {
-                String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "Http Method"});
-                log.error(msg);
-                throw new RuntimeException(msg);
+            switch (method) {
+                case HTTPMethod.METHOD_POST:
+                    request = new HttpPost(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_PUT:
+                    request = new HttpPut(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_GET:
+                    request = new HttpGet(target.toURI());
+                    break;
+                case HTTPMethod.METHOD_DELETE:
+                    request = new HttpDelete(target.toURI());
+                    break;
+                default:
+                    String msg = MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{method, "Http Method"});
+                    log.error(msg);
+                    throw new RuntimeException(msg);
             }
         } catch (URISyntaxException e) {
             responseWrapper.addError(e.getMessage());
@@ -149,10 +149,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-//        if (null != header && header.getHeaders().isEmpty()) {
-//            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-//            responseWrapper.addError(msg);
-//        }
         if (null == file || !file.exists() || !file.isFile() || !file.canRead()) {
             responseWrapper.addError(MessageTemplate.INVALID_BODY_MSG);
         }
@@ -182,7 +178,8 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             try {
                 response.close();
                 client.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
+                log.error(e.getMessage());
             }
         }
 
@@ -210,11 +207,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             String msg = MessageTemplate.print(MessageTemplate.INVAILID_FORMAT_MSG, new String[]{"Parameter url"});
             responseWrapper.addError(msg);
         }
-//        if (null != header && header.getHeaders().isEmpty()) {
-//            String msg = MessageTemplate.print(MessageTemplate.BLANK_OBJ_MSG, new String[]{"Parameter header"});
-//            responseWrapper.addError(msg);
-//        }
-
         if (responseWrapper.hasError()) {
             return responseWrapper;
         }
@@ -225,7 +217,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
         log.debug("===========Request End===========");
 
         HttpGet request = new HttpGet(url);
-        HttpResponse response = null;
+        HttpResponse response;
         try {
             response = client.execute(request);
         } catch (IOException e) {
@@ -256,7 +248,7 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
                 url += nameValuePair.getName() + "=" + nameValuePair.getValue();
                 url += "&";
             }
-            url = url.substring(0, url.length()-1);
+            url = url.substring(0, url.length() - 1);
         }
         return url;
     }
