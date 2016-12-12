@@ -2,7 +2,7 @@ var client = require('./../client');
 function ChatRoom() {
 
     //Create a chat room
-    this.createChatRoom = function (json) {
+    this.createChatRoom = function (json, callback) {
         var data = {
             name: json.name,
             description: json.description,
@@ -16,13 +16,13 @@ function ChatRoom() {
             method: 'POST',
             callback: function (data) {
                 console.log(data);
-                typeof json.callback == 'function' && json.callback(data);
+                typeof callback == 'function' && callback(data);
             }
-        }, client.getClient.request);
+        });
     };
 
     //Update chat room details
-    this.modifyChatRoom = function (json) {
+    this.modifyChatRoom = function (json, callback) {
         var data = {
             name: json.name,
             description: json.description,
@@ -34,7 +34,7 @@ function ChatRoom() {
             method: 'PUT',
             callback: function (data) {
                 console.log(data);
-                typeof json.callback == 'function' && json.callback(data);
+                typeof callback == 'function' && callback(data);
             }
         });
     };
