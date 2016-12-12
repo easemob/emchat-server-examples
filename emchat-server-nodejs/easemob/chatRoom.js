@@ -2,7 +2,7 @@ var client = require('./../client');
 function ChatRoom() {
 
     //Create a chat room
-    this.createChatRoom = function (json) {
+    this.createChatRoom = function (json, callback) {
         var data = {
             name: json.name,
             description: json.description,
@@ -12,17 +12,17 @@ function ChatRoom() {
         };
         client.client({
             data: data,
-            path: '/chatrooms',
+            path: 'chatrooms',
             method: 'POST',
             callback: function (data) {
                 console.log(data);
-                typeof json.callback == 'function' && json.callback(data);
+                typeof callback == 'function' && callback(data);
             }
-        }, client.getClient.request);
+        });
     };
 
     //Update chat room details
-    this.modifyChatRoom = function (json) {
+    this.modifyChatRoom = function (json, callback) {
         var data = {
             name: json.name,
             description: json.description,
@@ -30,11 +30,11 @@ function ChatRoom() {
         };
         client.client({
             data: data,
-            path: '/chatrooms/' + json.chatroom_id,
+            path: 'chatrooms/' + json.chatroom_id,
             method: 'PUT',
             callback: function (data) {
                 console.log(data);
-                typeof json.callback == 'function' && json.callback(data);
+                typeof callback == 'function' && callback(data);
             }
         });
     };
@@ -42,7 +42,7 @@ function ChatRoom() {
     //Delete a chat room
     this.deleteChatRoom = function (chatroom_id, callback) {
         client.client({
-            path: '/chatrooms/' + chatroom_id,
+            path: 'chatrooms/' + chatroom_id,
             method: 'DELETE',
             callback: function (data) {
                 console.log(data);
@@ -54,7 +54,7 @@ function ChatRoom() {
     //Get all chat rooms
     this.getChatRooms = function (callback) {
         client.client({
-            path: '/chatrooms',
+            path: 'chatrooms',
             method: 'GET',
             callback: function (data) {
                 console.log(data);
@@ -66,7 +66,7 @@ function ChatRoom() {
     //Get chat room detail
     this.getChatRoomDetail = function (chatroom_id, callback) {
         client.client({
-            path: '/chatrooms/' + chatroom_id,
+            path: 'chatrooms/' + chatroom_id,
             method: 'GET',
             callback: function (data) {
                 console.log(data);
@@ -78,7 +78,7 @@ function ChatRoom() {
     //Get all chat room of user joined
     this.getChatRoomJoined = function (username, callback) {
         client.client({
-            path: '/users/' + username + '/joined_chatrooms',
+            path: 'users/' + username + '/joined_chatrooms',
             method: 'GET',
             callback: function (data) {
                 console.log(data);
@@ -89,7 +89,7 @@ function ChatRoom() {
     //Add a member to chat room
     this.addChatRoomMember = function (chatroomid, username, callback) {
         client.client({
-            path: '/chatrooms/' + chatroomid + '/users/' + username,
+            path: 'chatrooms/' + chatroomid + '/users/' + username,
             method: 'POST',
             callback: function (data) {
                 console.log(data);
@@ -101,7 +101,7 @@ function ChatRoom() {
     this.addChatRoomMembers = function (chatroomid, json, callback) {
         var data = {usernames: json};
         client.client({
-            path: '/chatrooms/' + chatroomid + '/users/',
+            path: 'chatrooms/' + chatroomid + '/users/',
             method: 'POST',
             data: data,
             callback: function (data) {
@@ -114,7 +114,7 @@ function ChatRoom() {
     //Remove a member from chat room
     this.deleteChatRoomMember = function (chatroomid, username, callback) {
         client.client({
-            path: '/chatrooms/' + chatroomid + '/users/' + username,
+            path: 'chatrooms/' + chatroomid + '/users/' + username,
             method: 'DELETE',
             callback: function (data) {
                 console.log(data);
@@ -125,7 +125,7 @@ function ChatRoom() {
     //Remove multiple member from chat room
     this.deleteChatRoomMembers = function (chatroomid, usernames, callback) {
         client.client({
-            path: '/chatrooms/' + chatroomid + '/users/' + usernames,
+            path: 'chatrooms/' + chatroomid + '/users/' + usernames,
             method: 'DELETE',
             callback: function (data) {
                 console.log(data);
