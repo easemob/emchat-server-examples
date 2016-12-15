@@ -3,15 +3,16 @@ emchat-server-examples
 **Note**: `The master branch represents a un-released version. For a stable version, please checkout a released branch by tag.`
 
 
-包含了环信服务器端API的示例代码, 各种语言的实现请参考相应的子目录工程
+The project contains sample server API project for different languages. Please visit subfolders to learn more. 
 
-本项目使用了一个测试的账号, 具体信息如下
+
+Testing account:
 
 appkey: easemob-playground#test1
 
-企业管理员账号: zhangjianguo
+admin username: zhangjianguo
 
-企业管理员密码: zhangjianguo 
+admin password: zhangjianguo 
 
 client_id: YXA6wDs-MARqEeSO0VcBzaqg5A
 
