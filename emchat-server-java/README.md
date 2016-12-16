@@ -1,5 +1,7 @@
 ## Server Sample Source Code
 
+Master is a developing branch. Download release branch for stable version.
+
 The project can be built using Gradle and Maven, which we recommend, or be compiled from command line. 
 
 ## Maven
@@ -39,15 +41,17 @@ Run the following command and open the project from Intellij IDEA
 
 	$ gradlew.bat clean compile
 	
-## Dependency
+## Dependencies
 	
- - 1. package com.easemob.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
- - 2. package com.easemob.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
- - 3. Master is developing branch. Download release branch for stable version.
+ - package com.easemob.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
+ - package com.easemob.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
  
 ### Get all the dependencies
 
 We recommend using [maven](http://maven.apache.org) or [gradle](http://gradle.org) to build server components. 
+
+#### Windows
+
 If you're not using the tools listed above, you can manual manage the .jar package by running the following command.
 
     $ gradlew.bat distZip
