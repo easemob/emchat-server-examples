@@ -1,6 +1,6 @@
 package com.easemob.server.example.comm.wrapper;
 
-import jdk.nashorn.internal.ir.ObjectNode;
+//import jdk.nashorn.internal.ir.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
