@@ -1,47 +1,56 @@
-## 环信服务器端实例代码
+## Server Sample Source Code
 
-本项目支持使用[Maven](http://maven.apache.org)构建, 具体使用方式请参考maven的使用文档和pom.xml
+The project can be built using Gradle and Maven, which we recommend, or be compiled from command line. 
 
+## Maven
 
+This project upports build with [Maven](http://maven.apache.org), please see maven documentation and pom.xml for implementation details
 
-如果使用[Gradle](http://gradle.org)进行构建, 可以直接导入到IDE中, 例如
+## Gradle
 
+You can build with IDE using [Gradle](http://gradle.org). For example,
 
+### Eclipse
 
-### 导入到eclipse中:
+#### Unix
+ 
+    $ gradle eclipse
 
-在命令行中运行
+#### Windows
 
-    gradlew.bat eclipse
-    
-这个命令会生成eclipse的项目文件, 然后可以通过eclipse的import工具导入
+Run the following command, it'll generate necessary Eclipse files, then import via Eclipse
 
-### 导入到Intellij中:
+    $ gradlew.bat eclipse
 
-在命令行运行
+### Intellij IDEA
 
-    gradlew.bat idea
-    
-然后直接在Intellij中打开这个项目
+#### Unix
 
-### 获取本项目的所有依赖
+	$ gradle idea
 
-我们建议您使用 [maven](http://maven.apache.org) 或者 [gradle](http://gradle.org) 来构建您的服务器项目,
-如果您没有使用上面的工具, 而是自己手工管理所依赖的jar包的话, 可以使用下面的命令来得到本项目使用到的jar包
+#### Windows
 
+Run the following command and open the project from Intellij IDEA
 
-    gradlew.bat distZip
+    $ gradlew.bat idea
+	
 
-这个会在 _build/distributions_ 目录下生成一个 easemob-server-example.zip 文件, 里面包含了本项目的所有依赖
+## Build from Command line
 
-### 直接编译
+	$ gradlew.bat clean compile
+	
+## Dependency
+	
+ - 1. package com.easemob.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
+ - 2. package com.easemob.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
+ - 3. Master is developing branch. Download release branch for stable version.
+ 
+### Get all the dependencies
 
-在命令行中运行 
+We recommend using [maven](http://maven.apache.org) or [gradle](http://gradle.org) to build server components. 
+If you're not using the tools listed above, you can manual manage the .jar package by running the following command.
 
-    gradlew.bat clean compile
-    
-    
-### Notes：
- - 1. package com.easemob.server.example.jersey下采用Jersey2.15实现, 需要java7或更高版本支持;
- - 2. package com.easemob.server.example.httpclient下采用Httpclient4.3.3实现，需要Java1.5或更高版本支持.
- - 3. Master分支是开发分支，请慎重直接下载使用。如有需要请下载已经Release的版本。
+    $ gradlew.bat distZip
+
+That will create a zip file, easemob-server-example.zip, under the folder _build/distributions_, which includes all the dependency    
+ 
