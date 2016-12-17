@@ -22,7 +22,7 @@ You can build with IDE using [Gradle](http://gradle.org). For example,
 
 Run the following command, it'll generate necessary Eclipse files, then import via Eclipse
 
-    $ gradlew.bat eclipse
+    > gradlew.bat eclipse
 
 ### Intellij IDEA
 
@@ -34,12 +34,14 @@ Run the following command, it'll generate necessary Eclipse files, then import v
 
 Run the following command and open the project from Intellij IDEA
 
-    $ gradlew.bat idea
+    > gradlew.bat idea
 	
 
 ## Build from Command line
 
-	$ gradlew.bat clean compile
+#### Windows
+
+	> gradlew.bat clean compile
 	
 ## Dependencies
 	
@@ -54,7 +56,7 @@ We recommend using [maven](http://maven.apache.org) or [gradle](http://gradle.or
 
 If you're not using the tools listed above, you can manual manage the .jar package by running the following command.
 
-    $ gradlew.bat distZip
+    > gradlew.bat distZip
 
 That will create a zip file, easemob-server-example.zip, under the folder _build/distributions_, which includes all the dependency    
  
