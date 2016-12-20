@@ -14,7 +14,7 @@ You can build with IDE using [Gradle](http://gradle.org). For example,
 
 ### Eclipse
 
-#### Unix
+#### Unix or Mac
  
     $ gradle eclipse
 
@@ -26,7 +26,7 @@ Run the following command, it'll generate necessary Eclipse files, then import v
 
 ### Intellij IDEA
 
-#### Unix
+#### Unix or Mac
 
 	$ gradle idea
 
