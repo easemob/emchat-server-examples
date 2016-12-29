@@ -9,4 +9,8 @@ The `config.js` in directory `resources` is configuration file, you can config O
 ### 4. Run
 `test.js` provides an examples for all API invocation, you can change the value of variable `i` for running corresponding API.
 
+Run the following command line in terminal to run the test script
+```bash
+$ node test
+```
 

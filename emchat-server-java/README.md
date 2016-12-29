@@ -4,6 +4,7 @@ Master is a developing branch. Download release branch for stable version.
 
 The project can be built using Gradle and Maven, which we recommend, or be compiled from command line. 
 
+
 ## Maven
 
 This project upports build with [Maven](http://maven.apache.org), please see maven documentation and pom.xml for implementation details
@@ -11,6 +12,16 @@ This project upports build with [Maven](http://maven.apache.org), please see mav
 ## Gradle
 
 You can build with IDE using [Gradle](http://gradle.org). For example,
+
+
+## Installed the Java SDK
+
+You can download and install the most recent version of the [Java SDK](http://java.sun.com/javase/downloads/index.jsp).
+
+
+## Installed your favorite Java IDE
+
+You can use IntelliJ, Eclipse, NetBeans or any Java IDE you prefer to the run the project.
 
 ### Eclipse
 

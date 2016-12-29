@@ -1,7 +1,7 @@
 /**
- * 环信nodeJS调REST示例代码
- * Copyright(c) 2016 环信即时通信云 www.easemob.com
- * Author: 神之爱 <fengpei@easemob.com> && Aily <tongyao@easemob.com>
+ * Hyphenate nodeJS REST API sample code
+ * Copyright(c) 2016 www.hyphenate.io
+ * Author: Hyphenate <info@hyphenate.io>
  */
 var Token = require('./easemob/token');
 var User = require('./easemob/user');

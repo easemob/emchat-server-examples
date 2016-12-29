@@ -65,6 +65,7 @@ function client(json, callback) {
     }
 
 }
+
 function httpRequestWithToken(json) {
     if (token == null) {
         console.log('err: failed to access token!')
@@ -86,6 +87,7 @@ function uploadFileWithToken(json) {
         request.uploadFile(json);
     }
 }
+
 module.exports = {
     client: client,
     httpRequestWithToken: httpRequestWithToken,

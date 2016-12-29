@@ -1,23 +1,22 @@
 package com.easemob.server.example.api;
 
 /**
- * This interface is created for RestAPI of Chat Group, it should be
- * synchronized with the API list.
+ * REST API of Chat Group
  * 
  * @author Eric23 2016-01-05
- * @see http://docs.easemob.com/doku.php?id=start:100serverintegration:
- *      60groupmgmt
+ * @see https://docs.hyphenate.io/docs/group-management
+ *
  */
 public interface ChatGroupAPI {
 
 	/**
-	 * 获取群组，参数为空时获取所有群组 <br>
+	 * get groups. 获取群组，参数为空时获取所有群组 <br>
 	 * GET
 	 * 
 	 * @param limit
-	 *            单页数量
+	 *            max number of group
 	 * @param cursor
-	 *            游标，存在更多记录时产生
+	 *            page index for pagination
 	 * @return
 	 */
 	Object getChatGroups(Long limit, String cursor);

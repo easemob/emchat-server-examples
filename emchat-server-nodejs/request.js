@@ -16,6 +16,7 @@ exports.httpRequest = function (json) {
 
     var postData = JSON.stringify(json.data);
     var ca = fs.readFileSync(config.ca, 'utf-8');
+    
     //request parameters
     var options = {
         host: host,
@@ -25,6 +26,7 @@ exports.httpRequest = function (json) {
         ca: [ca],
         agent: false
     };
+    
     //connect with query parameters
     if (json.query != null) {
         options.path += '?';
@@ -35,6 +37,7 @@ exports.httpRequest = function (json) {
         }
         options.path = options.path.substring(0, options.path.length - 1);
     }
+    
     //send request
     var req = https.request(options, function (res) {
         var chunks = '';
@@ -56,6 +59,7 @@ exports.httpRequest = function (json) {
                 json.callback(chunks);
         });
     });
+    
     //print error message
     req.on('error', function (e) {
         console.log('problem with request: ' + e.message);
@@ -65,6 +69,7 @@ exports.httpRequest = function (json) {
     req.write(postData);
     req.end();
 };
+
 exports.uploadFile = function (json) {
     json = json || {};
     json.data = json.data || {};
