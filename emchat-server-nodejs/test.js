@@ -117,7 +117,7 @@ switch (i) {
         sendMessage.sendImage({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
+            url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
             filename: '01.jpg',
             secret: 'YWEeOptcEeaG8D-LXrAmEykZ07q6Q_d5jLK49nlbDAc7s3Yc',
             from: 'admin',
@@ -128,7 +128,7 @@ switch (i) {
         sendMessage.sendAudio({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
+            url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
             filename: 'audio.mp3',
             length: 10,
             secret: 'g0GUSpt5Eea-E78LqsqYRGrpCneE0xwEXPN8uvq327wtIiJ2',
@@ -140,9 +140,9 @@ switch (i) {
         sendMessage.sendVideo({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
+            url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
             filename: 'web.mp4',
-            thumb: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/17b55630-13d5-11e5-9570-e1734d6149fa',
+            thumb: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/17b55630-13d5-11e5-9570-e1734d6149fa',
             length: 10,
             file_length: 42190,
             thumb_secret: 'F7VWOhPVEeWrHbXQmsnDQAdyk4NuijHO1CemodZL8WMZRY1u',
