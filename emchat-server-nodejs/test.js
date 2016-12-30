@@ -19,10 +19,10 @@ group = new Group();
 chatRoom = new ChatRoom();
 sendMessage = new SendMessage();
 
-console.log('test.js is running');
-
 // pick a test
-var i = 14;
+var i = 33;
+
+console.log('======================================== test.js - Running test case ' + i + ' ========================================');
 
 switch (i) {
 
@@ -50,7 +50,7 @@ switch (i) {
         user.getUser('user101');
         break;
     case 14:    //Get users in batch.
-        var userCount = 5
+        var userCount = 5;
         user.getUsers(userCount);
         break;
     case 15:    //Delete a user
@@ -118,7 +118,7 @@ switch (i) {
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
-            filename: 'dog.jpg',
+            filename: '01.jpg',
             secret: 'YWEeOptcEeaG8D-LXrAmEykZ07q6Q_d5jLK49nlbDAc7s3Yc',
             from: 'admin',
             ext: {a: 'a', b: 'b'}
@@ -129,7 +129,7 @@ switch (i) {
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
-            filename: 'song.mp3',
+            filename: 'audio.mp3',
             length: 10,
             secret: 'g0GUSpt5Eea-E78LqsqYRGrpCneE0xwEXPN8uvq327wtIiJ2',
             from: 'admin',
