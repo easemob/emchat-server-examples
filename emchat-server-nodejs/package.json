@@ -1,7 +1,7 @@
 {
-  "name": "emchat-server-nodejs",
+  "name": "demo-server-nodejs",
   "version": "1.0.0",
-  "description": "Using nodejs to access API, provide users client-side example code.",
+  "description": "Node.js server-side REST API example code.",
   "config":{"ca":"resources/cacert/cacert.pem",
   "host":"api.hyphenate.io"},
   "main": "test.js",
