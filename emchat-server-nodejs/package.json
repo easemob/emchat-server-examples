@@ -1,9 +1,9 @@
 {
   "name": "emchat-server-nodejs",
   "version": "1.0.0",
-  "description": "Using nodejs to access API, provide users client example code.",
+  "description": "Using nodejs to access API, provide users client-side example code.",
   "config":{"ca":"resources/cacert/cacert.pem",
-  "host":"a1.easemob.com"},
+  "host":"api.hyphenate.io"},
   "main": "test.js",
   "dependencies": {
     "form-data": "^2.1.1",

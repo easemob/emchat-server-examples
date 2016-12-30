@@ -22,12 +22,12 @@ sendMessage = new SendMessage();
 console.log('test.js is running');
 
 // pick a test
-var i = 15;
+var i = 14;
 
 switch (i) {
 
     case 10:    //Request an Authentication Token
-        token.accessToken(function (data) {@
+        token.accessToken(function (data) {
             console.log(data);
         });
         break;
@@ -49,8 +49,9 @@ switch (i) {
     case 13:    //Get a user
         user.getUser('user101');
         break;
-    case 14:    //Get users in batch
-        user.getUsers(5);
+    case 14:    //Get users in batch.
+        var userCount = 5
+        user.getUsers(userCount);
         break;
     case 15:    //Delete a user
         user.deleteUser('user101');
@@ -116,7 +117,7 @@ switch (i) {
         sendMessage.sendImage({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
+            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
             filename: 'dog.jpg',
             secret: 'YWEeOptcEeaG8D-LXrAmEykZ07q6Q_d5jLK49nlbDAc7s3Yc',
             from: 'admin',
@@ -127,7 +128,7 @@ switch (i) {
         sendMessage.sendAudio({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
+            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
             filename: 'song.mp3',
             length: 10,
             secret: 'g0GUSpt5Eea-E78LqsqYRGrpCneE0xwEXPN8uvq327wtIiJ2',
@@ -139,9 +140,9 @@ switch (i) {
         sendMessage.sendVideo({
             type: 'users',
             target: ['user101', 'user102'],
-            url: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
+            url: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
             filename: 'web.mp4',
-            thumb: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/17b55630-13d5-11e5-9570-e1734d6149fa',
+            thumb: 'https://api.hyphenate.io/hyphenatedemo/hyphenatedemo/chatfiles/17b55630-13d5-11e5-9570-e1734d6149fa',
             length: 10,
             file_length: 42190,
             thumb_secret: 'F7VWOhPVEeWrHbXQmsnDQAdyk4NuijHO1CemodZL8WMZRY1u',
