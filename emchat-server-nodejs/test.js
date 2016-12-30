@@ -3,13 +3,14 @@
  * Copyright(c) 2016 www.hyphenate.io
  * Author: Hyphenate <info@hyphenate.io>
  */
-var Token = require('./easemob/token');
-var User = require('./easemob/user');
-var ChatHistory = require('./easemob/chatHistory');
-var Files = require('./easemob/files');
-var Group = require('./easemob/group');
-var ChatRoom = require('./easemob/chatRoom');
-var SendMessage = require('./easemob/sendMessage');
+var Token = require('./hyphenate/token');
+var User = require('./hyphenate/user');
+var ChatHistory = require('./hyphenate/chatHistory');
+var Files = require('./hyphenate/files');
+var Group = require('./hyphenate/group');
+var ChatRoom = require('./hyphenate/chatRoom');
+var SendMessage = require('./hyphenate/sendMessage');
+
 token = new Token();
 user = new User();
 chatHistory = new ChatHistory();
@@ -17,15 +18,21 @@ files = new Files();
 group = new Group();
 chatRoom = new ChatRoom();
 sendMessage = new SendMessage();
-var i = 52;
+
+console.log('test.js is running');
+
+// pick a test
+var i = 15;
+
 switch (i) {
+
     case 10:    //Request an Authentication Token
-        token.accessToken(function (data) {
+        token.accessToken(function (data) {@
             console.log(data);
         });
         break;
     case 11:    //Create a user
-        user.createUser('user001', '123456');
+        user.createUser('user101', '123456');
         break;
     case 12:    //Create multiple users
         user.createUsers([{
@@ -40,13 +47,13 @@ switch (i) {
         }]);
         break;
     case 13:    //Get a user
-        user.getUser('user100');
+        user.getUser('user101');
         break;
     case 14:    //Get users in batch
         user.getUsers(5);
         break;
     case 15:    //Delete a user
-        user.deleteUser('user100');
+        user.deleteUser('user101');
         break;
     case 16:    //Delete users in batch
         user.deleteUsers(2, '${cursor}');
@@ -55,7 +62,7 @@ switch (i) {
         user.resetPassword('user101', '123456', '654321');
         break;
     case 18:    //Update user's nickname
-        user.editNickname('user101', 'Aily');
+        user.editNickname('user101', 'orange');
         break;
     case 19:    //Add a friend for user
         user.addFriend('user101', 'user102');
@@ -112,7 +119,7 @@ switch (i) {
             url: 'https://a1.easemob.com/dihon/loveofgod/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
             filename: 'dog.jpg',
             secret: 'YWEeOptcEeaG8D-LXrAmEykZ07q6Q_d5jLK49nlbDAc7s3Yc',
-            frome: 'admin',
+            from: 'admin',
             ext: {a: 'a', b: 'b'}
         });
         break;
@@ -124,7 +131,7 @@ switch (i) {
             filename: 'song.mp3',
             length: 10,
             secret: 'g0GUSpt5Eea-E78LqsqYRGrpCneE0xwEXPN8uvq327wtIiJ2',
-            frome: 'admin',
+            from: 'admin',
             ext: {a: 'a', b: 'b'}
         });
         break;
@@ -139,7 +146,7 @@ switch (i) {
             file_length: 42190,
             thumb_secret: 'F7VWOhPVEeWrHbXQmsnDQAdyk4NuijHO1CemodZL8WMZRY1u',
             secret: 'pOqs2pt5EeaLsPXcXfAk0UrWaF5EEV9SNsCwxhMmT-ClN0PG',
-            frome: 'admin',
+            from: 'admin',
             ext: {a: 'a', b: 'b'}
         });
         break;
@@ -155,12 +162,12 @@ switch (i) {
     case 37:    //Get all groups
         group.getGroups();
         break;
-    case 38:    //Get group(s) detial
+    case 38:    //Get group(s) detail
         group.getGroupDetail(['1445866257312']);
         break;
     case 39:    //Create a group
         group.createGroup({
-            groupname: 'group999',
+            groupname: 'fruit club',
             desc: 'this is a new group created from user101',
             public: true,
             maxusers: 200,
@@ -171,8 +178,8 @@ switch (i) {
         break;
     case 40:    //Modify group information
         group.modifyGroupInfo({
-            groupname: 'man',
-            description: 'update groupinfo',
+            groupname: 'fruit club',
+            description: 'update group info',
             maxusers: 500
         });
         break;
@@ -233,18 +240,18 @@ switch (i) {
         break;
     case 55:    //Create a chat room
         chatRoom.createChatRoom({
-            name: 'test7',
-            description: 'this chatromm is created by fengpei',
+            name: 'a new chat room',
+            description: 'this chat room is created by user101',
             maxusers: 200,
-            owner: 'xiaoshe',
-            members: ['xiaoli']
+            owner: 'user101',
+            members: ['user102']
         });
         break;
     case 56:    //Update chat room details
         chatRoom.modifyChatRoom({
             chatroom_id: '1434597895697836',
-            name: 'fengpeichatroom',
-            description: 'this chatromm is created by fengpei in 2015',
+            name: 'fruit club',
+            description: 'this chat room is created by user101',
             maxusers: 500
         });
         break;
@@ -273,5 +280,4 @@ switch (i) {
         chatRoom.deleteChatRoomMembers('116707029891940804', 'user100,user101');
         break;
 }
-
 

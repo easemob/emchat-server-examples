@@ -1,4 +1,4 @@
-var Token = require('./easemob/token');
+var Token = require('./hyphenate/token');
 var request = require('./request');
 
 /*function Client() {
