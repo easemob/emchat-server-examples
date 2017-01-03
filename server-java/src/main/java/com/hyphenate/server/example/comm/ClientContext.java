@@ -241,5 +241,4 @@ public class ClientContext {
 	public static void main(String[] args) {
 		ClientContext.getInstance().init(null);
 	}
-
 }
