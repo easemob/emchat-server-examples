@@ -4,6 +4,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,6 @@ public class RestAPIUtilsTest {
     public void testGetJerseyClient() throws Exception {
         //TODO: Test goes here...
     }
-
 
     @Test
     public void testGetHttpClient_1() throws Exception {
@@ -73,6 +73,4 @@ public class RestAPIUtilsTest {
     public void testMatch() throws Exception {
         //TODO: Test goes here...
     }
-
-
 } 

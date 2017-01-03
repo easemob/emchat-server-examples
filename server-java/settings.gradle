@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'emchat-server-java'
+rootProject.name = 'server-java'

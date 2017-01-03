@@ -59,6 +59,8 @@ Run the following command and open the project from Intellij IDEA
  - package com.hyphenate.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
  - package com.hyphenate.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
  
+ - Install JUnit library (ex. junit:junit:4.12)
+ 
 ### Get all the dependencies
 
 We recommend using [maven](http://maven.apache.org) or [gradle](http://gradle.org) to build server components. 

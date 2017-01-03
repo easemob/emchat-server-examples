@@ -1,11 +1,13 @@
 package com.hyphenate.server.example.comm.invoker;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.utils.ResponseUtils;
 import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
 import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -15,21 +17,25 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
+
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 /**
  * HttpClientRestAPIInvoker Tester.
@@ -43,9 +49,10 @@ public class HttpClientRestAPIInvokerTest {
     private HttpClientRestAPIInvoker httpClient;
 
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() {
         ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES);
     }
+
     @Before
     public void before() throws Exception {
         httpClient = new HttpClientRestAPIInvoker();
