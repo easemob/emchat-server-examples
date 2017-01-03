@@ -32,7 +32,7 @@ public interface IMUserAPI {
 	Object createNewIMUserBatch(Object payload);
 
 	/**
-	 * Get user IM account
+	 * Get a User
 	 *
 	 * GET
 	 * 
@@ -78,7 +78,7 @@ public interface IMUserAPI {
 	Object deleteIMUserBatch(Long limit, String cursor);
 
 	/**
-	 * Update user IM account password
+	 * Reset User's Password
 	 *
 	 * PUT
 	 * 
@@ -91,7 +91,7 @@ public interface IMUserAPI {
 	Object modifyIMUserPasswordWithAdminToken(String userName, Object payload);
 
 	/**
-	 * Update user nickname
+	 * Update User's APNs Display Name
 	 *
 	 * PUT
 	 * 
@@ -104,7 +104,8 @@ public interface IMUserAPI {
 	Object modifyIMUserNickNameWithAdminToken(String userName, Object payload);
 
 	/**
-	 * Add contact for user <br>
+	 * Add Contact for User
+	 *
 	 * POST
 	 * 
 	 * @param userName
@@ -116,7 +117,7 @@ public interface IMUserAPI {
 	Object addFriendSingle(String userName, String friendName);
 
 	/**
-	 * Remove contact relationship
+	 * Remove Contact from User
 	 *
 	 * DELETE
 	 * 
@@ -129,7 +130,7 @@ public interface IMUserAPI {
 	Object deleteFriendSingle(String userName, String friendName);
 
 	/**
-	 * Get user's contact list
+	 * Get a List of Contacts
 	 *
 	 * GET
 	 * 
@@ -140,7 +141,7 @@ public interface IMUserAPI {
 	Object getFriends(String userName);
 
 	/**
-     * Get user's blacklist
+     * Get a List of Blocked Users
 	 *
 	 * GET
 	 * 
@@ -151,7 +152,7 @@ public interface IMUserAPI {
 	Object getBlackList(String userName);
 
 	/**
-	 * Block user(s)
+	 * Block User(s)
 	 *
 	 * POST
 	 * 
@@ -165,7 +166,7 @@ public interface IMUserAPI {
 	Object addToBlackList(String userName, Object payload);
 
 	/**
-	 * Unblock user
+	 * Unblock User(s)
 	 *
 	 * DELETE
 	 * 
@@ -178,7 +179,7 @@ public interface IMUserAPI {
 	Object removeFromBlackList(String userName, String blackListName);
 
 	/**
-	 * Get user online status
+	 * Get User Online Status
 	 *
 	 * GET
 	 * 
@@ -189,7 +190,7 @@ public interface IMUserAPI {
 	Object getIMUserStatus(String userName);
 
 	/**
-	 * Get offline message count of a user
+	 * Get Offline Message Count
 	 *
 	 * GET
 	 * 
@@ -200,7 +201,7 @@ public interface IMUserAPI {
 	Object getOfflineMsgCount(String userName);
 
 	/**
-	 * Get user offline message status
+	 * Get Offline Message Status
 	 *
 	 * GET
 	 * 
@@ -213,7 +214,7 @@ public interface IMUserAPI {
 	Object getSpecifiedOfflineMsgStatus(String userName, String msgId);
 
 	/**
-	 * Deactivate user account
+	 * Deactivate User Account
 	 *
 	 * POST
 	 * 
