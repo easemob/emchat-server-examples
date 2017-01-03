@@ -25,6 +25,4 @@ public abstract class HyphenateRestAPI implements RestAPI {
 	public void setInvoker(RestAPIInvoker invoker) {
 		this.invoker = invoker;
 	}
-	
-	
 }

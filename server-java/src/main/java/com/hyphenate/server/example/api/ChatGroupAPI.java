@@ -3,14 +3,15 @@ package com.hyphenate.server.example.api;
 /**
  * REST API of Chat Group
  * 
- * @author Eric23 2016-01-05
- * @see https://docs.hyphenate.io/docs/group-management
+ * @author Hyphenate
+ * @see https://docs.hyphenate.io
  *
  */
 public interface ChatGroupAPI {
 
 	/**
-	 * get groups. 获取群组，参数为空时获取所有群组 <br>
+	 * Get All the Groups
+	 *
 	 * GET
 	 * 
 	 * @param limit
@@ -22,17 +23,19 @@ public interface ChatGroupAPI {
 	Object getChatGroups(Long limit, String cursor);
 
 	/**
-	 * 获取一个或者多个群组的详情 <br>
+	 * Get Group(s) Details
+	 *
 	 * GET
 	 * 
 	 * @param groupIds
-	 *            群组ID数组
+	 *            group id
 	 * @return
 	 */
 	Object getChatGroupDetails(String[] groupIds);
 
 	/**
-	 * 创建一个群组 <br>
+	 * Create a Group
+	 *
 	 * POST
 	 * 
 	 * @param payload
@@ -42,11 +45,12 @@ public interface ChatGroupAPI {
 	Object createChatGroup(Object payload);
 
 	/**
-	 * 修改群组信息 <br>
+	 * Update Group Details
+	 *
 	 * PUT
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param payload
 	 *            <code>{"groupname":"testrestgrp12",description":"update groupinfo","maxusers":300}</code>
 	 * @return
@@ -54,142 +58,154 @@ public interface ChatGroupAPI {
 	Object modifyChatGroup(String groupId, Object payload);
 
 	/**
-	 * 删除群组 <br>
+	 * Delete a Group
+	 *
 	 * DELETE
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @return
 	 */
 	Object deleteChatGroup(String groupId);
 
 	/**
-	 * 获取群组所有用户 <br>
+	 * Get a List of Members of Group
+	 *
 	 * GET
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @return
 	 */
 	Object getChatGroupUsers(String groupId);
 
 	/**
-	 * 群组加人[单个] <br>
+	 * Add a Member to Group
+	 *
 	 * POST
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userId
-	 *            用户ID或用户名
+	 *            user id
 	 * @return
 	 */
 	Object addSingleUserToChatGroup(String groupId, String userId);
 
 	/**
-	 * 群组加人[批量] <br>
+	 * Add Multiple Members to Group
+	 *
 	 * POST
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param payload
-	 *            用户ID或用户名，数组形式
+	 *            user id
 	 * @return
 	 * @see com.hyphenate.server.example.comm.body.UserNamesBody
 	 */
 	Object addBatchUsersToChatGroup(String groupId, Object payload);
 
 	/**
-	 * 群组减人[单个] <br>
+	 * Remove a Member from the Group
+	 *
 	 * DELETE
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userId
-	 *            用户ID或用户名
+	 *            user id
 	 * @return
 	 */
 	Object removeSingleUserFromChatGroup(String groupId, String userId);
 
 	/**
-	 * 群组减人[批量] <br>
+	 * Remove multiple Member from the Group
+	 *
 	 * DELETE
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userIds
-	 *            用户ID或用户名，数组形式
+	 *            user id
 	 * @return
 	 */
 	Object removeBatchUsersFromChatGroup(String groupId, String[] userIds);
 
 	/**
-	 * 群组转让 <br>
+	 * Update Group Owner
+	 *
 	 * PUT
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param payload
-	 *            新群主ID或用户名
+	 *            new user id of group owner
 	 * @return
      * @see com.hyphenate.server.example.comm.body.GroupOwnerTransferBody
 	 */
 	Object transferChatGroupOwner(String groupId, Object payload);
 
 	/**
-	 * 查询群组黑名单 <br>
+	 * Get Group Blocked Users
+	 *
 	 * GET
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @return
 	 */
 	Object getChatGroupBlockUsers(String groupId);
 
 	/**
-	 * 群组黑名单个添加 <br>
+	 * Block a Group Member
+	 *
 	 * POST
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userId
-	 *            用户ID或用户名
+	 *            user id
 	 * @return
 	 */
 	Object addSingleBlockUserToChatGroup(String groupId, String userId);
 
 	/**
-	 * 群组黑名单批量添加 <br>
+	 * Block Group Members in Batch
+	 *
 	 * POST
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param payload
-	 *            用户ID或用户名，数组形式
+	 *            user id
 	 * @return
      * @see com.hyphenate.server.example.comm.body.UserNamesBody
 	 */
 	Object addBatchBlockUsersToChatGroup(String groupId, Object payload);
 
 	/**
-	 * 群组黑名单单个删除 <br>
+	 * Unblock a Group Member
+	 *
 	 * DELETE
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userId
-	 *            用户ID或用户名
+	 *            user id
 	 * @return
 	 */
 	Object removeSingleBlockUserFromChatGroup(String groupId, String userId);
 
 	/**
-	 * 群组黑名单批量删除 <br>
+	 * Unblock Group Members in Batch
+	 *
 	 * DELETE
 	 * 
 	 * @param groupId
-	 *            群组标识
+	 *            group id
 	 * @param userIds
-	 *            用户ID或用户名，数组形式
+	 *            user id
 	 * @return
 	 */
 	Object removeBatchBlockUsersFromChatGroup(String groupId, String[] userIds);

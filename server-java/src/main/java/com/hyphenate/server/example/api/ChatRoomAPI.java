@@ -1,16 +1,16 @@
 package com.hyphenate.server.example.api;
 
 /**
- * This interface is created for RestAPI of Chat Room, it should be synchronized
+ * This interface is created for REST API of Chat Room, it should be synchronized
  * with the API list.
- * 
- * @author Eric23 2016-01-05
- * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:
- *      70chatroommgmt
+ *
+ * @author Hyphenate
+ * @see http://docs.hyphenate.io
  */
 public interface ChatRoomAPI {
 	/**
-	 * 创建聊天室 <br>
+	 * Create a Chat Room
+	 *
 	 * POST
 	 * 
 	 * @param payload
@@ -20,11 +20,12 @@ public interface ChatRoomAPI {
 	Object createChatRoom(Object payload);
 
 	/**
-	 * 修改聊天室信息 <br>
+	 * Modify the Details of a Chat Room
+	 *
 	 * PUT
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @param payload
 	 *            <code>{"name":"test chatroom","description":
 	 *            "update chatroominfo","maxusers":200}
@@ -33,17 +34,19 @@ public interface ChatRoomAPI {
 	Object modifyChatRoom(String roomId, Object payload);
 
 	/**
-	 * 删除聊天室 <br>
+	 * Delete a Chat Room
+	 *
 	 * DELETE
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @return
 	 */
 	Object deleteChatRoom(String roomId);
 
 	/**
-	 * 获取app中所有的聊天室 <br>
+	 * Get All the Chat Rooms
+	 *
 	 * GET
 	 * 
 	 * @return
@@ -51,60 +54,64 @@ public interface ChatRoomAPI {
 	Object getAllChatRooms();
 
 	/**
-	 * 获取一个聊天室详情 <br>
+	 * Get the Details of a chat room
+	 *
 	 * GET
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @return
 	 */
 	Object getChatRoomDetail(String roomId);
 
 	/**
-	 * 聊天室成员添加[单个] <br>
+	 * Add a member to a chat room
+	 *
 	 * POST
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @param userName
-	 *            用户ID或用户名
+	 *            user to be added
 	 * @return
 	 */
 	Object addSingleUserToChatRoom(String roomId, String userName);
 
 	/**
-	 * 聊天室成员添加[批量] <br>
+	 * Add multiple members to a chat room
+	 *
 	 * POST
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @param payload
-	 *            用户ID或用户名，数组形式
+	 *            users to be added
 	 * @return
 	 * @see com.hyphenate.server.example.comm.body.UserNamesBody
 	 */
 	Object addBatchUsersToChatRoom(String roomId, Object payload);
 
 	/**
-	 * 聊天室成员删除[单个] <br>
+	 * Remove a member from a chat room
 	 * DELETE
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @param userName
-	 *            用户ID或用户名
+	 *            user to be removed
 	 * @return
 	 */
 	Object removeSingleUserFromChatRoom(String roomId, String userName);
 
 	/**
-	 * 聊天室成员删除[批量] <br>
+	 * Remove multiple members from a chat room
+	 *
 	 * DELETE
 	 * 
 	 * @param roomId
-	 *            聊天室标识
+	 *            chat room id
 	 * @param userNames
-	 *            用户ID或用户名，数组形式
+	 *            users to be removed
 	 * @return
 	 */
 	Object removeBatchUsersFromChatRoom(String roomId, String[] userNames);

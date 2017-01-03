@@ -3,21 +3,22 @@ package com.hyphenate.server.example.api;
 /**
  * This interface is created for RestAPI of Chat Messages, it should be
  * synchronized with the API list.
- * 
- * @author Eric23 2016-01-05
- * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:30chatlog
+ *
+ * @author Hyphenate
+ * @see http://docs.hyphenate.io
  */
 public interface ChatMessageAPI {
 	/**
-	 * 导出聊天记录，默认返回10条 <br>
+	 * Get Message History
+	 *
 	 * GET
 	 * 
 	 * @param limit
-	 *            单页条数，最多1000
+	 *            total number of messages per page by pagination at a time
 	 * @param cursor
-	 *            游标，存在更多页时产生
+	 *            Get messages by pagination. Obtained "cursor" from the previous GET messages call response.
 	 * @param query
-	 *            查询语句 <code>ql=select * where timestamp>1403164734226</code>
+	 *            query <code>ql=select * where timestamp>1403164734226</code>
 	 * @return
 	 */
 	Object exportChatMessages(Long limit, String cursor, String query);

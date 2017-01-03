@@ -3,92 +3,100 @@ package com.hyphenate.server.example.api;
 /**
  * This interface is created for RestAPI of User Integration, it should be
  * synchronized with the API list.
- * 
- * @author Eric23 2016-01-05
- * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:20users
+ *
+ * @author Hyphenate
+ * @see http://docs.hyphenate.io
  */
 public interface IMUserAPI {
 
 	/**
-	 * 注册IM用户[单个] <br>
+	 * Register a user IM account
+	 *
 	 * POST
 	 * 
 	 * @param payload
-	 *            <code>{"username":"${用户名}","password":"${密码}", "nickname":"${昵称值}"}</code>
+	 *            <code>{"username":"${username}","password":"${password}", "nickname":"${nickname}"}</code>
 	 * @return
 	 */
 	Object createNewIMUserSingle(Object payload);
 
 	/**
-	 * 注册IM用户[批量] <br>
+	 * Register multiple user IM accounts
+	 *
 	 * POST
 	 * 
 	 * @param payload
-	 *            <code>[{"username":"${用户名1}","password":"${密码}"},…,{"username":"${用户名2}","password":"${密码}"}]</code>
+	 *            <code>[{"username":"${username1}","password":"${password1}"},…,{"username":"${username2}","password":"${password2}"}]</code>
 	 * @return
 	 */
 	Object createNewIMUserBatch(Object payload);
 
 	/**
-	 * 获取IM用户[单个] <br>
+	 * Get user IM account
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+	 *            username or user ID
 	 * @return
 	 */
 	Object getIMUserByUserName(String userName);
 
 	/**
-	 * 获取IM用户[批量]，参数为空时默认返回最早创建的10个用户 <br>
+	 * Get multiple user IM accounts
+	 *
 	 * GET
 	 * 
 	 * @param limit
-	 *            单页获取数量
+	 *            number of user to get. Default 10.
 	 * @param cursor
-	 *            游标，大于单页记录时会产生
+	 *            pagination, index of page if exceeding one page
 	 * @return
 	 */
 	Object getIMUsersBatch(Long limit, String cursor);
 
 	/**
-	 * 删除IM用户[单个] <br>
+	 * Delete a User
+	 *
 	 * DELETE
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+	 *            username or user ID
 	 * @return
 	 */
 	Object deleteIMUserByUserName(String userName);
 
 	/**
-	 * 删除IM用户[批量]，随机删除 <br>
+	 * Delete user IM account(s)
+	 *
 	 * DELETE
 	 * 
 	 * @param limit
-	 *            删除数量，建议100-500
+	 *            Number of user to be deleted. Recommend delete 100-500 at a time
 	 * @return
 	 */
 	Object deleteIMUserBatch(Long limit, String cursor);
 
 	/**
-	 * 重置IM用户密码 <br>
+	 * Update user IM account password
+	 *
 	 * PUT
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @param payload
-	 *            <code>{"newpassword" : "${新密码指定的字符串}"}</code>
+	 *            <code>{"newpassword" : "${newPasswordCharacters}"}</code>
 	 * @return
 	 */
 	Object modifyIMUserPasswordWithAdminToken(String userName, Object payload);
 
 	/**
-	 * 修改用户昵称 <br>
+	 * Update user nickname
+	 *
 	 * PUT
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+	 *            username or user ID
 	 * @param payload
 	 *            <code>{"nickname" : "${昵称值}"}</code>
 	 * @return
@@ -96,156 +104,168 @@ public interface IMUserAPI {
 	Object modifyIMUserNickNameWithAdminToken(String userName, Object payload);
 
 	/**
-	 * 给IM用户的添加好友 <br>
+	 * Add contact for user <br>
 	 * POST
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            user initiated the action
 	 * @param friendName
-	 *            好友用戶名或用戶ID
+	 *            user to be added
 	 * @return
 	 */
 	Object addFriendSingle(String userName, String friendName);
 
 	/**
-	 * 解除IM用户的好友关系 <br>
+	 * Remove contact relationship
+	 *
 	 * DELETE
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            user initiated the action
 	 * @param friendName
-	 *            好友用戶名或用戶ID
+     *            user to be removed
 	 * @return
 	 */
 	Object deleteFriendSingle(String userName, String friendName);
 
 	/**
-	 * 查看某个IM用户的好友信息 <br>
+	 * Get user's contact list
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object getFriends(String userName);
 
 	/**
-	 * 获取IM用户的黑名单 <br>
+     * Get user's blacklist
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object getBlackList(String userName);
 
 	/**
-	 * 往IM用户的黑名单中加人 <br>
+	 * Block user(s)
+	 *
 	 * POST
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            user initiated the action
 	 * @param payload
-	 *            <code>{"usernames":["5cxhactgdj", "mh2kbjyop1"]}</code>
+     *            users to be blocked
+	 *            <code>{"usernames":["user1", "user2"]}</code>
 	 * @return
 	 */
 	Object addToBlackList(String userName, Object payload);
 
 	/**
-	 * 从IM用户的黑名单中减人 <br>
+	 * Unblock user
+	 *
 	 * DELETE
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            user initiated the action
 	 * @param blackListName
-	 *            黑名单用戶名或用戶ID
+     *            users to be unblocked
 	 * @return
 	 */
 	Object removeFromBlackList(String userName, String blackListName);
 
 	/**
-	 * 查看用户在线状态 <br>
+	 * Get user online status
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object getIMUserStatus(String userName);
 
 	/**
-	 * 查询离线消息数 <br>
+	 * Get offline message count of a user
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object getOfflineMsgCount(String userName);
 
 	/**
-	 * 查询某条离线消息状态 <br>
+	 * Get user offline message status
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @param msgId
-	 *            消息ID
+	 *            message ID
 	 * @return
 	 */
 	Object getSpecifiedOfflineMsgStatus(String userName, String msgId);
 
 	/**
-	 * 用户账号禁用 <br>
+	 * Deactivate user account
+	 *
 	 * POST
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object deactivateIMUser(String userName);
 
 	/**
-	 * 用户账号解禁 <br>
+	 * Activate User Account
+	 *
 	 * POST
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object activateIMUser(String userName);
 
 	/**
-	 * 强制用户下线 <br>
+	 * Logout User
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
 	 */
 	Object disconnectIMUser(String userName);
 
 	/**
-	 * 获取用户参与的群组 <br>
+	 * Get a List of Groups of User Joined
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
-	 * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:
-	 *      60groupmgmt
+	 * @see http://docs.hyphenate.io
 	 */
 	Object getIMUserAllChatGroups(String userName);
 
 	/**
-	 * 获取用户所有参与的聊天室 <br>
+	 * Get All the Chat Rooms of User Joined
+	 *
 	 * GET
 	 * 
 	 * @param userName
-	 *            用戶名或用戶ID
+     *            username or user ID
 	 * @return
-	 * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:
-	 *      70chatroommgmt
+	 * @see http://docs.hyphenate.io
 	 */
 	Object getIMUserAllChatRooms(String userName);
 }

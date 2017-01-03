@@ -5,31 +5,30 @@ package com.hyphenate.server.example.api;
  * be synchronized with the API list.
  * 
  * @author Eric23 2016-01-05
- * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:
- *      40fileoperation
+ * @see http://docs.hyphenate.io
  */
 public interface FileAPI {
 
 	/**
-	 * 上传文件 <br>
+	 * Upload file <br>
 	 * POST
 	 * 
 	 * @param file
-	 *            上传的文件对象，可以是地址、流等，以实现类为准
+	 *            file type. Ex, address, streaming, etc
 	 * @return
 	 */
 	Object uploadFile(Object file);
 
 	/**
-	 * 下载文件 <br>
+	 * Download file <br>
 	 * GET
 	 * 
 	 * @param fileUUID
-	 *            文件唯一标识，从上传Response-entities-uuid中获取
+	 *            file unique indicator. Obtain it from response parameter, Response-entities-uuid, after file uploaded
 	 * @param shareSecret
-	 *            文件访问秘钥，从上传Response-entities-share-secret中获取
+	 *            file access secret key. Obtain it from response parameter, Response-entities-share-secret, after file uploaded
 	 * @param isThumbnail
-	 *            ，如果下载图片，是否为缩略图
+	 *            if downloading image file
 	 * @return
 	 */
 	Object downloadFile(String fileUUID, String shareSecret, Boolean isThumbnail);
