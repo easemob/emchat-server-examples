@@ -2,12 +2,10 @@ package com.hyphenate.server.example.comm.invoker;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.utils.ResponseUtils;
 import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
 import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -17,24 +15,22 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 /**
@@ -79,7 +75,7 @@ public class HttpClientRestAPIInvokerTest {
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/user001";
+        String url = "https://api.hyphenate.io/hyphenate/demo/users/user001";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -106,7 +102,7 @@ public class HttpClientRestAPIInvokerTest {
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/u1";
+        String url = "https://api.hyphenate.io/hyphenate/demo/users/u1";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -136,7 +132,7 @@ public class HttpClientRestAPIInvokerTest {
     @Test
     public void testSendRequest_4() throws Exception {
         String method = "GET";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users";
+        String url = "https://api.hyphenate.io/hyphenate/demo/users";
         String token = "error";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -164,7 +160,7 @@ public class HttpClientRestAPIInvokerTest {
         EasyMock.expect(clientMock.execute(httpPostMock)).andReturn(responseMock);
         mocksControl.replay();
 
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles";
+        String url = "https://api.hyphenate.io/hyphenate/demo/chatfiles";
         HeaderWrapper headerWrapper = new HeaderWrapper();
         headerWrapper.addAuthorization("YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho");
         File file = new File("src/main/resources/audio/audio.mp3");
@@ -207,7 +203,7 @@ public class HttpClientRestAPIInvokerTest {
         mocksControl.replay();
 
         String uuid = "6b9dda80-a63a-11e6-95e3-751d965c5829";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles/" + uuid;
+        String url = "https://api.hyphenate.io/hyphenate/demo/chatfiles/" + uuid;
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization("YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho")
                 .addHeader("accept", "application/octet-stream")
@@ -231,7 +227,7 @@ public class HttpClientRestAPIInvokerTest {
         EasyMock.expect(clientMock.execute(httpGetMock)).andReturn(responseMock);
         mocksControl.replay();
         String uuid = "6b9dda80-a63a-11e6-95e3-751d965c5829";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles/" + uuid;
+        String url = "https://api.hyphenate.io/hyphenate/demo/chatfiles/" + uuid;
         ResponseWrapper responseWrapper = httpClient.downloadFile(url, null);
         assertEquals("200", responseWrapper.getResponseStatus().toString());
     }

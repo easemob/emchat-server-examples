@@ -73,3 +73,14 @@ If you're not using the tools listed above, you can manual manage the .jar packa
 
 That will create a zip file, hyphenate-server-example.zip, under the folder _build/distributions_, which includes all the dependency    
  
+
+## Configuration
+
+Update Hyphenate app properties in the file, `config.properties`.
+
+```java
+API_ORG = hyphenatedemo
+API_APP = demo
+APP_CLIENT_ID = YXA68E7DkM4uEeaPwTPbScypMA
+APP_CLIENT_SECRET = YXA63_RZdbtXQB9QZsizSCgMC70_4Rs
+```

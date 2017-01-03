@@ -10,235 +10,239 @@ import java.util.Properties;
 
 public class ClientContext {
 
-	/*
-	 * Configuration Source Type
-	 */
-	public static final String INIT_FROM_PROPERTIES = "FILE";
+    /*
+     * Configuration Source Type
+     */
+    public static final String INIT_FROM_PROPERTIES = "FILE";
 
-	public static final String INIT_FROM_CLASS = "CLASS";
+    public static final String INIT_FROM_CLASS = "CLASS";
 
-	/*
-	 * Implementation List
-	 */
-	public static final String JERSEY_API = "jersey";
+    /*
+     * Implementation List
+     */
+    public static final String JERSEY_API = "jersey";
 
-	public static final String HTTPCLIENT_API = "httpclient";
+    public static final String HTTPCLIENT_API = "httpclient";
 
-	/*
-	 * Properties
-	 */
-	private static final String API_PROTOCAL_KEY = "API_PROTOCAL";
+    /*
+     * Properties
+     */
+    private static final String API_PROTOCAL_KEY = "API_PROTOCAL";
 
-	private static final String API_HOST_KEY = "API_HOST";
+    private static final String API_HOST_KEY = "API_HOST";
 
-	private static final String API_ORG_KEY = "API_ORG";
+    private static final String API_ORG_KEY = "API_ORG";
 
-	private static final String API_APP_KEY = "API_APP";
+    private static final String API_APP_KEY = "API_APP";
 
-	private static final String APP_CLIENT_ID_KEY = "APP_CLIENT_ID";
+    private static final String APP_CLIENT_ID_KEY = "APP_CLIENT_ID";
 
-	private static final String APP_CLIENT_SECRET_KEY = "APP_CLIENT_SECRET";
+    private static final String APP_CLIENT_SECRET_KEY = "APP_CLIENT_SECRET";
 
-	private static final String APP_IMP_LIB_KEY = "APP_IMP_LIB";
+    private static final String APP_IMP_LIB_KEY = "APP_IMP_LIB";
 
-	private static final String CACERT_FILE_PATH_KEY = "CACERT_FILE_PATH";
+    private static final String CACERT_FILE_PATH_KEY = "CACERT_FILE_PATH";
 
-	private static final String CACERT_FILE_PASSWORD_KEY = "CACERT_FILE_PASSWORD";
+    private static final String CACERT_FILE_PASSWORD_KEY = "CACERT_FILE_PASSWORD";
 
 
+    private static final Logger log = LoggerFactory.getLogger(ClientContext.class);
 
-	private static final Logger log = LoggerFactory.getLogger(ClientContext.class);
+    private static ClientContext context;
 
-	private static ClientContext context;
+    private Boolean initialized = Boolean.FALSE;
 
-	private Boolean initialized = Boolean.FALSE;
+    private String protocal;
 
-	private String protocal;
+    private String host;
 
-	private String host;
+    private String impLib;
 
-	private String org;
+    private String cacertFilePath;
 
-	private String app;
+    private String cacertFilePassword;
 
-	private String clientId;
+    private HyphenateRestAPIFactory factory;
 
-	private String clientSecret;
+    private TokenGenerator token; // Wrap the token generator
 
-	private String impLib;
+    private String org;
 
-	private String cacertFilePath;
+    private String app;
 
-	private String cacertFilePassword;
+    private String clientId;
 
-	private HyphenateRestAPIFactory factory;
+    private String clientSecret;
 
-	private TokenGenerator token; // Wrap the token generator
+    private ClientContext() {
+    }
 
-	private ClientContext() {};
+    ;
 
-	public static ClientContext getInstance() {
-		if( null == context ) {
-			context = new ClientContext();
-		}
+    public static ClientContext getInstance() {
+        if (null == context) {
+            context = new ClientContext();
+        }
 
-		return context;
-	}
+        return context;
+    }
 
-	public ClientContext init(String type) {
-		if( initialized ) {
-			log.warn("Context has been initialized already, skipped!");
-			return context;
-		}
+    public ClientContext init(String type) {
+        if (initialized) {
+            log.warn("Context has been initialized already, skipped!");
+            return context;
+        }
 
-		if( StringUtils.isBlank(type) ) {
-			log.warn("Context initialization type was set to FILE by default.");
-			type = INIT_FROM_PROPERTIES;
-		}
+        if (StringUtils.isBlank(type)) {
+            log.warn("Context initialization type was set to FILE by default.");
+            type = INIT_FROM_PROPERTIES;
+        }
 
-		if( INIT_FROM_PROPERTIES.equalsIgnoreCase(type) ) {
-			initFromPropertiesFile();
-			initialized = Boolean.TRUE;
-		}
-		else if( INIT_FROM_CLASS.equalsIgnoreCase(type) ){
-			initFromStaticClass();
-			initialized = Boolean.TRUE;
-		}
-		else {
-			log.error(MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{type, "context initialization"}));
-			return context; // Context not initialized
-		}
+        if (INIT_FROM_PROPERTIES.equalsIgnoreCase(type)) {
+            initFromPropertiesFile();
+            initialized = Boolean.TRUE;
+        } else if (INIT_FROM_CLASS.equalsIgnoreCase(type)) {
+            initFromStaticClass();
+            initialized = Boolean.TRUE;
+        } else {
+            log.error(MessageTemplate.print(MessageTemplate.UNKNOWN_TYPE_MSG, new String[]{type, "context initialization"}));
+            return context; // Context not initialized
+        }
 
-		// Initialize the token generator by default
-		if( context.initialized ) {
-			token = new TokenGenerator(context);
-		}
+        // Initialize the token generator by default
+        if (context.initialized) {
+            token = new TokenGenerator(context);
+        }
 
-		return context;
-	}
+        return context;
+    }
 
-	public HyphenateRestAPIFactory getAPIFactory() {
-		if( !context.isInitialized() ) {
-			log.error(MessageTemplate.INVAILID_CONTEXT_MSG);
-			throw new RuntimeException(MessageTemplate.INVAILID_CONTEXT_MSG);
-		}
+    public HyphenateRestAPIFactory getAPIFactory() {
+        if (!context.isInitialized()) {
+            log.error(MessageTemplate.INVAILID_CONTEXT_MSG);
+            throw new RuntimeException(MessageTemplate.INVAILID_CONTEXT_MSG);
+        }
 
-		if( null == this.factory ) {
-			this.factory = HyphenateRestAPIFactory.getInstance(context);
-		}
+        if (null == this.factory) {
+            this.factory = HyphenateRestAPIFactory.getInstance(context);
+        }
 
-		return this.factory;
-	}
+        return this.factory;
+    }
 
-	public String getSeriveURL() {
-		if (null == context || !context.isInitialized()) {
-			log.error(MessageTemplate.INVAILID_CONTEXT_MSG);
-			throw new RuntimeException(MessageTemplate.INVAILID_CONTEXT_MSG);
-		}
+    public String getSeriveURL() {
+        if (null == context || !context.isInitialized()) {
+            log.error(MessageTemplate.INVAILID_CONTEXT_MSG);
+            throw new RuntimeException(MessageTemplate.INVAILID_CONTEXT_MSG);
+        }
 
-		String serviceURL = context.getProtocal() + "://" + context.getHost() + "/" + context.getOrg() + "/" + context.getApp();
+        String serviceURL = context.getProtocal() + "://" + context.getHost() + "/" + context.getOrg() + "/" + context.getApp();
 
-		return serviceURL;
-	}
+        return serviceURL;
+    }
 
-	public String getAuthToken() {
-		if( null == token ) {
-			log.error(MessageTemplate.INVAILID_TOKEN_MSG);
-			throw new RuntimeException(MessageTemplate.INVAILID_TOKEN_MSG);
-		}
+    public String getAuthToken() {
+        if (null == token) {
+            log.error(MessageTemplate.INVAILID_TOKEN_MSG);
+            throw new RuntimeException(MessageTemplate.INVAILID_TOKEN_MSG);
+        }
 
-		return token.request(Boolean.FALSE);
-	}
+        return token.request(Boolean.FALSE);
+    }
 
-	private void initFromPropertiesFile() {
-		Properties p = new Properties();
+    private void initFromPropertiesFile() {
+        Properties p = new Properties();
 
-		try {
-			InputStream inputStream = ClientContext.class.getClassLoader().getResourceAsStream("config.properties");
-			p.load(inputStream);
-		} catch (IOException e) {
-			log.error(MessageTemplate.print(MessageTemplate.FILE_ACCESS_MSG, new String[]{"config.properties"}));
-			return; // Context not initialized
-		}
+        try {
+            InputStream inputStream = ClientContext.class.getClassLoader().getResourceAsStream("config.properties");
+            p.load(inputStream);
+        } catch (IOException e) {
+            log.error(MessageTemplate.print(MessageTemplate.FILE_ACCESS_MSG, new String[]{"config.properties"}));
+            return; // Context not initialized
+        }
 
-		String protocal = p.getProperty(API_PROTOCAL_KEY);
-		String host = p.getProperty(API_HOST_KEY);
-		String org = p.getProperty(API_ORG_KEY);
-		String app = p.getProperty(API_APP_KEY);
-		String clientId = p.getProperty(APP_CLIENT_ID_KEY);
-		String clientSecret = p.getProperty(APP_CLIENT_SECRET_KEY);
-		String impLib = p.getProperty(APP_IMP_LIB_KEY);
-		String cacertFilePath = p.getProperty(CACERT_FILE_PATH_KEY);
-		String cacertFilePassword = p.getProperty(CACERT_FILE_PASSWORD_KEY);
+        String protocal = p.getProperty(API_PROTOCAL_KEY);
+        String host = p.getProperty(API_HOST_KEY);
+        String org = p.getProperty(API_ORG_KEY);
+        String app = p.getProperty(API_APP_KEY);
+        String clientId = p.getProperty(APP_CLIENT_ID_KEY);
+        String clientSecret = p.getProperty(APP_CLIENT_SECRET_KEY);
+        String impLib = p.getProperty(APP_IMP_LIB_KEY);
+        String cacertFilePath = p.getProperty(CACERT_FILE_PATH_KEY);
+        String cacertFilePassword = p.getProperty(CACERT_FILE_PASSWORD_KEY);
 
-		if( StringUtils.isBlank(protocal) || StringUtils.isBlank(host) || StringUtils.isBlank(org) || StringUtils.isBlank(app) || StringUtils.isBlank(clientId) || StringUtils.isBlank(clientSecret) || StringUtils.isBlank(impLib) ) {
-			log.error(MessageTemplate.print(MessageTemplate.INVAILID_PROPERTIES_MSG, new String[]{"config.properties"}));
-			return; // Context not initialized
-		}
+        if (StringUtils.isBlank(protocal) || StringUtils.isBlank(host) || StringUtils.isBlank(org) || StringUtils.isBlank(app) || StringUtils.isBlank(clientId) || StringUtils.isBlank(clientSecret) || StringUtils.isBlank(impLib)) {
+            log.error(MessageTemplate.print(MessageTemplate.INVAILID_PROPERTIES_MSG, new String[]{"config.properties"}));
+            return; // Context not initialized
+        }
 
-		context.protocal = protocal;
-		context.host = host;
-		context.org = org;
-		context.app = app;
-		context.clientId = clientId;
-		context.clientSecret = clientSecret;
-		context.impLib = impLib;
-		context.cacertFilePath = cacertFilePath;
-		context.cacertFilePassword = cacertFilePassword;
+        context.protocal = protocal;
+        context.host = host;
+        context.org = org;
+        context.app = app;
+        context.clientId = clientId;
+        context.clientSecret = clientSecret;
+        context.impLib = impLib;
+        context.cacertFilePath = cacertFilePath;
+        context.cacertFilePassword = cacertFilePassword;
 
-		log.debug("protocal: " + context.protocal);
-		log.debug("host: " + context.host);
-		log.debug("org: " + context.org);
-		log.debug("app: " + context.app);
-		log.debug("clientId: " + context.clientId);
-		log.debug("clientSecret: " + context.clientSecret);
-		log.debug("cacartFilePath: " + context.cacertFilePath);
-		log.debug("getCacertFilePassword: " + context.cacertFilePassword);
+        log.debug("protocal: " + context.protocal);
+        log.debug("host: " + context.host);
+        log.debug("org: " + context.org);
+        log.debug("app: " + context.app);
+        log.debug("clientId: " + context.clientId);
+        log.debug("clientSecret: " + context.clientSecret);
+        log.debug("cacartFilePath: " + context.cacertFilePath);
+        log.debug("getCacertFilePassword: " + context.cacertFilePassword);
 
-	}
+    }
 
-	private ClientContext initFromStaticClass() {
-		// TODO
-		return null;
-	}
+    private ClientContext initFromStaticClass() {
+        // TODO
+        return null;
+    }
 
-	public String getProtocal() {
-		return protocal;
-	}
+    public String getProtocal() {
+        return protocal;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public String getOrg() {
-		return org;
-	}
+    public String getOrg() {
+        return org;
+    }
 
-	public String getApp() {
-		return app;
-	}
+    public String getApp() {
+        return app;
+    }
 
-	public String getClientId() {
-		return clientId;
-	}
+    public String getClientId() {
+        return clientId;
+    }
 
-	public String getClientSecret() {
-		return clientSecret;
-	}
+    public String getClientSecret() {
+        return clientSecret;
+    }
 
-	public Boolean isInitialized() {
-		return initialized;
-	}
+    public Boolean isInitialized() {
+        return initialized;
+    }
 
-	public String getImpLib() {
-		return impLib;
-	}
+    public String getImpLib() {
+        return impLib;
+    }
 
-	public String getCacertFilePath() { return cacertFilePath; }
+    public String getCacertFilePath() {
+        return cacertFilePath;
+    }
 
-	public String getCacertFilePassword() { return cacertFilePassword; }
+    public String getCacertFilePassword() {
+        return cacertFilePassword;
+    }
 
-	public static void main(String[] args) {
-		ClientContext.getInstance().init(null);
-	}
+    public static void main(String[] args) {
+        ClientContext.getInstance().init(null);
+    }
 }

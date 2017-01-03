@@ -58,7 +58,7 @@ public class RestAPIUtilsTest {
         Boolean isSSL = true;
         String carcertFilePath = "src/main/resources/cacert/mykeystore.jks";
         String cacertFilePassword = "123456";
-        String url = "https://a1.hyphenate.com/status";
+        String url = "https://api.hyphenate.io/status";
         HttpClient client = RestAPIUtils.getHttpClient(isSSL, carcertFilePath, cacertFilePassword);
         URL target = new URL(url);
         HttpUriRequest request = new HttpGet(target.toURI());

@@ -67,7 +67,7 @@ public class JerseyRestAPIInvokerTest {
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/user001";
+        String url = "https://api.hyphenate.io/hyphenate/demo/users/user001";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
