@@ -1,9 +1,9 @@
-package com.easemob.server.example.comm.invoker;
+package com.hyphenate.server.example.comm.invoker;
 
-import com.easemob.server.example.comm.ClientContext;
-import com.easemob.server.example.comm.utils.ResponseUtils;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-import com.easemob.server.example.comm.wrapper.ResponseWrapper;
+import com.hyphenate.server.example.comm.ClientContext;
+import com.hyphenate.server.example.comm.utils.ResponseUtils;
+import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
+import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * JerseyRestAPIInvoker Tester.
  *
- * @author <Aily>
+ * @author <Hyphenate>
  * @version 1.0
  * @since <pre>2016.11</pre>
  */
@@ -60,14 +60,14 @@ public class JerseyRestAPIInvokerTest {
         StatusLine statusLineMock = mocksControl.createMock(StatusLine.class);
         EasyMock.expect(responseMock.getStatusLine()).andReturn(statusLineMock);
         EasyMock.expect(statusLineMock.getStatusCode()).andReturn(200);
-        FileInputStream fileInputStream = new FileInputStream("test/com/easemob/server/example/comm/invoker/mockdata/get user001");
+        FileInputStream fileInputStream = new FileInputStream("test/com/hyphenate/server/example/comm/invoker/mockdata/get user001");
         fileInputStream.close();
         EasyMock.expect(entityMock.getContent()).andReturn(fileInputStream);
         EasyMock.expect(clientMock.execute(requestMock)).andReturn(responseMock);
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users/user001";
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/user001";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);

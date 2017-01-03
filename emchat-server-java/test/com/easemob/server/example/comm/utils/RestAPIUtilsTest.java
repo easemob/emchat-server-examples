@@ -1,4 +1,4 @@
-package com.easemob.server.example.comm.utils;
+package com.hyphenate.server.example.comm.utils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * RestAPIUtils Tester.
  *
- * @author <Aily>
+ * @author <Hyphenate>
  * @version 1.0
  * @since <pre>2016.11</pre>
  */
@@ -58,7 +58,7 @@ public class RestAPIUtilsTest {
         Boolean isSSL = true;
         String carcertFilePath = "src/main/resources/cacert/mykeystore.jks";
         String cacertFilePassword = "123456";
-        String url = "https://a1.easemob.com/status";
+        String url = "https://a1.hyphenate.com/status";
         HttpClient client = RestAPIUtils.getHttpClient(isSSL, carcertFilePath, cacertFilePassword);
         URL target = new URL(url);
         HttpUriRequest request = new HttpGet(target.toURI());

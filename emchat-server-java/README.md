@@ -56,8 +56,8 @@ Run the following command and open the project from Intellij IDEA
 	
 ## Dependencies
 	
- - package com.easemob.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
- - package com.easemob.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
+ - package com.hyphenate.server.example.jersey is using Jersey 2.15. Java 7 or later is required.
+ - package com.hyphenate.server.example.httpclient is using Httpclient 4.3.3. Java 1.5 or later is required.
  
 ### Get all the dependencies
 
@@ -69,5 +69,5 @@ If you're not using the tools listed above, you can manual manage the .jar packa
 
     > gradlew.bat distZip
 
-That will create a zip file, easemob-server-example.zip, under the folder _build/distributions_, which includes all the dependency    
+That will create a zip file, hyphenate-server-example.zip, under the folder _build/distributions_, which includes all the dependency    
  

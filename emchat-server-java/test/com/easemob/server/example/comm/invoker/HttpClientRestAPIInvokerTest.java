@@ -1,9 +1,9 @@
-package com.easemob.server.example.comm.invoker;
+package com.hyphenate.server.example.comm.invoker;
 
-import com.easemob.server.example.comm.ClientContext;
-import com.easemob.server.example.comm.utils.ResponseUtils;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-import com.easemob.server.example.comm.wrapper.ResponseWrapper;
+import com.hyphenate.server.example.comm.ClientContext;
+import com.hyphenate.server.example.comm.utils.ResponseUtils;
+import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
+import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
 /**
  * HttpClientRestAPIInvoker Tester.
  *
- * @author <Aily>
+ * @author <Hyphenate>
  * @version 1.0
  * @since <pre>2016.11</pre>
  */
@@ -65,14 +65,14 @@ public class HttpClientRestAPIInvokerTest {
         StatusLine statusLineMock = mocksControl.createMock(StatusLine.class);
         EasyMock.expect(responseMock.getStatusLine()).andReturn(statusLineMock);
         EasyMock.expect(statusLineMock.getStatusCode()).andReturn(200);
-        FileInputStream fileInputStream = new FileInputStream("test/com/easemob/server/example/comm/invoker/mockdata/get user001");
+        FileInputStream fileInputStream = new FileInputStream("test/com/hyphenate/server/example/comm/invoker/mockdata/get user001");
         fileInputStream.close();
         EasyMock.expect(entityMock.getContent()).andReturn(fileInputStream);
         EasyMock.expect(clientMock.execute(requestMock)).andReturn(responseMock);
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users/user001";
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/user001";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -92,14 +92,14 @@ public class HttpClientRestAPIInvokerTest {
         StatusLine statusLineMock = mocksControl.createMock(StatusLine.class);
         EasyMock.expect(responseMock.getStatusLine()).andReturn(statusLineMock);
         EasyMock.expect(statusLineMock.getStatusCode()).andReturn(404);
-        FileInputStream fileInputStream = new FileInputStream("test/com/easemob/server/example/comm/invoker/mockdata/get u1");
+        FileInputStream fileInputStream = new FileInputStream("test/com/hyphenate/server/example/comm/invoker/mockdata/get u1");
         fileInputStream.close();
         EasyMock.expect(entityMock.getContent()).andReturn(fileInputStream);
         EasyMock.expect(clientMock.execute(requestMock)).andReturn(responseMock);
         mocksControl.replay();
 
         String method = "GET";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users/u1";
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users/u1";
         String token = "YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -129,7 +129,7 @@ public class HttpClientRestAPIInvokerTest {
     @Test
     public void testSendRequest_4() throws Exception {
         String method = "GET";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/users";
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/users";
         String token = "error";
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization(token);
@@ -151,13 +151,13 @@ public class HttpClientRestAPIInvokerTest {
         StatusLine statusLineMock = mocksControl.createMock(StatusLine.class);
         EasyMock.expect(responseMock.getStatusLine()).andReturn(statusLineMock);
         EasyMock.expect(statusLineMock.getStatusCode()).andReturn(404);
-        FileInputStream fileInputStream = new FileInputStream("test/com/easemob/server/example/comm/invoker/mockdata/upload file");
+        FileInputStream fileInputStream = new FileInputStream("test/com/hyphenate/server/example/comm/invoker/mockdata/upload file");
         fileInputStream.close();
         EasyMock.expect(entityMock.getContent()).andReturn(fileInputStream);
         EasyMock.expect(clientMock.execute(httpPostMock)).andReturn(responseMock);
         mocksControl.replay();
 
-        String url = "https://a1.easemob.com/1122161011178276/testapp/chatfiles";
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles";
         HeaderWrapper headerWrapper = new HeaderWrapper();
         headerWrapper.addAuthorization("YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho");
         File file = new File("src/main/resources/audio/audio.mp3");
@@ -200,7 +200,7 @@ public class HttpClientRestAPIInvokerTest {
         mocksControl.replay();
 
         String uuid = "6b9dda80-a63a-11e6-95e3-751d965c5829";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/chatfiles/" + uuid;
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles/" + uuid;
         HeaderWrapper header = new HeaderWrapper();
         header.addAuthorization("YWMtnIF_ZI-GEea1KgfxnnDmKAAAAVjnsTKe0OE4vMOBWCtOcrB-56YcrhOHMho")
                 .addHeader("accept", "application/octet-stream")
@@ -224,7 +224,7 @@ public class HttpClientRestAPIInvokerTest {
         EasyMock.expect(clientMock.execute(httpGetMock)).andReturn(responseMock);
         mocksControl.replay();
         String uuid = "6b9dda80-a63a-11e6-95e3-751d965c5829";
-        String url = "https://a1.easemob.com/1122161011178276/testapp/chatfiles/" + uuid;
+        String url = "https://a1.hyphenate.com/1122161011178276/testapp/chatfiles/" + uuid;
         ResponseWrapper responseWrapper = httpClient.downloadFile(url, null);
         assertEquals("200", responseWrapper.getResponseStatus().toString());
     }

@@ -1,7 +1,7 @@
 {
   "action": "get",
   "path": "/users",
-  "uri": "http://a1.easemob.com/1122161011178276/testapp/users/user001",
+  "uri": "http://api.hyphenate.io/1122161011178276/testapp/users/user001",
   "entities": [
     {
       "uuid": "25790d40-a4cd-11e6-aff1-f59dd101f539",

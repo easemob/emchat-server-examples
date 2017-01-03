@@ -2,7 +2,7 @@
   "action": "post",
   "application": "22bcffa0-8f86-11e6-9df8-516f6df68c6d",
   "path": "/chatfiles",
-  "uri": "https://a1.easemob.com/1122161011178276/testapp/chatfiles",
+  "uri": "https://api.hyphenate.io/1122161011178276/testapp/chatfiles",
   "entities": [
     {
       "uuid": "d510b290-a7fb-11e6-8cdb-b506d385961b",
