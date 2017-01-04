@@ -40,6 +40,10 @@ Run the following command, it'll generate necessary Eclipse files, then import v
 #### Unix or Mac
 
 	$ gradle idea
+	
+Use Maven to import module `examples.iml` when IntelliJ prompt during the initial project opening. 
+
+Or add the module manually by, File -> Project Structure (⌘;) -> Add (⌘N) -> Import Module -> select examples.iml file.
 
 #### Windows
 
@@ -75,6 +79,8 @@ That will create a zip file, hyphenate-server-example.zip, under the folder _bui
  
 
 ## Configuration
+
+### 
 
 Update Hyphenate app properties in the file, `config.properties`.
 
