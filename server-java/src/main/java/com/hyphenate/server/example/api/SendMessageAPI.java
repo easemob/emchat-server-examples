@@ -7,16 +7,15 @@ import com.hyphenate.server.example.comm.body.*;
  * synchronized with the API list.
  * 
  * @author Eric23 2016-01-05
- * @see http://docs.hyphenate.com/doku.php?id=start:100serverintegration:
- *      50messages
+ * @see http://docs.hyphenate.io
  */
 public interface SendMessageAPI {
 	/**
-	 * 发送消息 <br>
+	 * Send message
 	 * POST
 	 * 
 	 * @param payload
-	 *            消息体
+	 *            message body
 	 * @return
 	 * @see MessageBody
 	 * @see TextMessageBody
