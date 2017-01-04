@@ -4,11 +4,7 @@ import com.hyphenate.server.example.api.*;
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.HyphenateRestAPIFactory;
 import com.hyphenate.server.example.comm.body.IMUserBody;
-import com.hyphenate.server.example.comm.body.IMUsersBody;
 import com.hyphenate.server.example.comm.wrapper.BodyWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Main {
@@ -36,28 +32,27 @@ public class Main {
 //        }
 //        fos.close();
 
-
         // Create a IM user
 		BodyWrapper userBody = new IMUserBody("User001", "123456", "HelloWorld");
 		user.createUser(userBody);
 
-		// Create some IM users
-		List<IMUserBody> users = new ArrayList<IMUserBody>();
-		users.add(new IMUserBody("User002", "123456", null));
-		users.add(new IMUserBody("User003", "123456", null));
-		BodyWrapper usersBody = new IMUsersBody(users);
-		user.createUsers(usersBody);
+		// Create multiple IM users
+//		List<IMUserBody> users = new List<IMUserBody>();
+//		users.add(new IMUserBody("User002", "123456", null));
+//		users.add(new IMUserBody("User003", "123456", null));
+//		BodyWrapper usersBody = new IMUsersBody(users);
+//		user.createUsers(usersBody);
 
 		// Get a IM user
-		user.getUsersByUsername("User001");
+		Object users = user.getUsersByUsername("User001");
 
-		// Get a fake user
+		// Get a not-existing user
 		user.getUsersByUsername("FakeUser001");
 
-		// Get 12 users
+		// Get users with pagination
 		user.getUsersWithPagination(null, null);
 
-        // Get users
+        // Get users with pagination
         Object usersBatch = user.getUsersWithPagination(1L, "");
     }
 
