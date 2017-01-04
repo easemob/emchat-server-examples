@@ -3,10 +3,18 @@ package com.hyphenate.server.example;
 import com.hyphenate.server.example.api.*;
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.HyphenateRestAPIFactory;
+import com.hyphenate.server.example.comm.body.IMUserBody;
+import com.hyphenate.server.example.comm.body.IMUsersBody;
+import com.hyphenate.server.example.comm.wrapper.BodyWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
         HyphenateRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
 
         IMUserAPI user = (IMUserAPI) factory.newInstance(HyphenateRestAPIFactory.USER_CLASS);
@@ -30,27 +38,27 @@ public class Main {
 
 
         // Create a IM user
-//		BodyWrapper userBody = new IMUserBody("User102", "123456", "HelloWorld");
-//		user.createNewIMUserSingle(userBody);
-//
-//		// Create some IM users
-//		List<IMUserBody> users = new ArrayList<IMUserBody>();
-//		users.add(new IMUserBody("User002", "123456", null));
-//		users.add(new IMUserBody("User003", "123456", null));
-//		BodyWrapper usersBody = new IMUsersBody(users);
-//		user.createNewIMUserBatch(usersBody);
-//
-//		// Get a IM user
-//		user.getIMUsersByUserName("User001");
-//
-//		// Get a fake user
-//		user.getIMUsersByUserName("FakeUser001");
-//
-//		// Get 12 users
-//		user.getIMUsersBatch(null, null);
+		BodyWrapper userBody = new IMUserBody("User001", "123456", "HelloWorld");
+		user.createUser(userBody);
+
+		// Create some IM users
+		List<IMUserBody> users = new ArrayList<IMUserBody>();
+		users.add(new IMUserBody("User002", "123456", null));
+		users.add(new IMUserBody("User003", "123456", null));
+		BodyWrapper usersBody = new IMUsersBody(users);
+		user.createUsers(usersBody);
+
+		// Get a IM user
+		user.getUsersByUsername("User001");
+
+		// Get a fake user
+		user.getUsersByUsername("FakeUser001");
+
+		// Get 12 users
+		user.getUsersWithPagination(null, null);
 
         // Get users
-        user.getIMUsersBatch(1L, "");
+        Object usersBatch = user.getUsersWithPagination(1L, "");
     }
 
 }

@@ -9,264 +9,232 @@ package com.hyphenate.server.example.api;
  */
 public interface IMUserAPI {
 
-	/**
-	 * Register a user IM account
-	 *
-	 * POST
-	 * 
-	 * @param payload
-	 *            <code>{"username":"${username}","password":"${password}", "nickname":"${nickname}"}</code>
-	 * @return
-	 */
-	Object createNewIMUserSingle(Object payload);
+    /**
+     * Register a user IM account
+     * <p>
+     * POST
+     *
+     * @param payload <code>{"username":"${username}","password":"${password}", "nickname":"${nickname}"}</code>
+     * @return
+     */
+    Object createUser(Object payload);
 
-	/**
-	 * Register multiple user IM accounts
-	 *
-	 * POST
-	 * 
-	 * @param payload
-	 *            <code>[{"username":"${username1}","password":"${password1}"},…,{"username":"${username2}","password":"${password2}"}]</code>
-	 * @return
-	 */
-	Object createNewIMUserBatch(Object payload);
+    /**
+     * Register multiple user IM accounts
+     * <p>
+     * POST
+     *
+     * @param payload <code>[{"username":"${username1}","password":"${password1}"},…,{"username":"${username2}","password":"${password2}"}]</code>
+     * @return
+     */
+    Object createUsers(Object payload);
 
-	/**
-	 * Get a User
-	 *
-	 * GET
-	 * 
-	 * @param userName
-	 *            username or user ID
-	 * @return
-	 */
-	Object getIMUserByUserName(String userName);
+    /**
+     * Get a User
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getUsersByUsername(String username);
 
-	/**
-	 * Get multiple user IM accounts
-	 *
-	 * GET
-	 * 
-	 * @param limit
-	 *            number of user to get. Default 10.
-	 * @param cursor
-	 *            pagination, index of page if exceeding one page
-	 * @return
-	 */
-	Object getIMUsersBatch(Long limit, String cursor);
+    /**
+     * Get multiple user IM accounts
+     * <p>
+     * GET
+     *
+     * @param limit  number of user to get. Default 10.
+     * @param cursor pagination, index of page if exceeding one page
+     * @return
+     */
+    Object getUsersWithPagination(Long limit, String cursor);
 
-	/**
-	 * Delete a User
-	 *
-	 * DELETE
-	 * 
-	 * @param userName
-	 *            username or user ID
-	 * @return
-	 */
-	Object deleteIMUserByUserName(String userName);
+    /**
+     * Delete a User
+     * <p>
+     * DELETE
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object deleteUserByUsername(String username);
 
-	/**
-	 * Delete user IM account(s)
-	 *
-	 * DELETE
-	 * 
-	 * @param limit
-	 *            Number of user to be deleted. Recommend delete 100-500 at a time
-	 * @return
-	 */
-	Object deleteIMUserBatch(Long limit, String cursor);
+    /**
+     * Delete user IM account(s)
+     * <p>
+     * DELETE
+     *
+     * @param limit Number of user to be deleted. Recommend delete 100-500 at a time
+     * @return
+     */
+    Object deleteUsers(Long limit, String cursor);
 
-	/**
-	 * Reset User's Password
-	 *
-	 * PUT
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @param payload
-	 *            <code>{"newpassword" : "${newPasswordCharacters}"}</code>
-	 * @return
-	 */
-	Object modifyIMUserPasswordWithAdminToken(String userName, Object payload);
+    /**
+     * Reset User's Password
+     * <p>
+     * PUT
+     *
+     * @param username username or user ID
+     * @param payload  <code>{"newpassword" : "${newPasswordCharacters}"}</code>
+     * @return
+     */
+    Object updateUserPassword(String username, Object payload);
 
-	/**
-	 * Update User's APNs Display Name
-	 *
-	 * PUT
-	 * 
-	 * @param userName
-	 *            username or user ID
-	 * @param payload
-	 *            <code>{"nickname" : "${昵称值}"}</code>
-	 * @return
-	 */
-	Object modifyIMUserNickNameWithAdminToken(String userName, Object payload);
+    /**
+     * Update User's APNs Display Name
+     * <p>
+     * PUT
+     *
+     * @param username username or user ID
+     * @param payload  <code>{"nickname" : "${nickname}"}</code>
+     * @return
+     */
+    Object updateUserNickName(String username, Object payload);
 
-	/**
-	 * Add Contact for User
-	 *
-	 * POST
-	 * 
-	 * @param userName
-     *            user initiated the action
-	 * @param friendName
-	 *            user to be added
-	 * @return
-	 */
-	Object addFriendSingle(String userName, String friendName);
+    /**
+     * Add Contact for User
+     * <p>
+     * POST
+     *
+     * @param username   user initiated the action
+     * @param friendName user to be added
+     * @return
+     */
+    Object addContact(String username, String friendName);
 
-	/**
-	 * Remove Contact from User
-	 *
-	 * DELETE
-	 * 
-	 * @param userName
-     *            user initiated the action
-	 * @param friendName
-     *            user to be removed
-	 * @return
-	 */
-	Object deleteFriendSingle(String userName, String friendName);
+    /**
+     * Remove Contact from User
+     * <p>
+     * DELETE
+     *
+     * @param username   user initiated the action
+     * @param friendName user to be removed
+     * @return
+     */
+    Object deleteContact(String username, String friendName);
 
-	/**
-	 * Get a List of Contacts
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object getFriends(String userName);
+    /**
+     * Get a List of Contacts
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getContacts(String username);
 
-	/**
+    /**
      * Get a List of Blocked Users
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object getBlackList(String userName);
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getBlacklist(String username);
 
-	/**
-	 * Block User(s)
-	 *
-	 * POST
-	 * 
-	 * @param userName
-     *            user initiated the action
-	 * @param payload
-     *            users to be blocked
-	 *            <code>{"usernames":["user1", "user2"]}</code>
-	 * @return
-	 */
-	Object addToBlackList(String userName, Object payload);
+    /**
+     * Block User(s)
+     * <p>
+     * POST
+     *
+     * @param username user initiated the action
+     * @param payload  users to be blocked
+     *                 <code>{"usernames":["user1", "user2"]}</code>
+     * @return
+     */
+    Object blockUsers(String username, Object payload);
 
-	/**
-	 * Unblock User(s)
-	 *
-	 * DELETE
-	 * 
-	 * @param userName
-     *            user initiated the action
-	 * @param blackListName
-     *            users to be unblocked
-	 * @return
-	 */
-	Object removeFromBlackList(String userName, String blackListName);
+    /**
+     * Unblock User(s)
+     * <p>
+     * DELETE
+     *
+     * @param username    user initiated the action
+     * @param blacklistID users to be unblocked
+     * @return
+     */
+    Object unblockUsers(String username, String blacklistID);
 
-	/**
-	 * Get User Online Status
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object getIMUserStatus(String userName);
+    /**
+     * Get User Online Status
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getUserStatus(String username);
 
-	/**
-	 * Get Offline Message Count
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object getOfflineMsgCount(String userName);
+    /**
+     * Get Offline Message Count
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getUndeliveredMessageCountOfUser(String username);
 
-	/**
-	 * Get Offline Message Status
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @param msgId
-	 *            message ID
-	 * @return
-	 */
-	Object getSpecifiedOfflineMsgStatus(String userName, String msgId);
+    /**
+     * Get Offline Message Status
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @param msgId    message ID
+     * @return
+     */
+    Object getUndeliveredMessageStatusOfUser(String username, String msgId);
 
-	/**
-	 * Deactivate User Account
-	 *
-	 * POST
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object deactivateIMUser(String userName);
+    /**
+     * Deactivate User Account
+     * <p>
+     * POST
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object deactivateUser(String username);
 
-	/**
-	 * Activate User Account
-	 *
-	 * POST
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object activateIMUser(String userName);
+    /**
+     * Activate User Account
+     * <p>
+     * POST
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object activateUser(String username);
 
-	/**
-	 * Logout User
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 */
-	Object disconnectIMUser(String userName);
+    /**
+     * Logout User
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object logoutUser(String username);
 
-	/**
-	 * Get a List of Groups of User Joined
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 * @see http://docs.hyphenate.io
-	 */
-	Object getIMUserAllChatGroups(String userName);
+    /**
+     * Get a List of Groups of User Joined
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getGroupsOfUserJoined(String username);
 
-	/**
-	 * Get All the Chat Rooms of User Joined
-	 *
-	 * GET
-	 * 
-	 * @param userName
-     *            username or user ID
-	 * @return
-	 * @see http://docs.hyphenate.io
-	 */
-	Object getIMUserAllChatRooms(String userName);
+    /**
+     * Get All the Chat Rooms of User Joined
+     * <p>
+     * GET
+     *
+     * @param username username or user ID
+     * @return
+     */
+    Object getChatRoomsOfUserJoined(String username);
 }
