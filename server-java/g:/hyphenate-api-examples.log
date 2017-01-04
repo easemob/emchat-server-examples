@@ -1,0 +1,15 @@
+[framework] 2017-01-03 16:27:53,697 - com.hyphenate.server.example.comm.ClientContext -0    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - protocal: https
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - host: api.hyphenate.io
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - org: hyphenatedemo
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - app: demo
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - clientId: YXA68E7DkM4uEeaPwTPbScypMA
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - clientSecret: YXA63_RZdbtXQB9QZsizSCgMC70_4Rs
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - cacartFilePath: src/main/resources/cacert/mykeystore.jks
+[framework] 2017-01-03 16:27:53,699 - com.hyphenate.server.example.comm.ClientContext -2    [main] DEBUG com.hyphenate.server.example.comm.ClientContext  - getCacertFilePassword: 123456
+[framework] 2017-01-03 16:27:53,748 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -51   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - =============Request=============
+[framework] 2017-01-03 16:27:53,749 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -52   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - Method: POST
+[framework] 2017-01-03 16:27:53,749 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -52   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - URL: https://api.hyphenate.io/hyphenatedemo/demo/token
+[framework] 2017-01-03 16:27:53,749 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -52   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - Header: [Content-Type:application/json] 
+[framework] 2017-01-03 16:27:53,752 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -55   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - Body: {"grant_type":"client_credentials","client_id":"YXA68E7DkM4uEeaPwTPbScypMA","client_secret":"YXA63_RZdbtXQB9QZsizSCgMC70_4Rs"}
+[framework] 2017-01-03 16:27:53,752 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -55   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - Query: null
+[framework] 2017-01-03 16:27:53,753 - com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker -56   [main] DEBUG com.hyphenate.server.example.comm.invoker.HttpClientRestAPIInvoker  - ===========Request End===========
