@@ -64,7 +64,7 @@ public class ClientContext {
 
     private HyphenateRestAPIFactory factory;
 
-    private TokenGenerator token; // Wrap the token generator
+    private TokenGenerator tokenGenerator; // Wrap the token generator
 
     private String org;
 
@@ -111,7 +111,7 @@ public class ClientContext {
 
         // Initialize the token generator by default
         if (context.initialized) {
-            token = new TokenGenerator(context);
+            tokenGenerator = new TokenGenerator(context);
         }
 
         return context;
@@ -142,12 +142,12 @@ public class ClientContext {
     }
 
     public String getAuthToken() {
-        if (null == token) {
+        if (null == tokenGenerator) {
             log.error(MessageTemplate.INVAILID_TOKEN_MSG);
             throw new RuntimeException(MessageTemplate.INVAILID_TOKEN_MSG);
         }
 
-        return token.request(Boolean.FALSE);
+        return tokenGenerator.request(Boolean.FALSE);
     }
 
     private void initFromPropertiesFile() {
