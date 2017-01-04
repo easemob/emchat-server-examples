@@ -2,10 +2,12 @@ package com.hyphenate.server.example.comm.invoker;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.utils.ResponseUtils;
 import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
 import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -15,8 +17,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
+
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

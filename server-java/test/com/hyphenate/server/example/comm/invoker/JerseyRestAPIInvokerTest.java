@@ -1,10 +1,10 @@
 package com.hyphenate.server.example.comm.invoker;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hyphenate.server.example.comm.ClientContext;
 import com.hyphenate.server.example.comm.utils.ResponseUtils;
 import com.hyphenate.server.example.comm.wrapper.HeaderWrapper;
 import com.hyphenate.server.example.comm.wrapper.ResponseWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -48,7 +48,6 @@ public class JerseyRestAPIInvokerTest {
     @After
     public void after() throws Exception {
     }
-
 
     @Test
     public void testSendRequest_1() throws Exception {
