@@ -9,12 +9,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
         HyphenateRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
 
-		IMUserAPI user = (IMUserAPI)factory.newInstance(HyphenateRestAPIFactory.USER_CLASS);
-		ChatMessageAPI chat = (ChatMessageAPI)factory.newInstance(HyphenateRestAPIFactory.MESSAGE_CLASS);
-		FileAPI file = (FileAPI)factory.newInstance(HyphenateRestAPIFactory.FILE_CLASS);
-		SendMessageAPI message = (SendMessageAPI)factory.newInstance(HyphenateRestAPIFactory.SEND_MESSAGE_CLASS);
-		ChatGroupAPI chatgroup = (ChatGroupAPI)factory.newInstance(HyphenateRestAPIFactory.CHATGROUP_CLASS);
-		ChatRoomAPI chatroom = (ChatRoomAPI)factory.newInstance(HyphenateRestAPIFactory.CHATROOM_CLASS);
+        IMUserAPI user = (IMUserAPI) factory.newInstance(HyphenateRestAPIFactory.USER_CLASS);
+        ChatMessageAPI chat = (ChatMessageAPI) factory.newInstance(HyphenateRestAPIFactory.MESSAGE_CLASS);
+        FileAPI file = (FileAPI) factory.newInstance(HyphenateRestAPIFactory.FILE_CLASS);
+        SendMessageAPI message = (SendMessageAPI) factory.newInstance(HyphenateRestAPIFactory.SEND_MESSAGE_CLASS);
+        ChatGroupAPI chatgroup = (ChatGroupAPI) factory.newInstance(HyphenateRestAPIFactory.CHATGROUP_CLASS);
+        ChatRoomAPI chatroom = (ChatRoomAPI) factory.newInstance(HyphenateRestAPIFactory.CHATROOM_CLASS);
 
 //        ResponseWrapper fileResponse = (ResponseWrapper) file.uploadFile(new File("d:/01.jpg"));
 //        String uuid = ((ObjectNode) fileResponse.getResponseBody()).get("entities").get(0).get("uuid").asText();
@@ -29,7 +29,7 @@ public class Main {
 //        fos.close();
 
 
-		// Create a IM user
+        // Create a IM user
 //		BodyWrapper userBody = new IMUserBody("User102", "123456", "HelloWorld");
 //		user.createNewIMUserSingle(userBody);
 //
@@ -49,8 +49,8 @@ public class Main {
 //		// Get 12 users
 //		user.getIMUsersBatch(null, null);
 
-		// Get users
-        user.getIMUsersBatch(1L,"");
+        // Get users
+        user.getIMUsersBatch(1L, "");
     }
 
 }
