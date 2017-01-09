@@ -17,7 +17,7 @@ files = new Files();
 group = new Group();
 chatRoom = new ChatRoom();
 sendMessage = new SendMessage();
-var i = 52;
+var i = 15;
 switch (i) {
     case 10:    //Request an Authentication Token
         token.accessToken(function (data) {
@@ -46,7 +46,7 @@ switch (i) {
         user.getUsers(5);
         break;
     case 15:    //Delete a user
-        user.deleteUser('user100');
+        user.deleteUser('user001');
         break;
     case 16:    //Delete users in batch
         user.deleteUsers(2, '${cursor}');
@@ -271,6 +271,9 @@ switch (i) {
         break;
     case 64:    //Remove multiple member from chat room
         chatRoom.deleteChatRoomMembers('116707029891940804', 'user100,user101');
+        break;
+    case 65:
+        user.createUser('user001', '123456');
         break;
 }
 
