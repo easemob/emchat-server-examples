@@ -9,7 +9,7 @@ var ChatHistory = require('./hyphenate/chatHistory');
 var Files = require('./hyphenate/files');
 var Group = require('./hyphenate/group');
 var ChatRoom = require('./hyphenate/chatRoom');
-var SendMessage = require('./hyphenate/sendMessage');
+var Message = require('./hyphenate/message');
 
 token = new Token();
 user = new User();
@@ -17,10 +17,10 @@ chatHistory = new ChatHistory();
 files = new Files();
 group = new Group();
 chatRoom = new ChatRoom();
-sendMessage = new SendMessage();
+message = new Message();
 
 // pick a test
-var i = 33;
+var i = 12;
 
 console.log('======================================== test.js - Running test case ' + i + ' ========================================');
 
@@ -105,7 +105,7 @@ switch (i) {
         chatHistory.getChatMessages('${ql}', '${cursor}');
         break;
     case 32:    //Send text message
-        sendMessage.sendText({
+        message.sendText({
             type: 'users',
             target: ['user101'],
             content: 'this text is from admin',
@@ -114,7 +114,7 @@ switch (i) {
         });
         break;
     case 33:    //Send image message
-        sendMessage.sendImage({
+        message.sendImage({
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/61611e30-9b5c-11e6-b3d9-9d52b6f6416b',
@@ -125,7 +125,7 @@ switch (i) {
         });
         break;
     case 34:    //Send audio message
-        sendMessage.sendAudio({
+        message.sendAudio({
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/83419440-9b79-11e6-a408-01f417d892b0',
@@ -137,7 +137,7 @@ switch (i) {
         });
         break;
     case 35:    //Send video message
-        sendMessage.sendVideo({
+        message.sendVideo({
             type: 'users',
             target: ['user101', 'user102'],
             url: 'https://api.hyphenate.io/hyphenatedemo/demo/chatfiles/a4eaacd0-9b79-11e6-992f-b32958bd06ae',
@@ -152,7 +152,7 @@ switch (i) {
         });
         break;
     case 36:    //Send commend message
-        sendMessage.sendCmd({
+        message.sendCmd({
             type: 'users',
             target: ['user101', 'user102'],
             action: 'this action is from admin',

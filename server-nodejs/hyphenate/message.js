@@ -1,6 +1,7 @@
 var client = require('./../client');
 
-function SendMessage() {
+function Message() {
+
     //Send text message
     this.sendText = function (json) {
         var json = json || {};
@@ -20,7 +21,7 @@ function SendMessage() {
                 typeof json.callback == 'function' && json.callback(data);
             }
         });
-    }
+    };
 
     //Send image message
     this.sendImage = function (json) {
@@ -47,7 +48,7 @@ function SendMessage() {
                 typeof json.callback == 'function' && json.callback(data);
             }
         });
-    }
+    };
 
     //Send audio message
     this.sendAudio = function (json) {
@@ -68,7 +69,7 @@ function SendMessage() {
                 typeof json.callback == 'function' && json.callback(data);
             }
         });
-    }
+    };
 
     //Send video message
     this.sendVideo = function (json) {
@@ -98,7 +99,7 @@ function SendMessage() {
                 typeof json.callback == 'function' && json.callback(data);
             }
         });
-    }
+    };
 
     //Send commend message
     this.sendCmd = function (json) {
@@ -119,6 +120,6 @@ function SendMessage() {
                 typeof json.callback == 'function' && json.callback(data);
             }
         });
-    }
+    };
 }
-module.exports = SendMessage;
+module.exports = Message;

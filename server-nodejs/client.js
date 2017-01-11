@@ -1,46 +1,12 @@
 var Token = require('./hyphenate/token');
-var request = require('./request');
+var config = require('./resources/config');
+var request = require('request');
+var fs = require('fs');
+const util = require('util');
 
-/*function Client() {
- var Initialized = false;
- var token = new Token();
-
- this.requestWithToken = function (json, callback) {
- if (!Initialized || token.isExpire()) {
- token.accessToken(function () {
- Initialized = true;
- this.request(json);
- });
-
- } else {
- this.request(json);
- }
-
- }
-
- this.request = function (json) {
- if (token == null) {
- console.log('err: failed to access token!')
- } else {
- json.headers = json.headers || {};
- json.headers['Content-Type'] = 'application/json';
- json.headers['Authorization'] = 'Bearer ' + token.getToken();
- request.httpRequest(json);
- }
- }
- /!*    this.uploadFile_request = function (json) {
- if (token == null) {
- console.log('err: failed to access token!')
- } else {
- json.headers = json.headers || {};
- json.headers['http'] = 'multipart/form-data';
- json.headers['Authorization'] = 'Bearer ' + token.getToken();
- request.uploadFile(json);
- }
- }*!/
- }*/
-
-//exports.getClient = new Client();
+var ORG_NAME = config.org_name;
+var APP_NAME = config.app_name;
+const HyphenateFullURL =  'https://' + config.host + '/' + ORG_NAME + '/' + APP_NAME;
 
 var Initialized = false;
 var token = new Token();
@@ -51,35 +17,23 @@ function client(json, callback) {
             Initialized = true;
             if (typeof callback == 'function') {
                 callback(json);
-            }else {
-                httpRequestWithToken(json);
+            } else {
+                sendRequestWithToken(json);
             }
         });
 
     } else {
         if (typeof callback == 'function') {
             callback(json);
-        }else {
-            httpRequestWithToken(json);
+        } else {
+            sendRequestWithToken(json);
         }
-    }
-
-}
-
-function httpRequestWithToken(json) {
-    if (token == null) {
-        console.log('err: failed to access token!')
-    } else {
-        json.headers = json.headers || {};
-        json.headers['Content-Type'] = 'application/json';
-        json.headers['Authorization'] = 'Bearer ' + token.getToken();
-        request.httpRequest(json);
     }
 }
 
 function uploadFileWithToken(json) {
     if (token == null) {
-        console.log('err: failed to access token!')
+        console.log('error: failed to access token!')
     } else {
         json.headers = json.headers || {};
         json.headers['http'] = 'multipart/form-data';
@@ -88,9 +42,67 @@ function uploadFileWithToken(json) {
     }
 }
 
+function sendRequestWithToken(options, callback) {
+    if (token == null) {
+        console.log('error: failed to access token!')
+    } else {
+        options.headers = options.headers || {};
+        options.headers['Authorization'] = 'Bearer ' + token.getToken();
+        sendRequest(options, function(error, response, body) {
+            if (!error && callback) callback(error, response, body);
+            else if (callback) callback(error);
+        });
+    }
+}
+
+function sendRequest(options, callback) {
+
+    var ca = fs.readFileSync(config.ca, 'utf-8');
+
+    options.headers['Content-Type'] = 'application/json';
+    options.headers['Accept'] = 'application/json';
+    var headers = JSON.stringify(options.headers);
+
+    var data = JSON.stringify(options.data);
+
+    var body = JSON.stringify(options.body);
+
+    var fullOptions = {
+        url: HyphenateFullURL + '/' + options.path,
+        method: options.method,
+        body: body,
+        headers: headers,
+        data: data
+        // ca: [ca],
+        // agent: false
+    };
+
+    // options.query = {};
+    // //connect with query parameters
+    // if (json.query != null) {
+    //     options.path += '?';
+    //     for (var key in json.query) {
+    //         if (json.query[key] != null) {
+    //             options.path += key + '=' + json.query[key] + '&';
+    //         }
+    //     }
+    //     options.path = options.path.substring(0, options.path.length - 1);
+    // }
+
+    console.log('Debugger: options: ' + util.inspect(fullOptions, false, null));
+
+    request(fullOptions, function (error, response, body) {
+
+        console.log('Debugger: new function requestBase. body: ' + util.inspect(body, false, null));
+        // console.log('Debugger: new function requestBase. statusCode: ' + util.inspect(response.statusCode, false, null));
+
+        if (callback) callback(error, response, body);
+    });
+}
+
 module.exports = {
     client: client,
-    httpRequestWithToken: httpRequestWithToken,
-    uploadFileWithToken: uploadFileWithToken
-
-}
+    uploadFileWithToken: uploadFileWithToken,
+    sendRequest: sendRequest,
+    sendRequestWithToken: sendRequestWithToken
+};

@@ -1,5 +1,6 @@
 var https = require('https');
 var config = require('./resources/config');
+const util = require('util');
 var fs = require('fs');
 var fetch = require('node-fetch');
 
@@ -39,6 +40,8 @@ exports.httpRequest = function (json) {
     }
     
     //send request
+    console.log('httpRequest: ' + util.inspect(options, false, null));
+
     var req = https.request(options, function (res) {
         var chunks = '';
         var size = 0;

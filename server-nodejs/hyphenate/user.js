@@ -3,9 +3,9 @@ function User() {
 
     //Create a user
     this.createUser = function (username, password, callback) {
-        var data = {username: username, password: password};
+        var body = {username: username, password: password};
         client.client({
-            data: data,
+            body: body,
             path: 'users',
             method: 'POST',
             headers: {},
@@ -20,7 +20,7 @@ function User() {
     //Create multiple users
     this.createUsers = function (users, callback) {
         client.client({
-            data: users,
+            body: users,
             path: 'users',
             method: 'POST',
             headers:{},

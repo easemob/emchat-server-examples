@@ -7,5 +7,6 @@ var config = {
     client_secret: 'YXA63_RZdbtXQB9QZsizSCgMC70_4Rs',
     host: 'api.hyphenate.io',
     ca: 'resources/cacert/cacert.pem'
-}
+};
+
 module.exports = config;
