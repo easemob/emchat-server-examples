@@ -56,7 +56,25 @@ windows下运行
 unix-like下运行
 
     ./gradlew clean compile
-    
+
+### 生成证书库
+
+##### step 1. 下载证书文件
+打开浏览器，输入网址https://a1.easemob.com/status ，点击网址框左侧的锁形状，点击`详细信息`->`View certificate`->`复制到文件`，直到导出证书文件。
+
+##### step 2. 使用keytool工具创建证书库
+
+    Keytool –genkey –alias "certificate" –keyalg "RSA" –keystore "test.keystore"
+
+alias：证书名称
+
+keyalg：生成证书采用的算法，如RSA
+
+keystore：证书库名称
+
+##### step 3. 将证书导入到证书库中
+    Keytool –import –keystore test.keystore –file C:\Users\EaseMob\Desktop\certificate.cer
+
 ### Notes：
  - 1. package com.easemob.server.example.jersey下采用Jersey2.15实现, 需要java7或更高版本支持;
  - 2. package com.easemob.server.example.httpclient下采用Httpclient4.3.3实现，需要Java1.5或更高版本支持.
