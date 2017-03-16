@@ -1,11 +1,8 @@
 package io.swagger.client.util;
-
-import com.sun.java.browser.plugin2.DOM;
 import io.swagger.client.ApiException;
 import io.swagger.client.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.TimeUnit;
 
 /**
