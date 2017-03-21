@@ -280,5 +280,8 @@ switch (i) {
     case 64:    //Remove multiple member from chat room
         chatRoom.deleteChatRoomMembers('116707029891940804', 'user100,user101');
         break;
+    case 65:
+        user.createUser('user001', '123456');
+        break;
 }
 
