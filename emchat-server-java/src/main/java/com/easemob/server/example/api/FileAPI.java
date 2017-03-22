@@ -5,8 +5,7 @@ package com.easemob.server.example.api;
  * be synchronized with the API list.
  * 
  * @author Eric23 2016-01-05
- * @see http://docs.easemob.com/doku.php?id=start:100serverintegration:
- *      40fileoperation
+ * @see http://docs.easemob.com/
  */
 public interface FileAPI {
 
