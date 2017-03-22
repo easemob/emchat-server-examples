@@ -1,6 +1,7 @@
 package com.easemob;
 
 import com.easemob.server.example.api.impl.EasemobIMUsers;
+import io.swagger.client.model.NewPassword;
 import io.swagger.client.model.RegisterUsers;
 import io.swagger.client.model.User;
 import org.junit.Assert;
@@ -27,12 +28,35 @@ public class TestUser {
         users.add(user);
         users.add(user1);
         Object result = easemobIMUsers.createNewIMUserSingle(users);
-        System.out.println(result);
+        logger.info(result.toString());
         Assert.assertNotNull(result);
     }
 
     @Test
-    public void aaa(){
+    public void getUserByName(){
+        String userName = "stringa";
+        Object result = easemobIMUsers.getIMUserByUserName(userName);
+        logger.info(result.toString());
+    }
 
+    @Test
+    public void gerUsers(){
+        Object result = easemobIMUsers.getIMUsersBatch(5L,null);
+        logger.info(result.toString());
+    }
+
+    @Test
+    public void changePassword(){
+        String userName = "stringa";
+        NewPassword psd = new NewPassword().newpassword("123");
+        Object result = easemobIMUsers.modifyIMUserPasswordWithAdminToken(userName,psd);
+        logger.info(result.toString());
+    }
+
+    @Test
+    public void getFriend(){
+        String userName =  "stringa";
+        Object result = easemobIMUsers.getFriends(userName);
+        logger.info(result.toString());
     }
 }

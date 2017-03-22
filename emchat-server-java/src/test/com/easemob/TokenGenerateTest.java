@@ -15,7 +15,6 @@ public class TestTokenGenerate {
     @Test
     public void testTokenGet() throws ApiException {
         System.out.println(easemobAuthToken.getAuthToken());
-        //aaa = easemobAuthToken.getAuthToken();
         Assert.assertNotNull(easemobAuthToken.getAuthToken());
     }
 }
