@@ -1,31 +1,35 @@
 package com.easemob.server.example.api.impl;
 
-import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.FileAPI;
-import com.easemob.server.example.comm.helper.HeaderHelper;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-
+import com.easemob.server.example.comm.EasemobAPI;
+import com.easemob.server.example.comm.OrgInfo;
+import com.easemob.server.example.comm.ResponseHandler;
+import com.easemob.server.example.comm.TokenUtil;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.UploadAndDownloadFilesApi;
 import java.io.File;
 
-public class EasemobFile extends EasemobRestAPI implements FileAPI {
-    private static final String ROOT_URI = "/chatfiles";
+
+public class EasemobFile implements FileAPI {
+    private ResponseHandler responseHandler = new ResponseHandler();
+    private UploadAndDownloadFilesApi api = new UploadAndDownloadFilesApi();
+    @Override
+    public Object uploadFile(final Object file) {
+        return responseHandler.handle(new EasemobAPI() {
+            @Override
+            public Object invokeEasemobAPI() throws ApiException {
+                return api.orgNameAppNameChatfilesPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),(File)file,true);
+             }
+        });
+    }
 
     @Override
-    public String getResourceRootURI() {
-        return ROOT_URI;
-    }
-
-    public Object uploadFile(Object file) {
-        String url = getContext().getSeriveURL() + getResourceRootURI();
-        HeaderWrapper header = HeaderHelper.getUploadHeaderWithToken();
-
-        return getInvoker().uploadFile(url, header, (File) file);
-    }
-
-    public Object downloadFile(String fileUUID, String shareSecret, Boolean isThumbnail) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + fileUUID;
-        HeaderWrapper header = HeaderHelper.getDownloadHeaderWithToken(shareSecret, isThumbnail);
-
-        return getInvoker().downloadFile(url, header);
+    public Object downloadFile(final String fileUUID,final  String shareSecret,final Boolean isThumbnail) {
+        return responseHandler.handle(new EasemobAPI() {
+            @Override
+            public Object invokeEasemobAPI() throws ApiException {
+               return api.orgNameAppNameChatfilesUuidGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),fileUUID,shareSecret,isThumbnail);
+            }
+        });
     }
 }

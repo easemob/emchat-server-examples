@@ -1,26 +1,26 @@
 package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.ChatMessageAPI;
-import com.easemob.server.example.api.EasemobRestAPI;
-import com.easemob.server.example.comm.constant.HTTPMethod;
-import com.easemob.server.example.comm.helper.HeaderHelper;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-import com.easemob.server.example.comm.wrapper.QueryWrapper;
+import com.easemob.server.example.comm.OrgInfo;
+import com.easemob.server.example.comm.ResponseHandler;
+import com.easemob.server.example.comm.EasemobAPI;
+import com.easemob.server.example.comm.TokenUtil;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.ChatHistoryApi;
 
-public class EasemobChatMessage extends EasemobRestAPI implements ChatMessageAPI {
 
-    private static final String ROOT_URI = "/chatmessages";
+public class EasemobChatMessage  implements ChatMessageAPI {
 
-    public Object exportChatMessages(Long limit, String cursor, String query) {
-        String url = getContext().getSeriveURL() + getResourceRootURI();
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        QueryWrapper queryWrapper = QueryWrapper.newInstance().addLimit(limit).addCursor(cursor).addQueryLang(query);
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, queryWrapper);
-    }
+    private ResponseHandler responseHandler = new ResponseHandler();
+    private ChatHistoryApi api = new ChatHistoryApi();
 
     @Override
-    public String getResourceRootURI() {
-        return ROOT_URI;
+    public Object exportChatMessages(final Long limit,final String cursor,final String query) {
+        return responseHandler.handle(new EasemobAPI() {
+            @Override
+            public Object invokeEasemobAPI() throws ApiException {
+                return api.orgNameAppNameChatmessagesGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),query,limit+"",cursor);
+            }
+        });
     }
 }

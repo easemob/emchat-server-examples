@@ -1,25 +1,24 @@
 package com.easemob.server.example.api.impl;
 
-import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.SendMessageAPI;
-import com.easemob.server.example.comm.wrapper.BodyWrapper;
-import com.easemob.server.example.comm.constant.HTTPMethod;
-import com.easemob.server.example.comm.helper.HeaderHelper;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
+import com.easemob.server.example.comm.OrgInfo;
+import com.easemob.server.example.comm.ResponseHandler;
+import com.easemob.server.example.comm.EasemobAPI;
+import com.easemob.server.example.comm.TokenUtil;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.MessagesApi;
+import io.swagger.client.model.Msg;
 
-public class EasemobSendMessage extends EasemobRestAPI implements SendMessageAPI {
-    private static final String ROOT_URI = "/messages";
-
+public class EasemobSendMessage implements SendMessageAPI {
+    private ResponseHandler responseHandler = new ResponseHandler();
+    private MessagesApi api = new MessagesApi();
     @Override
-    public String getResourceRootURI() {
-        return ROOT_URI;
-    }
-
-    public Object sendMessage(Object payload) {
-        String  url = getContext().getSeriveURL() + getResourceRootURI();
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        BodyWrapper body = (BodyWrapper) payload;
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
+    public Object sendMessage(final Object payload) {
+        return responseHandler.handle(new EasemobAPI() {
+            @Override
+            public Object invokeEasemobAPI() throws ApiException {
+                return api.orgNameAppNameMessagesPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(), (Msg) payload);
+            }
+        });
     }
 }
