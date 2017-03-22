@@ -14,9 +14,9 @@ import java.util.Random;
 /**
  * Created by easemob on 2017/3/21.
  */
-public class TestUser {
+public class UserTest {
 
-    Logger logger = LoggerFactory.getLogger(TestUser.class);
+    Logger logger = LoggerFactory.getLogger(UserTest.class);
     private EasemobIMUsers easemobIMUsers = new EasemobIMUsers();
 
 

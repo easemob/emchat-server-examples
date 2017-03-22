@@ -18,6 +18,13 @@ public class FileTest {
         Object result = easemobFile.uploadFile(file);
         System.out.println(result);
         Assert.assertNotNull(result);
-
+    }
+    @Test
+    public void downloadFile(){
+        String uuid = "5deca060-0ea9-11e7-959e-0d3820191bac";
+        String shareSecret = "Xeygag6pEee72lV9uA9IoegLjgqfAy-ZBNQ68U0YmSwOsk8t";
+        Boolean thumbnail = true;
+        File result = (File)easemobFile.downloadFile(uuid, shareSecret, thumbnail);
+        System.out.println(result);
     }
 }

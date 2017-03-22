@@ -1,7 +1,7 @@
 package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.FileAPI;
-import com.easemob.server.example.comm.Action;
+import com.easemob.server.example.comm.MyHttpRequest;
 import com.easemob.server.example.comm.DoMethod;
 import com.easemob.server.example.comm.TokenUtil;
 import io.swagger.client.ApiException;
@@ -14,15 +14,21 @@ public class EasemobFile implements FileAPI {
     private UploadAndDownloadFilesApi api = new UploadAndDownloadFilesApi();
     @Override
     public Object uploadFile(final Object file) {
-        return doMethod.doAction(new Action() {
+        return doMethod.sendHttpRequest(new MyHttpRequest() {
             @Override
-            public String send(String authorization) throws ApiException {
+            public Object doHttpRequest(String authorization) throws ApiException {
                 return api.orgNameAppNameChatfilesPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,(File)file,true);
-        }},TokenUtil.getAccessToken());
+             }
+        },TokenUtil.getAccessToken());
     }
 
     @Override
-    public Object downloadFile(String fileUUID, String shareSecret, Boolean isThumbnail) {
-        return null;
+    public Object downloadFile(final String fileUUID,final  String shareSecret,final Boolean isThumbnail) {
+        return doMethod.sendHttpRequest(new MyHttpRequest() {
+            @Override
+            public Object doHttpRequest(String authorization) throws ApiException {
+               return api.orgNameAppNameChatfilesUuidGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,fileUUID,shareSecret,isThumbnail);
+            }
+        },TokenUtil.getAccessToken());
     }
 }

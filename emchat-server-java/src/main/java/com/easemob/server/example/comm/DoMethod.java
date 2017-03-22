@@ -12,17 +12,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class DoMethod {
     private Logger logger = LoggerFactory.getLogger(DoMethod.class);
-    public String doAction(Action action, String authorization)  {
-       String result = null;
+    public Object sendHttpRequest(MyHttpRequest myHttpRequest, String authorization)  {
+       Object result = null;
         try {
-            result =  action.doHttpRequest(authorization);
+            result =  myHttpRequest.doHttpRequest(authorization);
         } catch (ApiException e) {
             if(e.getCode()==401){
                 logger.info("The current token is invalid, re-generating token for you and calling it again");
                 TokenUtil.initTokenByProp();
                 authorization = TokenUtil.getAccessToken();
                 try {
-                    result = action.doHttpRequest(authorization);
+                    result = myHttpRequest.doHttpRequest(authorization);
                 } catch (ApiException e1) {
                   logger.error(e1.getMessage());
                 }
@@ -38,7 +38,7 @@ public class DoMethod {
                     try {
                         TimeUnit.SECONDS.sleep(time);
                         logger.info("Reconnection is in progress..."+i);
-                        result = action.doHttpRequest(authorization);
+                        result = myHttpRequest.doHttpRequest(authorization);
                         if(result!=null){
                            return result;
                         }
@@ -54,6 +54,7 @@ public class DoMethod {
             }
             Gson gson = new Gson();
             Map<String,String> map = gson.fromJson(e.getResponseBody(), Map.class);
+            logger.error(e.getCode()+":"+e.getMessage());
             logger.error(map.get("error"));
         }
         return result;

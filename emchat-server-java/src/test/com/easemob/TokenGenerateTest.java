@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Created by easemob on 2017/3/21.
  */
-public class TestTokenGenerate {
+public class TokenGenerateTest {
     private EasemobAuthToken easemobAuthToken = new EasemobAuthToken();
 
     @Test
