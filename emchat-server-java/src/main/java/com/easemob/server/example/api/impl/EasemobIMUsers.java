@@ -1,185 +1,239 @@
 package com.easemob.server.example.api.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.IMUserAPI;
-import com.easemob.server.example.comm.wrapper.BodyWrapper;
-import com.easemob.server.example.comm.constant.HTTPMethod;
-import com.easemob.server.example.comm.helper.HeaderHelper;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-import com.easemob.server.example.comm.wrapper.QueryWrapper;
+import com.easemob.server.example.comm.MyHttpRequest;
+import com.easemob.server.example.comm.DoMethod;
+import com.easemob.server.example.comm.TokenUtil;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.UsersApi;
+import io.swagger.client.model.NewPassword;
+import io.swagger.client.model.Nickname;
+import io.swagger.client.model.RegisterUsers;
+import io.swagger.client.model.UserNames;
 
-public class EasemobIMUsers extends EasemobRestAPI implements IMUserAPI {
 
-	private static final Logger log = LoggerFactory.getLogger(EasemobIMUsers.class);
-	
-	private static final String ROOT_URI = "/users";
+public class EasemobIMUsers  implements IMUserAPI {
 
-	public Object createNewIMUserSingle(Object payload) {
-		String url = getContext().getSeriveURL() + getResourceRootURI();
-		BodyWrapper body = (BodyWrapper) payload;
-		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
-	}
-
-	public Object createNewIMUserBatch(Object payload) {
-		String url = getContext().getSeriveURL() + getResourceRootURI();
-		BodyWrapper body = (BodyWrapper) payload;
-		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
-	}
-
-	public Object getIMUserByUserName(String userName) {
-		String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName;
-		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getIMUsersBatch(Long limit, String cursor) {
-		String url = getContext().getSeriveURL() + getResourceRootURI();
-		HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-		QueryWrapper query = QueryWrapper.newInstance().addLimit(limit).addCursor(cursor);
-		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, query);
-	}
-
-	public Object deleteIMUserByUserName(String userName) {
-		String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-		return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, null);
-	}
-
-	public Object deleteIMUserBatch(Long limit, String cursor) {
-		String url = getContext().getSeriveURL() + getResourceRootURI();
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        QueryWrapper query = QueryWrapper.newInstance().addLimit(limit).addCursor(cursor);
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, query);
-	}
-
-	public Object modifyIMUserPasswordWithAdminToken(String userName, Object payload) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/password";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        BodyWrapper body = (BodyWrapper) payload;
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_PUT, url, header, body, null);
-	}
-
-	public Object modifyIMUserNickNameWithAdminToken(String userName, Object payload) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        BodyWrapper body = (BodyWrapper) payload;
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_PUT, url, header, body, null);
-	}
-
-	public Object addFriendSingle(String userName, String friendName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/contacts/users/" + friendName;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, null, null);
-	}
-
-	public Object deleteFriendSingle(String userName, String friendName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/contacts/users/" + friendName;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, null);
-	}
-
-	public Object getFriends(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/contacts/users";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getBlackList(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/blocks/users";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object addToBlackList(String userName, Object payload) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/blocks/users";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-        BodyWrapper body = (BodyWrapper) payload;
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
-	}
-
-	public Object removeFromBlackList(String userName, String blackListName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/blocks/users/" + blackListName;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_DELETE, url, header, null, null);
-	}
-
-	public Object getIMUserStatus(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/status";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getOfflineMsgCount(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/offline_msg_count";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getSpecifiedOfflineMsgStatus(String userName, String msgId) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/offline_msg_status/" + msgId;
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object deactivateIMUser(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/deactivate";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, null, null);
-	}
-
-	public Object activateIMUser(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/activate";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, null, null);
-	}
-
-	public Object disconnectIMUser(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/disconnect";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getIMUserAllChatGroups(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/joined_chatgroups";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
-	}
-
-	public Object getIMUserAllChatRooms(String userName) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + userName + "/joined_chatrooms";
-        HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
-
-        return getInvoker().sendRequest(HTTPMethod.METHOD_GET, url, header, null, null);
+	private UsersApi api = new UsersApi();
+	private DoMethod doMethod = new DoMethod();
+	@Override
+	public Object createNewIMUserSingle(final Object payload) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME, (RegisterUsers) payload,authorization);
+			}
+		},TokenUtil.getAccessToken());
 	}
 
 	@Override
-	public String getResourceRootURI() {
-		return ROOT_URI;
+	public Object createNewIMUserBatch(final Object payload) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME, (RegisterUsers) payload,authorization);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getIMUserByUserName(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+		}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getIMUsersBatch(final Long limit,final String cursor) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,limit+"",cursor);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object deleteIMUserByUserName(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object deleteIMUserBatch(final Long limit,final String cursor) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,limit+"",cursor);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object modifyIMUserPasswordWithAdminToken(final String userName, final Object payload) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernamePasswordPut(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,userName, (NewPassword) payload,authorization);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object modifyIMUserNickNameWithAdminToken(final String userName,final Object payload) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernamePut(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,userName, (Nickname) payload,authorization);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object addFriendSingle(final String userName,final String friendName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName,friendName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object deleteFriendSingle(final String userName,final String friendName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName,friendName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getFriends(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getBlackList(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object addToBlackList(final String userName,final Object payload) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName, (UserNames) payload);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object removeFromBlackList(final String userName,final String blackListName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName,blackListName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getIMUserStatus(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameStatusGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getOfflineMsgCount(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getSpecifiedOfflineMsgStatus(final String userName,final String msgId) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName,msgId);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object deactivateIMUser(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameDeactivatePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object activateIMUser(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameActivatePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object disconnectIMUser(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameDisconnectGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getIMUserAllChatGroups(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
+	}
+
+	@Override
+	public Object getIMUserAllChatRooms(final String userName) {
+		return doMethod.sendHttpRequest(new MyHttpRequest() {
+			@Override
+			public Object doHttpRequest(String authorization) throws ApiException {
+				return api.orgNameAppNameUsersUsernameJoinedChatroomsGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,userName);
+			}
+		},TokenUtil.getAccessToken());
 	}
 }

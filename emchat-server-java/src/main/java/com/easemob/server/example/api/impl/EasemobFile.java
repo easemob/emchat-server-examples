@@ -1,31 +1,34 @@
 package com.easemob.server.example.api.impl;
 
-import com.easemob.server.example.api.EasemobRestAPI;
 import com.easemob.server.example.api.FileAPI;
-import com.easemob.server.example.comm.helper.HeaderHelper;
-import com.easemob.server.example.comm.wrapper.HeaderWrapper;
-
+import com.easemob.server.example.comm.MyHttpRequest;
+import com.easemob.server.example.comm.DoMethod;
+import com.easemob.server.example.comm.TokenUtil;
+import io.swagger.client.ApiException;
+import io.swagger.client.api.UploadAndDownloadFilesApi;
 import java.io.File;
 
-public class EasemobFile extends EasemobRestAPI implements FileAPI {
-    private static final String ROOT_URI = "/chatfiles";
+
+public class EasemobFile implements FileAPI {
+    private DoMethod doMethod = new DoMethod();
+    private UploadAndDownloadFilesApi api = new UploadAndDownloadFilesApi();
+    @Override
+    public Object uploadFile(final Object file) {
+        return doMethod.sendHttpRequest(new MyHttpRequest() {
+            @Override
+            public Object doHttpRequest(String authorization) throws ApiException {
+                return api.orgNameAppNameChatfilesPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,(File)file,true);
+             }
+        },TokenUtil.getAccessToken());
+    }
 
     @Override
-    public String getResourceRootURI() {
-        return ROOT_URI;
-    }
-
-    public Object uploadFile(Object file) {
-        String url = getContext().getSeriveURL() + getResourceRootURI();
-        HeaderWrapper header = HeaderHelper.getUploadHeaderWithToken();
-
-        return getInvoker().uploadFile(url, header, (File) file);
-    }
-
-    public Object downloadFile(String fileUUID, String shareSecret, Boolean isThumbnail) {
-        String url = getContext().getSeriveURL() + getResourceRootURI() + "/" + fileUUID;
-        HeaderWrapper header = HeaderHelper.getDownloadHeaderWithToken(shareSecret, isThumbnail);
-
-        return getInvoker().downloadFile(url, header);
+    public Object downloadFile(final String fileUUID,final  String shareSecret,final Boolean isThumbnail) {
+        return doMethod.sendHttpRequest(new MyHttpRequest() {
+            @Override
+            public Object doHttpRequest(String authorization) throws ApiException {
+               return api.orgNameAppNameChatfilesUuidGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,authorization,fileUUID,shareSecret,isThumbnail);
+            }
+        },TokenUtil.getAccessToken());
     }
 }
