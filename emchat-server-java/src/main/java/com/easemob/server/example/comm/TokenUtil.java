@@ -28,7 +28,7 @@ public  class TokenUtil {
     private static Double EXPIREDAT = -1D;
     private static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
     /**
-     * 初始化Token放到内存
+     * get token from server
      * @throws ApiException
      */
     public static void initTokenByProp() {
@@ -58,7 +58,7 @@ public  class TokenUtil {
     }
 
     /**
-     * 得到内存中封装好的Token
+     * get Token from memory
      * @return
      * @throws ApiException
      */
