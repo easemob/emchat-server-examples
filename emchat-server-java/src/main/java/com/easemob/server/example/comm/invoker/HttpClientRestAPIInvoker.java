@@ -170,7 +170,11 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
             httppost.setEntity(MultipartEntityBuilder.create().addBinaryBody("file", file, ContentType.APPLICATION_OCTET_STREAM, file.getName()).build());
 
             response = client.execute(httppost);
+            responseWrapper = readResponse(responseWrapper, response, false);
 
+            log.debug("=============Response=============");
+            log.debug(responseWrapper.toString());
+            log.debug("===========Response End===========");
         } catch (Exception e) {
             responseWrapper.addError(e.getMessage());
             return responseWrapper;
@@ -182,12 +186,6 @@ public class HttpClientRestAPIInvoker implements RestAPIInvoker {
                 log.error(e.getMessage());
             }
         }
-
-        responseWrapper = readResponse(responseWrapper, response, false);
-
-        log.debug("=============Response=============");
-        log.debug(responseWrapper.toString());
-        log.debug("===========Response End===========");
         return responseWrapper;
     }
 
