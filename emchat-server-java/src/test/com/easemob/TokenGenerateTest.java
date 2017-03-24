@@ -11,7 +11,6 @@ import org.junit.Test;
  */
 public class TokenGenerateTest {
     private EasemobAuthToken easemobAuthToken = new EasemobAuthToken();
-
     @Test
     public void testTokenGet() throws ApiException {
         System.out.println(easemobAuthToken.getAuthToken());

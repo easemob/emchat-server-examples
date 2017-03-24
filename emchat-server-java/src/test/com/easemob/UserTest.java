@@ -19,7 +19,6 @@ public class UserTest {
     Logger logger = LoggerFactory.getLogger(UserTest.class);
     private EasemobIMUsers easemobIMUsers = new EasemobIMUsers();
 
-
     @Test
     public void createUser(){
         RegisterUsers users = new RegisterUsers();

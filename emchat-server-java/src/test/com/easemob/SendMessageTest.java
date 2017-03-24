@@ -11,7 +11,6 @@ import org.junit.Test;
  */
 public class SendMessageTest {
     private EasemobSendMessage easemobSendMessage = new EasemobSendMessage();
-
     @Test
     public void send(){
         Msg msg = new Msg();

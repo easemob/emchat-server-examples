@@ -24,20 +24,19 @@ public  class TokenUtil {
     private static String CLIENT_SECRET;
     private static Token BODY;
     private static AuthenticationApi API = new AuthenticationApi();
-    private static String ACESS_TOKEN;
+    private static String ACCESS_TOKEN;
     private static Double EXPIREDAT = -1D;
     private static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
     /**
      * get token from server
-     * @throws ApiException
      */
-    public static void initTokenByProp() {
+    static{
         InputStream inputStream = TokenUtil.class.getClassLoader().getResourceAsStream("config.properties");
         Properties prop = new Properties();
         try {
             prop.load(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         ORG_NAME = prop.getProperty("ORG_NAME");
         APP_NAME = prop.getProperty("APP_NAME");
@@ -45,6 +44,8 @@ public  class TokenUtil {
         CLIENT_ID = prop.getProperty("CLIENT_ID");
         CLIENT_SECRET = prop.getProperty("CLIENT_SECRET");
         BODY = new Token().clientId(CLIENT_ID).grantType(GRANT_TYPE).clientSecret(CLIENT_SECRET);
+    }
+    public static void initTokenByProp() {
         String resp = null;
         try {
             resp = API.orgNameAppNameTokenPost(ORG_NAME, APP_NAME,BODY);
@@ -53,20 +54,19 @@ public  class TokenUtil {
         }
         Gson gson = new Gson();
         Map map = gson.fromJson(resp, Map.class);
-        ACESS_TOKEN = " Bearer "+map.get("access_token");
+        ACCESS_TOKEN = " Bearer "+map.get("access_token");
         EXPIREDAT = System.currentTimeMillis() + (Double)map.get("expires_in");
     }
 
     /**
      * get Token from memory
      * @return
-     * @throws ApiException
      */
     public static String getAccessToken(){
-        if(ACESS_TOKEN==null || isExpired()){
+        if(ACCESS_TOKEN==null || isExpired()){
                 initTokenByProp();
         }
-        return ACESS_TOKEN;
+        return ACCESS_TOKEN;
     }
     private static Boolean isExpired() {
         return System.currentTimeMillis() > EXPIREDAT;

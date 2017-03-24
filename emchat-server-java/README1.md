@@ -165,9 +165,9 @@ Class | Method | HTTP request | Description
  - [UserNames](docs/UserNames.md)
 
 
-## Documentation for Authorization
+## Documentation for TokenUtil.getAccessToken
 
-All endpoints do not require authorization.
+All endpoints do not require TokenUtil.getAccessToken.
 Authentication schemes defined for the API:
 
 ## Recommendation
