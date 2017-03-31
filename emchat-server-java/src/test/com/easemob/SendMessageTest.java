@@ -11,10 +11,11 @@ import org.junit.Test;
  */
 public class SendMessageTest {
     private EasemobSendMessage easemobSendMessage = new EasemobSendMessage();
+
     @Test
-    public void send(){
+    public void send() {
         Msg msg = new Msg();
-        MsgContent msgContent =  new MsgContent();
+        MsgContent msgContent = new MsgContent();
         msgContent.type(MsgContent.TypeEnum.TXT).msg("helloword");
         UserName userName = new UserName();
         userName.add("qwqwqww");

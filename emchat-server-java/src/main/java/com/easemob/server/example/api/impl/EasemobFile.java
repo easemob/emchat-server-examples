@@ -2,6 +2,7 @@ package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.FileAPI;
 import com.easemob.server.example.comm.EasemobAPI;
+import com.easemob.server.example.comm.OrgInfo;
 import com.easemob.server.example.comm.ResponseHandle;
 import com.easemob.server.example.comm.TokenUtil;
 import io.swagger.client.ApiException;
@@ -17,7 +18,7 @@ public class EasemobFile implements FileAPI {
         return responseHandle.handle(new EasemobAPI() {
             @Override
             public Object easemobAPIInvoker() throws ApiException {
-                return api.orgNameAppNameChatfilesPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),(File)file,true);
+                return api.orgNameAppNameChatfilesPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),(File)file,true);
              }
         });
     }
@@ -27,7 +28,7 @@ public class EasemobFile implements FileAPI {
         return responseHandle.handle(new EasemobAPI() {
             @Override
             public Object easemobAPIInvoker() throws ApiException {
-               return api.orgNameAppNameChatfilesUuidGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),fileUUID,shareSecret,isThumbnail);
+               return api.orgNameAppNameChatfilesUuidGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),fileUUID,shareSecret,isThumbnail);
             }
         });
     }

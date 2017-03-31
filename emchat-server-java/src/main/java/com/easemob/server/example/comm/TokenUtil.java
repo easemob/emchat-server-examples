@@ -15,10 +15,7 @@ import java.util.Properties;
 /**
  * Created by easemob on 2017/3/14.
  */
-public  class TokenUtil {
-
-    public static String ORG_NAME;
-    public static String APP_NAME;
+public class TokenUtil {
     public static String GRANT_TYPE;
     private static String CLIENT_ID;
     private static String CLIENT_SECRET;
@@ -27,10 +24,11 @@ public  class TokenUtil {
     private static String ACCESS_TOKEN;
     private static Double EXPIREDAT = -1D;
     private static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
+
     /**
      * get token from server
      */
-    static{
+    static {
         InputStream inputStream = TokenUtil.class.getClassLoader().getResourceAsStream("config.properties");
         Properties prop = new Properties();
         try {
@@ -38,41 +36,40 @@ public  class TokenUtil {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-        ORG_NAME = prop.getProperty("ORG_NAME");
-        APP_NAME = prop.getProperty("APP_NAME");
         GRANT_TYPE = prop.getProperty("GRANT_TYPE");
         CLIENT_ID = prop.getProperty("CLIENT_ID");
         CLIENT_SECRET = prop.getProperty("CLIENT_SECRET");
         BODY = new Token().clientId(CLIENT_ID).grantType(GRANT_TYPE).clientSecret(CLIENT_SECRET);
     }
+
     public static void initTokenByProp() {
         String resp = null;
         try {
-            resp = API.orgNameAppNameTokenPost(ORG_NAME, APP_NAME,BODY);
+            resp = API.orgNameAppNameTokenPost(OrgInfo.ORG_NAME, OrgInfo.APP_NAME, BODY);
         } catch (ApiException e) {
             logger.error(e.getMessage());
         }
         Gson gson = new Gson();
         Map map = gson.fromJson(resp, Map.class);
-        ACCESS_TOKEN = " Bearer "+map.get("access_token");
-        EXPIREDAT = System.currentTimeMillis() + (Double)map.get("expires_in");
+        ACCESS_TOKEN = " Bearer " + map.get("access_token");
+        EXPIREDAT = System.currentTimeMillis() + (Double) map.get("expires_in");
     }
 
     /**
      * get Token from memory
+     *
      * @return
      */
-    public static String getAccessToken(){
-        if(ACCESS_TOKEN==null || isExpired()){
-                initTokenByProp();
+    public static String getAccessToken() {
+        if (ACCESS_TOKEN == null || isExpired()) {
+            initTokenByProp();
         }
         return ACCESS_TOKEN;
     }
+
     private static Boolean isExpired() {
         return System.currentTimeMillis() > EXPIREDAT;
     }
-
-
 
 }
 

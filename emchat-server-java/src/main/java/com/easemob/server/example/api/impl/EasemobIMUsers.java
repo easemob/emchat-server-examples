@@ -3,6 +3,7 @@ package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.IMUserAPI;
 import com.easemob.server.example.comm.EasemobAPI;
+import com.easemob.server.example.comm.OrgInfo;
 import com.easemob.server.example.comm.ResponseHandle;
 import com.easemob.server.example.comm.TokenUtil;
 import io.swagger.client.ApiException;
@@ -22,7 +23,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME, (RegisterUsers) payload,TokenUtil.getAccessToken());
+				return api.orgNameAppNameUsersPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME, (RegisterUsers) payload,TokenUtil.getAccessToken());
 			}
 		});
 	}
@@ -32,7 +33,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME, (RegisterUsers) payload,TokenUtil.getAccessToken());
+				return api.orgNameAppNameUsersPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME, (RegisterUsers) payload,TokenUtil.getAccessToken());
 			}
 		});
 	}
@@ -42,7 +43,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 		}
 		});
 	}
@@ -52,7 +53,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),limit+"",cursor);
+				return api.orgNameAppNameUsersGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),limit+"",cursor);
 			}
 		});
 	}
@@ -62,7 +63,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameDelete(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -72,7 +73,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),limit+"",cursor);
+				return api.orgNameAppNameUsersDelete(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),limit+"",cursor);
 			}
 		});
 	}
@@ -82,7 +83,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernamePasswordPut(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,userName, (NewPassword) payload,TokenUtil.getAccessToken());
+				return api.orgNameAppNameUsersUsernamePasswordPut(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,userName, (NewPassword) payload,TokenUtil.getAccessToken());
 			}
 		});
 	}
@@ -92,7 +93,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernamePut(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,userName, (Nickname) payload,TokenUtil.getAccessToken());
+				return api.orgNameAppNameUsersUsernamePut(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,userName, (Nickname) payload,TokenUtil.getAccessToken());
 			}
 		});
 	}
@@ -102,7 +103,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName,friendName);
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName,friendName);
 			}
 		});
 	}
@@ -112,7 +113,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName,friendName);
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName,friendName);
 			}
 		});
 	}
@@ -122,7 +123,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -132,7 +133,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -142,7 +143,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName, (UserNames) payload);
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName, (UserNames) payload);
 			}
 		});
 	}
@@ -152,7 +153,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName,blackListName);
+				return api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName,blackListName);
 			}
 		});
 	}
@@ -162,7 +163,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameStatusGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameStatusGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -172,7 +173,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -182,7 +183,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName,msgId);
+				return api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName,msgId);
 			}
 		});
 	}
@@ -192,7 +193,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameDeactivatePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameDeactivatePost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -202,7 +203,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameActivatePost(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameActivatePost(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -212,7 +213,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameDisconnectGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameDisconnectGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -222,7 +223,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}
@@ -232,7 +233,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandle.handle(new EasemobAPI() {
 			@Override
 			public Object easemobAPIInvoker() throws ApiException {
-				return api.orgNameAppNameUsersUsernameJoinedChatroomsGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),userName);
+				return api.orgNameAppNameUsersUsernameJoinedChatroomsGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),userName);
 			}
 		});
 	}

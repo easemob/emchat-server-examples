@@ -18,7 +18,7 @@ public class ChatRoomTest {
     private Logger logger = LoggerFactory.getLogger(ChatRoomTest.class);
 
     @Test
-    public void createChatRoom(){
+    public void createChatRoom() {
         Chatroom chatroom = new Chatroom();
         chatroom.name("myChatRoom").description("test chatroom").maxusers(200).owner("stringa");
         Object result = easemobChatRoom.createChatRoom(chatroom);
@@ -26,39 +26,39 @@ public class ChatRoomTest {
     }
 
     @Test
-    public void changeChatRoomInfo(){
+    public void changeChatRoomInfo() {
         String roomId = "11368499576837";
         ModifyChatroom chatroom = new ModifyChatroom();
         chatroom.name("changeRoom").description("test changeromm info").maxusers(100);
-        Object result = easemobChatRoom.modifyChatRoom(roomId,chatroom);
+        Object result = easemobChatRoom.modifyChatRoom(roomId, chatroom);
         logger.info(result.toString());
     }
 
     @Test
-    public void getAllRoom(){
+    public void getAllRoom() {
         Object result = easemobChatRoom.getAllChatRooms();
         logger.info(result.toString());
     }
 
     @Test
-    public void addUsersToRoom(){
+    public void addUsersToRoom() {
         String roomId = "11368499576837";
         UserNames userNames = new UserNames();
         UserName userList = new UserName();
         userList.add("qwqwqw");
         userList.add("qwqwqww");
         userNames.usernames(userList);
-        Object result = easemobChatRoom.addBatchUsersToChatRoom(roomId,userNames);
+        Object result = easemobChatRoom.addBatchUsersToChatRoom(roomId, userNames);
         logger.info(result.toString());
     }
 
     @Test
-    public void deleteUsersFromRoom(){
+    public void deleteUsersFromRoom() {
         String roomId = "11368499576837";
         String[] userIds = new String[2];
         userIds[0] = "qwqwqw";
         userIds[1] = "qwqwqww";
-        Object result = easemobChatRoom.removeBatchUsersFromChatRoom(roomId,userIds);
+        Object result = easemobChatRoom.removeBatchUsersFromChatRoom(roomId, userIds);
         logger.info(result.toString());
     }
 

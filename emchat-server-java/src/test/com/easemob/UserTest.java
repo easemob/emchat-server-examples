@@ -20,10 +20,10 @@ public class UserTest {
     private EasemobIMUsers easemobIMUsers = new EasemobIMUsers();
 
     @Test
-    public void createUser(){
+    public void createUser() {
         RegisterUsers users = new RegisterUsers();
-        User user = new User().username("aaaa123456"+new Random().nextInt(500)).password("123456");
-        User user1 = new User().username("aaa123456"+new Random().nextInt(500)).password("123456");
+        User user = new User().username("aaaa123456" + new Random().nextInt(500)).password("123456");
+        User user1 = new User().username("aaa123456" + new Random().nextInt(500)).password("123456");
         users.add(user);
         users.add(user1);
         Object result = easemobIMUsers.createNewIMUserSingle(users);
@@ -32,29 +32,29 @@ public class UserTest {
     }
 
     @Test
-    public void getUserByName(){
+    public void getUserByName() {
         String userName = "stringa";
         Object result = easemobIMUsers.getIMUserByUserName(userName);
         logger.info(result.toString());
     }
 
     @Test
-    public void gerUsers(){
-        Object result = easemobIMUsers.getIMUsersBatch(5L,null);
+    public void gerUsers() {
+        Object result = easemobIMUsers.getIMUsersBatch(5L, null);
         logger.info(result.toString());
     }
 
     @Test
-    public void changePassword(){
+    public void changePassword() {
         String userName = "stringa";
         NewPassword psd = new NewPassword().newpassword("123");
-        Object result = easemobIMUsers.modifyIMUserPasswordWithAdminToken(userName,psd);
+        Object result = easemobIMUsers.modifyIMUserPasswordWithAdminToken(userName, psd);
         logger.info(result.toString());
     }
 
     @Test
-    public void getFriend(){
-        String userName =  "stringa";
+    public void getFriend() {
+        String userName = "stringa";
         Object result = easemobIMUsers.getFriends(userName);
         logger.info(result.toString());
     }

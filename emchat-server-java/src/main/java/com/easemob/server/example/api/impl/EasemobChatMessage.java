@@ -1,6 +1,7 @@
 package com.easemob.server.example.api.impl;
 
 import com.easemob.server.example.api.ChatMessageAPI;
+import com.easemob.server.example.comm.OrgInfo;
 import com.easemob.server.example.comm.ResponseHandle;
 import com.easemob.server.example.comm.EasemobAPI;
 import com.easemob.server.example.comm.TokenUtil;
@@ -18,7 +19,7 @@ public class EasemobChatMessage  implements ChatMessageAPI {
         return responseHandle.handle(new EasemobAPI() {
             @Override
             public Object easemobAPIInvoker() throws ApiException {
-                return api.orgNameAppNameChatmessagesGet(TokenUtil.ORG_NAME,TokenUtil.APP_NAME,TokenUtil.getAccessToken(),query,limit+"",cursor);
+                return api.orgNameAppNameChatmessagesGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),query,limit+"",cursor);
             }
         });
     }
