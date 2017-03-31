@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class ChatRoomTest {
 
     private EasemobChatRoom easemobChatRoom = new EasemobChatRoom();
-    private Logger logger = LoggerFactory.getLogger(ChatRoomTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatRoomTest.class);
 
     @Test
     public void createChatRoom() {

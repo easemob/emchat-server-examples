@@ -23,7 +23,7 @@ public class TokenUtil {
     private static AuthenticationApi API = new AuthenticationApi();
     private static String ACCESS_TOKEN;
     private static Double EXPIREDAT = -1D;
-    private static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenUtil.class);
 
     /**
      * get token from server

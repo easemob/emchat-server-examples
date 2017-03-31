@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class UserTest {
 
-    Logger logger = LoggerFactory.getLogger(UserTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserTest.class);
     private EasemobIMUsers easemobIMUsers = new EasemobIMUsers();
 
     @Test

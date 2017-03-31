@@ -14,7 +14,7 @@ public class OrgInfo {
 
     public static String ORG_NAME;
     public static String APP_NAME;
-    public static Logger logger = LoggerFactory.getLogger(OrgInfo.class);
+    public static final Logger logger = LoggerFactory.getLogger(OrgInfo.class);
 
     static {
         InputStream inputStream = OrgInfo.class.getClassLoader().getResourceAsStream("config.properties");

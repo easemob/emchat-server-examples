@@ -11,19 +11,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by easemob on 2017/3/16.
  */
-public class ResponseHandle {
-    private Logger logger = LoggerFactory.getLogger(ResponseHandle.class);
+public class ResponseHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
     public Object handle(EasemobAPI easemobAPI) {
         Object result = null;
         try {
-            result = easemobAPI.easemobAPIInvoker();
+            result = easemobAPI.invokeEasemobAPI();
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 logger.info("The current token is invalid, re-generating token for you and calling it again");
                 TokenUtil.initTokenByProp();
                 try {
-                    result = easemobAPI.easemobAPIInvoker();
+                    result = easemobAPI.invokeEasemobAPI();
                 } catch (ApiException e1) {
                     logger.error(e1.getMessage());
                 }
@@ -55,7 +55,7 @@ public class ResponseHandle {
             try {
                 TimeUnit.SECONDS.sleep(time);
                 logger.info("Reconnection is in progress..." + i);
-                result = easemobAPI.easemobAPIInvoker();
+                result = easemobAPI.invokeEasemobAPI();
                 if (result != null) {
                     return result;
                 }

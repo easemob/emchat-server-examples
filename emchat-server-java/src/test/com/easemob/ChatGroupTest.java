@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ChatGroupTest {
     private EasemobChatGroup easemobChatGroup = new EasemobChatGroup();
-    private Logger logger = LoggerFactory.getLogger(ChatGroupTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatGroupTest.class);
 
     @Test
     public void getChatGroups() {
