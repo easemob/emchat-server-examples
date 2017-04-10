@@ -65,6 +65,8 @@ unix-like下运行
 ##### step 2. 使用keytool工具创建证书库
 
     Keytool –genkey –alias "certificate" –keyalg "RSA" –keystore "test.keystore"
+    
+这里的test.keystore是生成的证书库,可以指定生成目录比如d:\test.keystore,这样就可以在d盘找到刚才生成的证书库了
 
 alias：证书名称
 
