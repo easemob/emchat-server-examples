@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'distribution'
 
 repositories {
     mavenCentral()
@@ -12,5 +13,6 @@ dependencies {
     compile 'junit:junit:4.12'
     
     compile 'log4j:log4j:1.2.16'
-
+   
+    compile 'com.easemob:rest-java-sdk:1.0.0'
 }
