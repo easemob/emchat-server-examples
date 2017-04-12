@@ -28,3 +28,5 @@ hs_err_pid*
 
 # nodejs
 **/node_modules
+
+.DS_Store
