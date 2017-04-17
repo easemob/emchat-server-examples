@@ -3,7 +3,7 @@
 
     <contextName>logback</contextName>
 
-    <property name="log.path" value="c:/java-client-log/log.log" />
+    <property name="log.path" value="/java-client-log/log.log" />
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- <filter class="com.example.logback.filter.MyFilter" /> -->
