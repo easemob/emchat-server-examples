@@ -330,7 +330,7 @@ class Easemob{
 		$url=$this->url.'chatfiles';
 		$file=file_get_contents($filePath);
 		$body['file']=$file;
-		$header=array('enctype:multipart/form-data',$this->getToken(),"restrict-access:true");
+		$header=array('Content-type: multipart/form-data',$this->getToken(),"restrict-access:true");
 		$result=$this->postCurl($url,$body,$header,'XXX');
 		return $result;
 			

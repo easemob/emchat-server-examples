@@ -2,11 +2,13 @@ package com.easemob;
 
 import com.easemob.server.example.api.impl.EasemobSendMessage;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
 import io.swagger.client.model.Msg;
 import io.swagger.client.model.MsgContent;
 import io.swagger.client.model.UserName;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by easemob on 2017/3/22.
@@ -21,7 +23,10 @@ public class SendMessageTest {
         msgContent.type(MsgContent.TypeEnum.TXT).msg("helloword");
         UserName userName = new UserName();
         userName.add("qwqwqww");
-        msg.from("stringa").target(userName).targetType("users").msg(msgContent);
+        Map<String,Object> ext = new HashMap<>();
+        ext.put("test_key","test_value");
+        msg.from("stringa").target(userName).targetType("users").msg(msgContent).ext(ext);
+        System.out.println(new GsonBuilder().create().toJson(msg));
         Object result = easemobSendMessage.sendMessage(msg);
         System.out.println(result);
     }
