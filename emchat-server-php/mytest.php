@@ -7,7 +7,7 @@
 
 <body>
 <div id="container">
-	<div id="content">
+	<pre id="content">
 <?php
 include "Easemob.class.php";
 
@@ -18,7 +18,7 @@ $options['app_name']='YOUR_APP_NAME';
 
 $h=new Easemob($options);
 
-$i=70;
+$i=33;
 switch($i){
 	case 10://获取token
 		$token=$h->getToken();
@@ -102,11 +102,13 @@ switch($i){
 		break;
 	case 32://上传图片或文件
 		var_dump($h->uploadFile("./resource/up/pujing.jpg"));
-		//var_dump($h->uploadFile("./resource/up/mangai.mp3"));
-		//var_dump($h->uploadFile("./resource/up/sunny.mp4"));
+//		var_dump($h->uploadFile("./resource/up/mangai.mp3"));
+//		var_dump($h->uploadFile("./resource/up/sunny.mp4"));
 		break;
 	case 33://下载图片或文件
-		var_dump($h->downloadFile('01adb440-7be0-11e5-8b3f-e7e11cda33bb','Aa20SnvgEeWul_Mq8KN-Ck-613IMXvJN8i6U9kBKzYo13RL5'));
+		var_dump($h->downloadFile('75f3eee0-3b07-11e7-bbeb-97d815ecf44e','dfPu6jsHEeeZagGGnCWb3mtLyJi6FrvjgWRprrBzFULV6KLU','png'));
+//		var_dump($h->downloadFile('66183660-3af9-11e7-96d6-63605e337dea','Zhg2ajr5Eee3o2mxIT8bo3JeTtSRuK5PrbAlQwLrLU5L9jBN','mp3'));
+//		var_dump($h->downloadFile('83d159a0-3b05-11e7-9b3c-337a24e89abb','g9FZqjsFEeebr-sskMYXY1VfjF0b7s91XKiP228q_NOGoe3v','mp4'));
 		break;
 	case 34://下载图片缩略图
 		var_dump($h->downloadThumbnail('01adb440-7be0-11e5-8b3f-e7e11cda33bb','Aa20SnvgEeWul_Mq8KN-Ck-613IMXvJN8i6U9kBKzYo13RL5'));
@@ -319,7 +321,7 @@ switch($i){
 		break;
 }
 ?>
-    </div>
+    </pre>
 </div>
 </body>
 </html>

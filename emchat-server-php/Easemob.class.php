@@ -338,21 +338,38 @@ class Easemob{
 	/*
 		下载文件或图片
 	*/
-	function downloadFile($uuid,$shareSecret){
-		$url=$this->url.'chatfiles/'.$uuid;
-		$header = array("share-secret:".$shareSecret,"Accept:application/octet-stream",$this->getToken());
-		$result=$this->postCurl($url,'',$header,'GET');
-		$filename = md5(time().mt_rand(10, 99)).".png"; //新图片名称
-		if(!file_exists("resource/down")){
-			//mkdir("../image/down");
-			mkdirs("resource/down/");
+	function downloadFile($uuid,$shareSecret,$ext)
+	{
+		$url = $this->url . 'chatfiles/' . $uuid;
+		$header = array("share-secret:" . $shareSecret, "Accept:application/octet-stream", $this->getToken(),);
+
+		if ($ext=="png") {
+			$result=$this->postCurl($url,'',$header,'GET');
+		}else {
+			$result = $this->getFile($url);
 		}
-		
+		$filename = md5(time().mt_rand(10, 99)).".".$ext; //新图片名称
+		if(!file_exists("resource/down")){
+			mkdir("resource/down/");
+		}
+
 		$file = @fopen("resource/down/".$filename,"w+");//打开文件准备写入
 		@fwrite($file,$result);//写入
 		fclose($file);//关闭
 		return $filename;
 		
+	}
+
+	function getFile($url){
+		set_time_limit(0); // unlimited max execution time
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 600); //max 10 minutes
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		$result = curl_exec($ch);
+		curl_close($ch);
+		return $result;
 	}
 	/*
 		下载图片缩略图
@@ -818,7 +835,7 @@ class Easemob{
 		}
 		$header=array($this->getToken());
 		$result=$this->postCurl($url,'',$header,"GET");
-		$cursor=$result["cursor"];
+		$cursor=isset ( $result["cursor"] ) ? $result["cursor"] : '-1';
 		$this->writeCursor("chatfile.txt",$cursor);
 		//var_dump($GLOBALS['cursor'].'00000000000000');
 		return $result;
@@ -838,7 +855,7 @@ class Easemob{
 		//array_push($header, 'http:multipart/form-data');
 		//设置为false,只会获得响应的正文(true的话会连响应头一并获取到)
 		curl_setopt($ch,CURLOPT_HEADER,0);
-		curl_setopt ( $ch, CURLOPT_TIMEOUT,5); // 设置超时限制防止死循环
+//		curl_setopt ( $ch, CURLOPT_TIMEOUT,5); // 设置超时限制防止死循环
 		//设置发起连接前的等待时间，如果设置为0，则无限等待。
 		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
 		//将curl_exec()获取的信息以文件流的形式返回，而不是直接输出。
@@ -866,7 +883,7 @@ class Easemob{
 			case "POST":
 				curl_setopt($ch,CURLOPT_POST,true);
 				break;
-			case "PUT"://使用一个自定义的请求信息来代替"GET"或"HEAD"作为HTTP请									                     求。这对于执行"DELETE" 或者其他更隐蔽的HTT
+			case "PUT"://使用一个自定义的请求信息来代替"GET"或"HEAD"作为HTTP请求。这对于执行"DELETE" 或者其他更隐蔽的HTT
 				curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"PUT");
 				break;
 			case "DELETE":
@@ -877,8 +894,8 @@ class Easemob{
 		
 		//4)在HTTP请求中包含一个"User-Agent: "头的字符串。-----必设
 	
-		curl_setopt($ch, CURLOPT_USERAGENT, 'SSTS Browser/1.0');
-		curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+//		curl_setopt($ch, CURLOPT_USERAGENT, 'SSTS Browser/1.0');
+//		curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
 	
 		curl_setopt ( $ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)' ); // 模拟用户使用的浏览器
 		//5)
@@ -886,7 +903,7 @@ class Easemob{
 		
 		//3.抓取URL并把它传递给浏览器
 		$res=curl_exec($ch);
-	
+
 		$result=json_decode($res,true);
 		//4.关闭curl资源，并且释放系统资源
 		curl_close($ch);
