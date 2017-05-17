@@ -1,0 +1,9 @@
+{
+  "groupId": "com.easemob",
+  "artifactId": "rest-java-sdk",
+  "artifactVersion": "1.0.1.SNAPSHOT",
+  "developerName": "daiwa",
+  "developerEmail": "suxy@easemob.com",
+  "developerOrganization": "easemob",
+  "developerOrganizationUrl": "www.easemob.com"
+}
