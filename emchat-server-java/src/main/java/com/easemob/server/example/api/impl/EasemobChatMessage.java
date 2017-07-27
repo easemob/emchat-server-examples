@@ -23,4 +23,14 @@ public class EasemobChatMessage  implements ChatMessageAPI {
             }
         });
     }
+
+    @Override
+    public Object exportChatMessages(final String timeStr) {
+        return responseHandler.handle(new EasemobAPI() {
+            @Override
+            public Object invokeEasemobAPI() throws ApiException {
+                return api.orgNameAppNameChatmessagesTimeGet(OrgInfo.ORG_NAME,OrgInfo.APP_NAME,TokenUtil.getAccessToken(),timeStr);
+            }
+        });
+    }
 }
