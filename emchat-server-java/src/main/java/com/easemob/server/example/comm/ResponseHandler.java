@@ -16,7 +16,6 @@ public class ResponseHandler {
 
     public Object handle(EasemobAPI easemobAPI) {
         Object result = null;
-        StringBuffer stringBuffer = new StringBuffer();
         try {
             result = easemobAPI.invokeEasemobAPI();
         } catch (ApiException e) {
