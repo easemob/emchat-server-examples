@@ -10,12 +10,16 @@ import java.util.Calendar;
 
 /**
  * Created by easemob on 2017/3/22.
+ * API 文档地址：http://docs.easemob.com/im/100serverintegration/30chatlog
  */
 public class ChatMessagesTest {
     private EasemobChatMessage easemobChatMessage = new EasemobChatMessage();
     private static final Logger logger = LoggerFactory.getLogger(ChatMessagesTest.class);
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHH");
 
+    /**
+     * 获取聊天记录文件url
+     */
     @Test
     public void getChatMessagesDownloadUrl() {
         Calendar calendar = Calendar.getInstance();

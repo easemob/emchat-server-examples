@@ -8,11 +8,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Created by easemob on 2017/3/22.
+ * API 文档地址：http://docs.easemob.com/im/100serverintegration/60groupmgmt
  */
 public class ChatGroupTest {
     private EasemobChatGroup easemobChatGroup = new EasemobChatGroup();
     private static final Logger logger = LoggerFactory.getLogger(ChatGroupTest.class);
 
+    /**
+     * 分页获取 APP 下的群组
+     */
     @Test
     public void getChatGroups() {
         Long limit = 5L;
@@ -21,6 +25,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 获取群组详情
+     */
     @Test
     public void getGroupsInfo() {
         String[] grousIds = new String[2];
@@ -30,6 +37,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 创建一个群组
+     */
     @Test
     public void createGroup() {
         Group group = new Group();
@@ -38,6 +48,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 修改群组信息
+     */
     @Test
     public void changeGroupInfo() {
         ModifyGroup group = new ModifyGroup();
@@ -47,6 +60,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 分页获取群组成员
+     */
     @Test
     public void getUsersFromGroup() {
         String groupId = "49985853915137";
@@ -54,6 +70,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 添加群组成员[批量]
+     */
     @Test
     public void addUsers() {
         String groupId = "49985853915137";
@@ -66,6 +85,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 移除群组成员[批量]
+     */
     @Test
     public void removeUsersFromGroup() {
         String groupId = "49985853915137";
@@ -76,6 +98,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 转让群组
+     */
     @Test
     public void transferGroupOwner() {
         String groupId = "49985853915137";
@@ -85,6 +110,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 查询群组黑名单
+     */
     @Test
     public void getChatGroupBlockUsers(){
         String groupId = "49985853915137";
@@ -92,6 +120,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 添加用户至群组黑名单
+     */
     @Test
     public void addBlockUsers() {
         String groupId = "49985853915137";
@@ -104,6 +135,9 @@ public class ChatGroupTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 从群组黑名单移除用户
+     */
     @Test
     public void removeBlockUser() {
         String groupId = "49985853915137";

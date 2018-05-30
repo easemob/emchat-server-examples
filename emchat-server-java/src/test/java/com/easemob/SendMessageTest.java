@@ -11,10 +11,14 @@ import java.util.Map;
 
 /**
  * Created by easemob on 2017/3/22.
+ * API 地址：http://docs.easemob.com/im/100serverintegration/50messages
  */
 public class SendMessageTest {
     private EasemobSendMessage easemobSendMessage = new EasemobSendMessage();
 
+    /**
+     * 发送文本消息
+     */
     @Test
     public void sendText() {
         Msg msg = new Msg();
@@ -30,6 +34,9 @@ public class SendMessageTest {
         System.out.println(result);
     }
 
+    /**
+     * 发送图片消息
+     */
     @Test
     public void sendImage() {
         Msg msg = new Msg();
@@ -44,6 +51,9 @@ public class SendMessageTest {
         System.out.println(result);
     }
 
+    /**
+     * 发送语音消息
+     */
     @Test
     public void sendAudio() {
         Msg msg = new Msg();
@@ -57,6 +67,9 @@ public class SendMessageTest {
         System.out.println(result);
     }
 
+    /**
+     * 发送视频消息
+     */
     @Test
     public void sendVideo() {
         Msg msg = new Msg();
@@ -70,6 +83,9 @@ public class SendMessageTest {
         System.out.println(result);
     }
 
+    /**
+     * 发送透传消息
+     */
     @Test
     public void sendCmd() {
         Msg msg = new Msg();
@@ -82,6 +98,9 @@ public class SendMessageTest {
         System.out.println(result);
     }
 
+    /**
+     * 发送文本消息带扩展
+     */
     @Test
     public void sendTextWhitExt() {
         Msg msg = new Msg();

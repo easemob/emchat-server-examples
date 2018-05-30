@@ -11,12 +11,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Created by easemob on 2017/3/23.
+ * API 地址：http://docs.easemob.com/im/100serverintegration/70chatroommgmt
  */
 public class ChatRoomTest {
 
     private EasemobChatRoom easemobChatRoom = new EasemobChatRoom();
     private static final Logger logger = LoggerFactory.getLogger(ChatRoomTest.class);
 
+    /**
+     * 创建一个聊天室
+     */
     @Test
     public void createChatRoom() {
         Chatroom chatroom = new Chatroom();
@@ -25,6 +29,9 @@ public class ChatRoomTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 修改聊天室信息
+     */
     @Test
     public void changeChatRoomInfo() {
         String roomId = "49986023784449";
@@ -34,12 +41,18 @@ public class ChatRoomTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 获取 APP 中所有的聊天室
+     */
     @Test
     public void getAllRoom() {
         Object result = easemobChatRoom.getAllChatRooms();
         logger.info(result.toString());
     }
 
+    /**
+     * 获取聊天室详情
+     */
     @Test
     public void getChatRoomDetail(){
         String roomId = "11368499576837";
@@ -47,6 +60,9 @@ public class ChatRoomTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 添加聊天室成员
+     */
     @Test
     public void addUsersToRoom() {
         String roomId = "49986023784449";
@@ -59,6 +75,9 @@ public class ChatRoomTest {
         logger.info(result.toString());
     }
 
+    /**
+     * 删除聊天室成员
+     */
     @Test
     public void deleteUsersFromRoom() {
         String roomId = "49986023784449";

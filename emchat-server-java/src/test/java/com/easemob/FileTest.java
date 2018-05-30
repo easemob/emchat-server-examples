@@ -9,10 +9,15 @@ import java.io.File;
 
 /**
  * Created by easemob on 2017/3/22.
+ * API 文档地址：http://docs.easemob.com/im/100serverintegration/40fileoperation
  */
 public class FileTest {
     private EasemobFile easemobFile = new EasemobFile();
 
+    /**
+     * 上传文件
+     * 示例：上传图片文件
+     */
     @Test
     public void uploadFile() {
         String path = TokenUtil.class.getClassLoader().getResource("pic/chick.jpg").getPath();
@@ -22,6 +27,9 @@ public class FileTest {
         Assert.assertNotNull(result);
     }
 
+    /**
+     * 下载文件
+     */
     @Test
     public void downloadFile() {
         String uuid = "5deca060-0ea9-11e7-959e-0d3820191bac";

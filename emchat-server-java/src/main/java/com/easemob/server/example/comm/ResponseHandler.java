@@ -16,10 +16,13 @@ public class ResponseHandler {
 
     public Object handle(EasemobAPI easemobAPI) {
         Object result = null;
-        StringBuffer stringBuffer = new StringBuffer();
         try {
             result = easemobAPI.invokeEasemobAPI();
         } catch (ApiException e) {
+
+            /**
+             * 请求状态码非200时，捕获异常，也可以抛出上层处理。
+             */
             if (e.getCode() == 401) {
                 logger.info("The current token is invalid, re-generating token for you and calling it again");
                 TokenUtil.initTokenByProp();
@@ -45,11 +48,6 @@ public class ResponseHandler {
             Gson gson = new Gson();
             Map<String, String> map = gson.fromJson(e.getResponseBody(), Map.class);
             logger.error("error_code:{} error_msg:{} error_desc:{}", e.getCode(), e.getMessage(), map.get("error_description"));
-
-            // 将未捕捉的exception返回上层
-            if (result == null) {
-                result = e.getResponseBody();
-            }
         }
         return result;
     }
